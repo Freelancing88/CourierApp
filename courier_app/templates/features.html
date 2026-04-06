@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Features - TransGlo Logistics Network{% endblock %}
+
+
+{% block content %}
+<!-- Section 1: Intro Grid -->
+<section class="py-6 bg-offwhite border-bottom min-vh-100 d-flex align-items-center">
+    <div class="container py-5">
+        <div class="text-center mb-5 animate-fade-up">
+            <span class="text-accent fw-bold tracking-wide">CAPABILITIES</span>
+            <h2 class="display-4 fw-bold font-outfit mt-2 text-dark">Why Choose <span class="text-accent">TransGlo</span>
+            </h2>
+            <p class="text-secondary font-inter lead mt-3 mx-auto fw-bold" style="max-width: 600px;">
+                Enterprise-grade logistics infrastructure integrated directly with an autonomous conversational AI.
+            </p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4 animate-fade-up delay-1 card-entrance">
+                <div class="glass-panel p-4 rounded-4 h-100 hover-scale text-center border-top border-5 bg-white shadow-lg"
+                    style="border-top-color: var(--primary-red) !important;">
+                    <div class="mb-4">
+                        <img src="{% static 'img/voice_ai_assistant.jpg' %}" class="img-fluid rounded-circle shadow-sm animate-bounce-hover" style="width: 80px; height: 80px; object-fit: cover;" alt="Voice AI">
+                    </div>
+                    <h4 class="font-outfit fw-bold mb-3 text-dark">Voice-Powered</h4>
+                    <p class="text-secondary font-inter mb-0 fw-medium">Book securely through voice commands.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 animate-fade-up delay-2 card-entrance">
+                <div class="glass-panel p-4 rounded-4 h-100 hover-scale text-center border-top border-5 bg-white shadow-lg"
+                    style="border-top-color: var(--accent-yellow) !important;">
+                    <div class="mb-4">
+                        <img src="{% static 'img/global_assets_clean.jpg' %}" class="img-fluid rounded-4 shadow-sm animate-bounce-hover" style="height: 80px; width: 80px; object-fit: cover; border-radius: 50%;" alt="Smart AI">
+                    </div>
+                    <h4 class="font-outfit fw-bold mb-3 text-dark">Smart AI</h4>
+                    <p class="text-secondary font-inter mb-0 fw-medium">Optimizing routes continuously.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 animate-fade-up delay-3 card-entrance">
+                <div class="glass-panel p-4 rounded-4 h-100 hover-scale text-center border-top border-5 bg-white shadow-lg"
+                    style="border-top-color: var(--accent-green) !important;">
+                    <div class="mb-4">
+                        <img src="{% static 'img/global_network_hand.jpg' %}" class="img-fluid rounded-circle shadow-sm animate-bounce-hover" style="height: 80px; width: 80px; object-fit: cover;" alt="Multilingual">
+                    </div>
+                    <h4 class="font-outfit fw-bold mb-3 text-dark">Multilingual</h4>
+                    <p class="text-secondary font-inter mb-0 fw-medium">Automatic language detection.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section 2: Security (Red) -->
+<section class="py-6 bg-white position-relative overflow-hidden">
+    <div class="container text-center animate-fade-up bg-accent text-white rounded-4 p-5 shadow-lg">
+        <div class="mb-4">
+            <img src="{% static 'img/security_center.jpg' %}" class="img-fluid rounded-4 shadow-lg border border-5 border-white animate-bounce-hover" style="max-height: 200px;" alt="Security Center">
+        </div>
+        <h2 class="display-4 fw-bold font-outfit mb-4">Military-Grade Security</h2>
+        <p class="lead fw-medium mx-auto" style="max-width: 700px;">Every data point handled by TransGlo is fully encrypted
+            end-to-end to guarantee maximum enterprise safety. Our infrastructure utilizes AES-256 bit encryption at rest and TLS 1.3 in transit, backed by rigorous third-party penetration testing protocols to keep your trade secrets entirely secure.</p>
+    </div>
+</section>
+
+<!-- Section 3: Tech Stack (White) -->
+<section class="py-6 bg-white border-bottom">
+    <div class="container">
+        <h2 class="text-center display-5 fw-bold font-outfit text-dark animate-fade-up mb-5">Our Technology</h2>
+        <div class="row text-center mt-5">
+            <div class="col-md-3 animate-slide-in delay-1 hover-scale">
+                <h3 class="fw-bold text-accent">Python</h3>
+                <p class="text-secondary fw-bold">Backend Logic</p>
+            </div>
+            <div class="col-md-3 animate-slide-in delay-2 hover-scale">
+                <h3 class="fw-bold text-yellow">PostgreSQL</h3>
+                <p class="text-secondary fw-bold">Massive Storage</p>
+            </div>
+            <div class="col-md-3 animate-slide-in delay-3 hover-scale">
+                <h3 class="fw-bold text-green">TensorFlow</h3>
+                <p class="text-secondary fw-bold">Predictive AI</p>
+            </div>
+            <div class="col-md-3 animate-slide-in delay-4 hover-scale">
+                <h3 class="fw-bold text-secondary">React</h3>
+                <p class="text-secondary fw-bold">Dynamic Views</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section 4: API Integration (Yellow) -->
+<section class="py-6 bg-white overflow-hidden z-3 position-relative">
+    <div class="container animate-fade-up bg-yellow rounded-4 p-5 shadow-lg">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="display-4 fw-bold font-outfit">Developer APIs</h2>
+                <p class="lead fw-bold mb-4">Integrate TransGlo into your e-commerce platform with our robust GraphQL API in
+                    under 10 minutes. Effortlessly automate label creation, shipping cost calculation, and final delivery updates directly inside your POS.</p>
+                <a href="#" class="btn btn-dark btn-lg rounded-pill fw-bold hover-scale shadow-lg">Read Docs</a>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="{% static 'img/global_montage.jpg' %}" class="img-fluid rounded-4 shadow-lg border border-5 border-white animate-fade-up" alt="Global Logistics Montage">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section 5: Mobile App (White) -->
+<section class="py-6 bg-white border-bottom">
+    <div class="container text-center animate-fade-up">
+        <div class="mb-4">
+            <img src="{% static 'img/isometric_tracking_app.jpg' %}" class="img-fluid rounded-4 shadow-lg animate-bounce-hover" style="max-height: 350px;" alt="Mobile App Visual">
+        </div>
+        <h2 class="display-5 fw-bold font-outfit text-dark mb-4">TransGlo Mobile App</h2>
+        <p class="lead text-secondary fw-medium mx-auto mb-4" style="max-width: 600px;">Take control of your logistics
+            on the go. Available for iOS and Android devices, it functions as a lightweight terminal to your deliveries.</p>
+        <a href="#" class="btn btn-green btn-lg px-4 rounded-pill shadow-lg animate-bounce-hover fw-bold"><i
+                class="bi bi-apple me-2"></i> App Store</a>
+        <a href="#" class="btn btn-outline-dark btn-lg px-4 rounded-pill shadow-sm animate-bounce-hover fw-bold ms-3"><i
+                class="bi bi-google-play me-2"></i> Google Play</a>
+    </div>
+</section>
+
+<!-- Section 6: Enterprise Solutions (Green) -->
+<section class="py-6 bg-white shadow-sm text-center z-3 position-relative">
+    <div class="container animate-grow bg-green text-white rounded-4 p-5 shadow-lg">
+        <h2 class="display-4 fw-bold font-outfit mb-4">Enterprise Grade Infrastructure</h2>
+        <p class="lead fw-medium mb-5">Talk to our specialists to design a custom TransGlo node for your corporation, complete with wholesale rates and dedicated account handlers.</p>
+        <a href="{% url 'contact' %}"
+            class="btn bg-white text-green btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg hover-scale animate-bounce-hover">Contact
+            Sales</a>
+    </div>
+</section>
+{% endblock %}

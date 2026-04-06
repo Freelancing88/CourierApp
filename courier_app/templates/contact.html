@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block title %}Contact - TransGlo Logistics Network{% endblock %}
+
+{% block content %}
+<!-- Sec 1 -->
+<section class="py-6 bg-white position-relative min-vh-100 d-flex align-items-center overflow-hidden border-bottom">
+    <div class="position-absolute top-100 start-100 translate-middle blob-yellow z-0 opacity-50"></div>
+    <div class="container py-5 animate-fade-up position-relative z-2">
+        <div class="row gx-5">
+            <div class="col-lg-5 mb-5 mb-lg-0 animate-slide-in">
+                <span
+                    class="badge bg-green text-white rounded-pill px-3 py-2 mb-3 fw-bold tracking-wide shadow-sm">REACH
+                    OUT</span>
+                <h2 class="display-4 fw-bold font-outfit mb-4 text-dark">Let's <span class="text-accent">Connect</span>
+                </h2>
+                <div class="d-flex flex-column gap-4 font-inter fw-medium mt-5">
+                    <div class="d-flex align-items-start gap-4">
+                        <div class="bg-yellow text-dark p-3 rounded-circle shadow-sm animate-bounce-hover"><i
+                                class="bi bi-geo-alt-fill fs-4"></i></div>
+                        <div>
+                            <h5 class="fw-bold mb-1 text-dark">Global Headquarters</h5>
+                            <p class="text-secondary mb-0">100 Innovation Drive, Silicon Valley, CA</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-4">
+                        <div class="bg-accent text-white p-3 rounded-circle shadow-sm animate-bounce-hover"><i
+                                class="bi bi-envelope-fill fs-4"></i></div>
+                        <div>
+                            <h5 class="fw-bold mb-1 text-dark">Email Us</h5>
+                            <p class="text-secondary mb-0">enterprise@transglo.global</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-4">
+                        <div class="bg-green text-white p-3 rounded-circle shadow-sm animate-bounce-hover"><i
+                                class="bi bi-telephone-fill fs-4"></i></div>
+                        <div>
+                            <h5 class="fw-bold mb-1 text-dark">Call Us</h5>
+                            <p class="text-secondary mb-0">+1 (800) 555-0199</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7 animate-fade-up delay-2">
+                <div class="glass-panel p-5 rounded-4 shadow-lg bg-offwhite border-0 border-top border-5"
+                    style="border-top-color: var(--primary-red) !important;">
+                    <form>
+                        <div class="row g-4">
+                            <div class="col-md-6"><label class="form-label font-inter fw-bold text-dark">First
+                                    Name</label><input type="text"
+                                    class="form-control bg-white border-secondary-subtle px-3 py-2 rounded-3 shadow-sm transition-btn">
+                            </div>
+                            <div class="col-md-6"><label class="form-label font-inter fw-bold text-dark">Last
+                                    Name</label><input type="text"
+                                    class="form-control bg-white border-secondary-subtle px-3 py-2 rounded-3 shadow-sm transition-btn">
+                            </div>
+                            <div class="col-12"><label
+                                    class="form-label font-inter fw-bold text-dark">Message</label><textarea
+                                    class="form-control bg-white border-secondary-subtle px-3 py-2 rounded-3 shadow-sm transition-btn"
+                                    rows="4"></textarea></div>
+                            <div class="col-12 mt-5"><button type="button"
+                                    class="btn btn-accent w-100 py-3 rounded-3 fw-bold fs-5 shadow-accent animate-bounce-hover">Send
+                                    Message</button></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Sec 2 -->
+<section class="py-6 bg-white overflow-hidden text-center z-3 position-relative">
+    <div class="container animate-fade-up bg-yellow rounded-4 p-5 shadow-lg">
+        <h2 class="display-5 fw-bold font-outfit mb-5">Global Offices</h2>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4 hover-scale">
+                <div
+                    class="bg-white p-4 rounded-4 shadow-sm border border-5 border-top-0 border-start-0 border-end-0 border-accent">
+                    <h4 class="fw-bold">North America</h4>
+                    <p class="text-secondary mb-0">New York & SF</p>
+                </div>
+            </div>
+            <div class="col-md-4 hover-scale delay-1">
+                <div
+                    class="bg-white p-4 rounded-4 shadow-sm border border-5 border-top-0 border-start-0 border-end-0 border-success">
+                    <h4 class="fw-bold">Europe</h4>
+                    <p class="text-secondary mb-0">London & Berlin</p>
+                </div>
+            </div>
+            <div class="col-md-4 hover-scale delay-2">
+                <div
+                    class="bg-white p-4 rounded-4 shadow-sm border border-5 border-top-0 border-start-0 border-end-0 border-warning">
+                    <h4 class="fw-bold">Asia Pacific</h4>
+                    <p class="text-secondary mb-0">Tokyo & Singapore</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Sec 3 -->
+<section id="careers" class="py-6 bg-white border-bottom text-center">
+    <div class="container animate-grow">
+        <h2 class="display-4 fw-bold text-dark mb-4 filter-drop-shadow">Build Your Career</h2>
+        <p class="lead text-secondary fw-medium mb-4 mx-auto" style="max-width: 800px;">We are hiring engineers and analysts to build the best logistics core. Challenge the status quo with us. Join our globally distributed teams in data science, autonomous vehicle routing, and strategic global partnerships. We offer competitive equity, limitless growth potential, and the chance to fundamentally reshape global trade.</p>
+        <a href="{% url 'about' %}" class="btn btn-green btn-lg px-5 rounded-pill shadow-lg hover-scale animate-bounce-hover fw-bold">View
+            Openings</a>
+    </div>
+</section>
+<!-- Sec 4 -->
+<section class="py-6 bg-white text-center position-relative overflow-hidden">
+    <div class="container animate-fade-up bg-accent text-white rounded-4 p-5 shadow-lg">
+        <i class="bi bi-building display-3 mb-4 d-inline-block animate-bounce-hover text-yellow"></i>
+        <h2 class="display-5 fw-bold font-outfit mb-4">Partner Inquiries</h2>
+        <p class="lead fw-medium mx-auto" style="max-width: 700px;">Airlines and Freight Networks can inject directly
+            into TransGlo routing protocols. Become an authorized provider connecting into our expansive network graph. Leverage our AI routing systems to fill your cargo space seamlessly and monetize unused transit capacity globally.</p>
+    </div>
+</section>
+<!-- Sec 5 -->
+<section id="faq" class="py-6 bg-offwhite border-bottom text-center">
+    <div class="container">
+        <h2 class="display-5 fw-bold font-outfit text-dark mb-4 animate-fade-up">Quick FAQ</h2>
+        <p class="lead text-secondary fw-medium mx-auto mb-5" style="max-width: 600px;">Curious about how we operate? Here are some of the most common questions our enterprise clients ask before onboarding with us.</p>
+        <div class="glass-panel p-4 rounded-4 text-start shadow-sm mx-auto animate-slide-in hover-scale"
+            style="max-width: 700px; border-top: 5px solid var(--accent-yellow);">
+            <h5 class="fw-bold text-dark">How fast is enterprise deployment?</h5>
+            <p class="text-secondary fw-medium">Full API connectivity happens in 24 hours.</p>
+            <h5 class="fw-bold text-dark mt-4">Is support multilingual?</h5>
+            <p class="text-secondary mb-0 fw-medium">Yes, the platform supports 90+ recognized languages in real-time.</p>
+        </div>
+    </div>
+</section>
+<!-- Sec 6 -->
+<section class="py-6 bg-white text-center position-relative overflow-hidden">
+    <div class="position-absolute top-0 start-50 translate-middle blob-yellow z-0 opacity-25"></div>
+    <div class="container z-2 position-relative animate-grow bg-green text-white rounded-4 p-5 shadow-lg">
+        <h2 class="display-4 fw-bold font-outfit mb-4">Join Newsletter</h2>
+        <div class="d-flex mx-auto rounded-pill overflow-hidden shadow-lg p-2 bg-white hover-scale"
+            style="max-width: 500px;">
+            <input class="form-control border-0 bg-transparent shadow-none font-inter text-dark fw-bold"
+                placeholder="Email...">
+            <button onclick="alert('Signed up to Newsletter successfully!');" class="btn btn-dark rounded-pill px-4 fw-bold">Sign Up</button>
+        </div>
+    </div>
+</section>
+{% endblock %}

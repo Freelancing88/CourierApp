@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Track Your Cargo - TransGlo Logistics Network{% endblock %}
+
+{% block content %}
+<!-- Sec 1 -->
+<section
+    class="py-6 bg-accent text-white border-bottom min-vh-100 d-flex align-items-center position-relative overflow-hidden">
+    <div class="position-absolute top-50 start-50 translate-middle blob-yellow z-0 opacity-50"></div>
+    <div class="container text-center z-2 position-relative animate-fade-up">
+        <i class="bi bi-geo-alt-fill display-1 mb-4 animate-bounce-hover text-yellow"></i>
+        <h1 class="display-3 fw-bold font-outfit mb-4">Track Your Shipment</h1>
+        <p class="lead fw-medium mx-auto mb-5" style="max-width: 600px;">Enter your TransGlo tracking reference below to
+            access millisecond-accurate geospatial data.</p>
+        <div class="bg-white p-3 rounded-pill shadow-lg d-flex align-items-center mx-auto" style="max-width: 600px;">
+            <input type="text" id="trackingInput"
+                class="form-control bg-transparent border-0 text-dark font-inter shadow-none px-4 fs-5 fw-bold"
+                placeholder="Enter your tracking number" />
+            <button id="trackBtn"
+                class="btn btn-yellow text-dark rounded-pill px-5 py-3 fw-bold transition-btn shadow-sm fs-5"
+                style="white-space: nowrap;">TRACK</button>
+        </div>
+        <!-- Tracking Result -->
+        <div id="trackingResult" class="mt-5 text-start d-none mx-auto animate-slide-in" style="max-width: 1000px;">
+            <div class="row g-4">
+                <!-- Package Details & Airway Bill -->
+                <div class="col-lg-6">
+                    <div class="bg-white p-4 rounded-4 shadow-lg h-100"
+                        style="border-top: 8px solid var(--accent-yellow);">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span class="badge bg-yellow text-dark px-3 py-2 fs-6 tracking-wide shadow-sm"
+                                id="resStatus">STATUS</span>
+                            <span class="text-secondary font-inter fw-bold fs-6"><i
+                                    class="bi bi-calendar-check text-green me-1"></i> <span id="resEstDelivery">Oct 24,
+                                    2026</span></span>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-4 bg-offwhite p-3 rounded-4 border">
+                            <div class="text-dark fw-bold fs-5 text-truncate" id="resOrigin"></div>
+                            <i class="bi bi-airplane-fill mx-3 fs-3 text-accent animate-bounce-hover"></i>
+                            <div class="text-dark fw-bold fs-5 text-truncate" id="resDest"></div>
+                        </div>
+
+                        <div class="row g-3 mb-4 font-inter text-secondary fw-medium">
+                            <div class="col-6">
+                                <small class="text-uppercase fw-bold text-dark">Airway Bill</small>
+                                <div id="resAWB" class="text-accent fw-bold text-truncate">AWB-PENDING</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-uppercase fw-bold text-dark">Created On</small>
+                                <div id="resCreated">Date</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-uppercase fw-bold text-dark">Content</small>
+                                <div id="resContent" class="text-truncate">General</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-uppercase fw-bold text-dark">Weight / Cost</small>
+                                <div><span id="resWeight">0</span> kg &bull; <span id="resCost"
+                                        class="text-green fw-bold">$0.00</span></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-offwhite p-3 rounded-3 border mb-4 d-flex justify-content-between align-items-center">
+                            <small class="text-uppercase fw-bold text-dark mb-0">Latest Update</small>
+                            <p class="text-secondary font-inter mb-0 fw-bold text-end ms-3" id="resUpdate">Latest update goes here.</p>
+                        </div>
+
+                        <!-- Print/Download Buttons -->
+                        <div class="d-flex gap-2">
+                            <button onclick="window.print()" class="btn btn-outline-dark fw-bold w-50 rounded-pill"><i
+                                    class="bi bi-printer-fill me-2"></i>Print Receipt</button>
+                            <button class="btn btn-green text-white fw-bold w-50 rounded-pill shadow-sm"><i
+                                    class="bi bi-file-earmark-pdf-fill me-2"></i>Save AWB</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Map Tracker Simulation -->
+                <div class="col-lg-6">
+                    <div class="bg-white p-4 rounded-4 shadow-lg h-100 d-flex flex-column"
+                        style="border-top: 8px solid var(--accent-green);">
+                        <h5 class="fw-bold font-outfit text-dark mb-4"><i
+                                class="bi bi-geo-alt text-accent me-2"></i>Live Map Tracker</h5>
+
+                        <!-- Actual Live Map -->
+                        <div id="shipmentMap" class="flex-grow-1 bg-offwhite rounded-4 border position-relative overflow-hidden shadow-inner"
+                            style="min-height: 250px; z-index: 10;"></div>
+                        
+                        <!-- Live Indicator Overlay -->
+                        <div class="mt-3 p-3 bg-fade rounded-3 border d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-uppercase fw-bold text-dark d-block" style="font-size: 0.65rem;">Time Remaining</small>
+                                <div class="fw-bold text-accent fs-5" id="resEtaHours">Calculating...</div>
+                            </div>
+                            <div class="text-center">
+                                <small class="text-uppercase fw-bold text-dark d-block" style="font-size: 0.65rem;">Current Speed</small>
+                                <div class="fw-bold text-dark fs-6" id="resAvgSpeed">0 km/h</div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center w-100">
+                                <small class="text-uppercase fw-bold text-dark mb-0" style="font-size: 0.65rem;">GPS Stream</small>
+                                <div class="text-green fw-bold animate-pulse mb-0"><i class="bi bi-broadcast me-1"></i> LIVE</div>
+                            </div>
+                        </div>
+
+                        <!-- Sender/Receiver Info -->
+                        <div class="mt-4 row g-3 text-start">
+                            <div class="col-6">
+                                <div class="p-3 bg-offwhite rounded-3 border h-100 shadow-sm">
+                                    <small class="text-uppercase fw-bold text-dark d-block">Sender</small>
+                                    <div class="fw-bold text-secondary text-truncate" id="resSenderName">Name</div>
+                                    <small class="text-muted d-block text-truncate" id="resSenderAddr"
+                                        style="font-size: 0.75rem;">Address</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-offwhite rounded-3 border h-100 shadow-sm">
+                                    <small class="text-uppercase fw-bold text-accent d-block">Receiver</small>
+                                    <div class="fw-bold text-secondary text-truncate" id="resReceiverName">Name</div>
+                                    <small class="text-muted d-block text-truncate" id="resReceiverAddr"
+                                        style="font-size: 0.75rem;">Address</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Confirmation -->
+                        <div class="mt-4 rounded-4 overflow-hidden border shadow-sm">
+                            <img src="{% static 'img/tracking_phone.jpg' %}" class="w-100" style="height: 150px; object-fit: cover;" alt="GPS Tracking Visual">
+                        </div>
+
+                        <!-- Proactive Notifications Subscribe -->
+                        <div class="mt-4 p-4 text-center rounded-4 shadow-sm" style="background-color: var(--primary-gray);">
+                            <h6 class="fw-bold text-white mb-2 font-outfit"><i class="bi bi-bell-fill text-yellow me-2"></i> Get Tracking Updates By Email</h6>
+                            <p class="text-light fw-medium mb-3" style="font-size: 0.85rem;">We'll notify you automatically when this shipment moves.</p>
+                            <form id="subscribeForm" class="d-flex bg-white rounded-pill p-1 overflow-hidden">
+                                <input type="email" id="subEmail" class="form-control border-0 shadow-none ps-3 fw-bold font-inter text-dark" placeholder="Enter your email" required style="font-size: 0.9rem;">
+                                <button type="submit" id="subBtn" class="btn btn-dark text-white fw-bold rounded-pill px-4" style="font-size: 0.9rem; white-space: nowrap;">Subscribe</button>
+                            </form>
+                            <div id="subMessage" class="mt-2 fw-bold text-yellow d-none font-inter" style="font-size: 0.85rem;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Sec 2 -->
+<section class="py-6 bg-white border-bottom text-center">
+    <div class="container animate-fade-up">
+        <h2 class="display-5 fw-bold font-outfit text-dark mb-4">How TransGlo Tracker Works</h2>
+        <p class="lead text-secondary fw-medium mx-auto mb-5" style="max-width: 800px;">The TransGlo Tracker is not just a static database query. It is a live, predictive engine drawing from thousands of geographic sensors and weather APIs to show you not just where your package is, but entirely ensuring its security.</p>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4 hover-scale"><i
+                    class="bi bi-satellite-fill fs-1 text-accent mb-3 d-block d-inline-block animate-bounce-hover"></i>
+                <h4 class="fw-bold text-dark">Satellite Synced</h4>
+                <p class="text-secondary fw-medium">Connected to global GPS nodes.</p>
+            </div>
+            <div class="col-md-4 hover-scale delay-1"><i
+                    class="bi bi-shield-lock fs-1 text-green mb-3 d-block d-inline-block animate-bounce-hover"></i>
+                <h4 class="fw-bold text-dark">Blockchain Verified</h4>
+                <p class="text-secondary fw-medium">Immutable ledger validation.</p>
+            </div>
+            <div class="col-md-4 hover-scale delay-2"><i
+                    class="bi bi-robot fs-1 text-yellow mb-3 d-block d-inline-block animate-bounce-hover"></i>
+                <h4 class="fw-bold text-dark">AI Predicted</h4>
+                <p class="text-secondary fw-medium">The system predicts delays instantly.</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Sec 3 -->
+<section class="py-6 bg-white overflow-hidden text-center z-3 position-relative">
+    <div class="container animate-fade-up bg-yellow rounded-4 p-5 shadow-lg">
+        <h2 class="display-5 fw-bold font-outfit mb-4">Enterprise Tracking API</h2>
+        <p class="lead fw-bold mx-auto mb-5 text-secondary" style="max-width: 800px;">Embed our real-time tracking engine directly into
+            your e-commerce platform. Provide your customers with live map visualizations natively within your checkout pages. Our WebSocket-powered GraphQL API guarantees sub-millisecond response times under peak holiday traffic.</p>
+        <a href="{% url 'features' %}" class="btn btn-dark btn-lg px-5 rounded-pill shadow-lg hover-scale animate-bounce-hover">Read Developers
+            Info</a>
+    </div>
+</section>
+<!-- Sec 4 -->
+<section class="py-6 bg-white shadow-sm text-center z-3 position-relative">
+    <div class="container animate-grow bg-green text-white rounded-4 p-5 shadow-lg">
+        <i class="bi bi-phone-vibrate display-2 mb-4 d-inline-block animate-bounce-hover"></i>
+        <h2 class="display-5 fw-bold font-outfit mb-4">Track on the Go</h2>
+        <p class="lead fw-medium mx-auto mb-5" style="max-width: 800px;">Download the TransGlo Mobile app for push
+            notifications regarding your freight. Our award-winning mobile platform allows you to intercept packages, reroute destinations mid-transit, and sign digital receipts from anywhere in the world.</p>
+        <a href="#" class="btn btn-white text-green btn-lg fw-bold rounded-pill mx-2 hover-scale shadow-lg"><i
+                class="bi bi-apple"></i> iOS App</a>
+        <a href="#" class="btn btn-dark btn-lg fw-bold rounded-pill mx-2 hover-scale shadow-lg"><i
+                class="bi bi-google-play"></i> Android App</a>
+    </div>
+</section>
+<!-- Sec 5 -->
+<section class="py-6 bg-white border-bottom text-center">
+    <div class="container animate-fade-up">
+        <h2 class="display-5 fw-bold font-outfit text-dark mb-4">99.99% Uptime SLA</h2>
+        <p class="text-secondary lead fw-medium mx-auto mb-0" style="max-width: 800px;">Our tracking network is hosted across
+            distributed nodes globally to ensure you always have access to your routing manifest. We recognize that blind spots in logistics cost money. Therefore we financially guarantee our uptime. Dual-redundant satellite backups ensure that even during widespread outages, your tracking data remains immediately accessible.</p>
+    </div>
+</section>
+<!-- Sec 6 -->
+<section class="py-6 bg-white text-center position-relative overflow-hidden">
+    <div class="position-absolute bottom-0 start-0 translate-middle-y blob-yellow z-0 opacity-50"></div>
+    <div class="container z-2 position-relative animate-fade-up bg-accent text-white rounded-4 p-5 shadow-lg">
+        <h2 class="display-4 fw-bold font-outfit mb-4">Need Intervention?</h2>
+        <p class="lead fw-medium mx-auto mb-5" style="max-width: 700px;">Is your tracking number showing an anomaly? Let
+            our agents sort it immediately. Whether customs requires additional paperwork or you accidentally provided an incorrect address, our 24/7 rapid response team intervenes to resolve administrative roadblocks instantly.</p>
+        <a href="{% url 'contact' %}"
+            class="btn btn-white text-accent btn-lg fw-bold px-5 rounded-pill hover-scale animate-bounce-hover shadow-lg">Contact
+            Support</a>
+    </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{{ block.super }}
+{% endblock %}

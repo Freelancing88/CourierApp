@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Help Center - TransGlo Logistics Network{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="bg-dark text-white py-6 bg-fade" style="background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('{% static 'img/warehouse.jpg' %}') center/cover fixed;">
+    <div class="container py-5 text-center px-4 animate-fade-up">
+        <span class="badge bg-danger text-white px-4 py-2 rounded-pill fs-6 fw-bold mb-4 animate-bounce-hover">SUPPORT TICKET ENGINE</span>
+        <h1 class="display-3 fw-bold font-outfit mb-3">How can we <span class="text-accent underline-accent">help</span> you?</h1>
+        <p class="lead mb-0 font-inter mx-auto fw-medium text-light" style="max-width: 600px;">Check our FAQs below or open a direct ticket to our claims department.</p>
+    </div>
+</section>
+
+<section class="py-6 bg-offwhite">
+    <div class="container">
+        
+        {% if messages %}
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8">
+                {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show fw-bold shadow-sm" role="alert">
+                    <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill text-success{% else %}bi-exclamation-triangle-fill text-danger{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row g-5 justify-content-center">
+            
+            <!-- Submit Ticket Form -->
+            <div class="col-lg-5">
+                <div class="bg-white p-5 rounded-4 shadow-lg border-bottom border-accent border-5 h-100">
+                    <h3 class="fw-bold font-outfit text-dark mb-4"><i class="bi bi-headset text-accent me-2"></i> Submit a Ticket</h3>
+                    <form method="POST" action="{% url 'help_center' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary">Email Address *</label>
+                            <input type="email" name="email" class="form-control bg-offwhite border-0 py-3" placeholder="email@example.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary">Tracking or AWB (Optional)</label>
+                            <input type="text" name="tracking" class="form-control bg-offwhite border-0 py-3" placeholder="e.g. TRG-ABCD123">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary">Subject *</label>
+                            <select name="subject" class="form-select bg-offwhite border-0 py-3" required>
+                                <option value="" disabled selected>Select an issue...</option>
+                                <option value="Delayed Shipment">My package is delayed</option>
+                                <option value="Lost Shipment">I believe my package is lost</option>
+                                <option value="Damaged Cargo">Damaged cargo claim</option>
+                                <option value="Customs Issue">Customs clearance problem</option>
+                                <option value="Billing Issue">Invoice or billing error</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary">Issue Description *</label>
+                            <textarea name="issue" rows="4" class="form-control bg-offwhite border-0 py-3" placeholder="Please provide specific details..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100 py-3 rounded-pill fw-bold hover-scale shadow">Submit to Claims Division</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- FAQ -->
+            <div class="col-lg-7">
+                <div class="px-lg-4">
+                    <h3 class="fw-bold font-outfit text-dark mb-4"><i class="bi bi-question-circle-fill text-yellow me-2"></i> Frequently Asked Questions</h3>
+                    <div class="accordion shadow-sm rounded-4 overflow-hidden" id="faqAccordion">
+                        <div class="accordion-item border-0 border-bottom">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button fw-bold text-dark font-inter" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    How long do international shipments take?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-secondary fw-medium">
+                                    Standard international shipments usually clear customs and deliver within 5-7 business days. Express shipments are priority cleared and deliver within 1-3 days globally via our air network.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item border-0 border-bottom">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed fw-bold text-dark font-inter" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    What happens if my package is seized at Customs?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-secondary fw-medium">
+                                    TransGlo operates under strict compliance. If paperwork is missing, the tracker will display "Customs Hold". You will need to contact our clearance division by submitting a ticket with your commercial invoice.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed fw-bold text-dark font-inter" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    How is volumetric weight calculated?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-secondary fw-medium">
+                                    We use the standard divisor of 5000. Calculation: Length (cm) x Width (cm) x Height (cm) / 5000. If the volumetric weight exceeds actual weight, the volumetric weight becomes the billable weight.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

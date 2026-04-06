@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TransGlo Logistic Network - Market leaders in global logistics.">
+    <title>{% block title %}TransGlo Logistic Network{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+
+<body class="bg-white text-dark">
+    <!-- Sticky Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-glass fixed-top py-3 transition-nav border-bottom shadow-sm"
+        id="mainNav">
+        <div class="container">
+            <a class="navbar-brand fw-bold font-outfit d-flex align-items-center gap-2 animate-slide-in"
+                href="{% url 'home' %}">
+                <!-- TransGlo Globe + Delivery Icon Logo -->
+                <div class="d-flex align-items-center justify-content-center position-relative" style="width:42px;height:42px;">
+                    <i class="bi bi-globe-americas text-accent logo-globe" style="font-size:28px;"></i>
+                    <i class="bi bi-box-fill text-yellow position-absolute" style="font-size:13px;bottom:0;right:0;"></i>
+                </div>
+                <div class="d-flex flex-column lh-1">
+                    <span class="fs-5 fw-bold text-dark">TransGlo</span>
+                    <span style="font-size:10px;" class="text-secondary fw-normal tracking-wide">LOGISTIC NETWORK</span>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse animate-fade-up" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center fw-medium font-inter">
+                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'features' %}">Features</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'quote' %}">Get a Quote</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'testimonials' %}">Testimonials</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'help_center' %}">Help Center</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'contact' %}">Contact</a></li>
+                    <!-- Language Selector -->
+                    <li class="nav-item dropdown ms-1">
+                        <a class="nav-link dropdown-toggle px-2 d-flex align-items-center gap-1" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-translate fs-6"></i> <span id="currentLang">EN</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3" aria-labelledby="langDropdown">
+                            <li><a class="dropdown-item lang-option" href="#" data-lang="en">🇬🇧 English</a></li>
+                            <li><a class="dropdown-item lang-option" href="#" data-lang="fr">🇫🇷 Français</a></li>
+                            <li><a class="dropdown-item lang-option" href="#" data-lang="es">🇪🇸 Español</a></li>
+                            <li><a class="dropdown-item lang-option" href="#" data-lang="de">🇩🇪 Deutsch</a></li>
+                            <li><a class="dropdown-item lang-option" href="#" data-lang="zh">🇨🇳 中文</a></li>
+                            <li><a class="dropdown-item lang-option" href="#" data-lang="ar">🇸🇦 العربية</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                        <a href="{% url 'tracking' %}"
+                            class="btn btn-accent rounded-pill px-4 fw-bold shadow-accent animate-bounce-hover">Track
+                            Package</a>
+                    </li>
+                    
+                    <!-- Header Theme Toggle -->
+                    <li class="nav-item ms-lg-3 mt-3 mt-lg-0 d-flex align-items-center justify-content-center">
+                        <div class="d-flex align-items-center bg-white rounded-pill px-2 py-1 shadow-sm border border-secondary-subtle gap-2">
+                            <span class="small fw-bold text-secondary ps-1" style="font-size: 0.75rem;">THEME:</span>
+                            <button class="btn btn-sm rounded-circle p-0 border border-secondary border-1 shadow-sm" style="width: 18px; height: 18px; background-color: #ffffff;" onclick="setHeaderTheme('default')" title="Default Glass"></button>
+                            <button class="btn btn-sm rounded-circle p-0 border border-secondary border-1 shadow-sm" style="width: 18px; height: 18px; background-color: #d32f2f;" onclick="setHeaderTheme('red')" title="Red Header"></button>
+                            <button class="btn btn-sm rounded-circle p-0 border border-secondary border-1 shadow-sm" style="width: 18px; height: 18px; background-color: #ffc107;" onclick="setHeaderTheme('yellow')" title="Yellow Header"></button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="page-content min-vh-100">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold font-outfit" id="registerModalLabel">Register for TransGlo</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label class="form-label fw-bold">Email address</label>
+                <input type="email" class="form-control rounded-pill px-4" placeholder="name@company.com">
+              </div>
+              <div class="mb-4">
+                <label class="form-label fw-bold">Password</label>
+                <input type="password" class="form-control rounded-pill px-4" placeholder="••••••••">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-dark rounded-pill fw-bold" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-accent text-white rounded-pill fw-bold px-4" onclick="alert('Demo functionality: Registration successful'); bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();">Sign Up</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="mt-6" style="background-color: #1a1a1a; color: #ffffff; padding-top: 60px;">
+        <div class="container animate-fade-up">
+            <div class="row gx-5 mb-5 text-start">
+                <!-- Col 1: About -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <h6 class="fw-bold mb-3 text-uppercase font-outfit text-yellow" style="letter-spacing: 1px;">About TransGlo</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="{% url 'about' %}" class="text-white text-decoration-none footer-link">About Us</a></li>
+                        <li class="mb-2"><a href="{% url 'contact' %}#careers" class="text-white text-decoration-none footer-link">Careers</a></li>
+                        <li class="mb-2"><a href="{% url 'testimonials' %}" class="text-white text-decoration-none footer-link">Newsroom</a></li>
+                    </ul>
+                </div>
+                <!-- Col 2: Services -->
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+                    <h6 class="fw-bold mb-3 text-uppercase font-outfit text-yellow" style="letter-spacing: 1px;">Our Services</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="{% url 'features' %}" class="text-white text-decoration-none footer-link">Shipping</a></li>
+                        <li class="mb-2"><a href="{% url 'tracking' %}" class="text-white text-decoration-none footer-link">Tracking</a></li>
+                        <li class="mb-2"><a href="{% url 'home' %}#services" class="text-white text-decoration-none footer-link">Freight</a></li>
+                        <li class="mb-2"><a href="{% url 'features' %}" class="text-white text-decoration-none footer-link">Supply Chain</a></li>
+                    </ul>
+                </div>
+                <!-- Col 3: Support -->
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+                    <h6 class="fw-bold mb-3 text-uppercase font-outfit text-yellow" style="letter-spacing: 1px;">Support</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="{% url 'help_center' %}" class="text-white text-decoration-none footer-link">Help Center</a></li>
+                        <li class="mb-2"><a href="{% url 'contact' %}" class="text-white text-decoration-none footer-link">Contact Us</a></li>
+                        <li class="mb-2"><a href="#" onclick="document.getElementById('liveChatWidget').style.display='flex';document.getElementById('liveChatWidget').style.flexDirection='column';return false;" class="text-white text-decoration-none footer-link">Live Chat</a></li>
+                    </ul>
+                </div>
+                <!-- Col 4: Account -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-3 text-uppercase font-outfit text-yellow" style="letter-spacing: 1px;">Account & Billing</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" class="text-white text-decoration-none footer-link">Sign Up / Register</a></li>
+                        <li class="mb-2"><a href="{% url 'quote' %}" class="text-white text-decoration-none footer-link">Get a Quote</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none footer-link">Invoice</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none footer-link">Payment Options</a></li>
+                    </ul>
+                </div>
+                <!-- Col 5: Connect -->
+                <div class="col-lg-2 col-md-6 mb-4 text-lg-end">
+                    <h6 class="fw-bold mb-3 text-uppercase font-outfit text-yellow" style="letter-spacing: 1px;">Connect</h6>
+                    <div class="d-flex justify-content-lg-end gap-3">
+                        <a href="https://www.facebook.com/ups" target="_blank" class="text-white fs-4 hover-accent"><i class="bi bi-facebook"></i></a>
+                        <a href="https://twitter.com/ups" target="_blank" class="text-white fs-4 hover-accent"><i class="bi bi-twitter"></i></a>
+                        <a href="https://www.linkedin.com/company/ups" target="_blank" class="text-white fs-4 hover-accent"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://www.instagram.com/ups" target="_blank" class="text-white fs-4 hover-accent"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Legal Bar -->
+        <div style="background-color: #111111; padding: 20px 0;">
+            <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <p class="text-secondary font-inter mb-3 mb-md-0 small">&copy; 2026 TransGlo Logistic Network. <br class="d-block d-md-none">All rights reserved.</p>
+                <ul class="list-inline mb-0 flex-wrap d-flex justify-content-center justify-content-md-end small">
+                    <li class="list-inline-item mx-2 mb-2 mb-md-0"><a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal" class="text-secondary text-decoration-none footer-legal-link">Privacy Notice</a></li>
+                    <li class="list-inline-item mx-2 mb-2 mb-md-0"><a href="#" data-bs-toggle="modal" data-bs-target="#termsModal" class="text-secondary text-decoration-none footer-legal-link">Terms of Use</a></li>
+                    <li class="list-inline-item mx-2 mb-2 mb-md-0"><a href="#" onclick="alert('Cookie Preferences Panel Opened'); return false;" class="text-secondary text-decoration-none footer-legal-link">Cookie Preferences</a></li>
+                    <li class="list-inline-item mx-2 mb-2 mb-md-0"><a href="#" data-bs-toggle="modal" data-bs-target="#dataModal" class="text-secondary text-decoration-none footer-legal-link" style="border-bottom: 1px dotted #6c757d;">Do Not Sell My Personal Information</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <style>
+            .footer-link {
+                transition: all 0.2s ease;
+                opacity: 0.8;
+                font-size: 0.95rem;
+            }
+            .footer-link:hover {
+                color: var(--accent-yellow) !important;
+                opacity: 1;
+                text-decoration: underline !important;
+            }
+            .footer-legal-link {
+                transition: color 0.2s ease;
+            }
+            .footer-legal-link:hover {
+                color: #ffffff !important;
+                text-decoration: underline !important;
+            }
+            .hover-accent {
+                transition: transform 0.2s ease, color 0.2s ease;
+            }
+            .hover-accent:hover {
+                color: var(--accent-yellow) !important;
+                transform: translateY(-3px);
+            }
+        </style>
+    </footer>
+
+    <!-- Privacy Modal -->
+    <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold font-outfit">Privacy Notice</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-start">
+            <p class="text-secondary">At TransGlo, we value your privacy. This notice explains how we collect, use, and protect your data across our logistics network. We utilize state-of-the-art encryption to ensure your shipment data remains strictly confidential.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terms Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold font-outfit">Terms of Use</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-start">
+            <p class="text-secondary">By using TransGlo services, you agree to our terms regarding shipment handling, prohibited items, and liability limits. We pride ourselves on transparent operations and expect the same from our partners.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Modal -->
+    <div class="modal fade" id="dataModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold font-outfit">Do Not Sell My Info</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-start">
+            <p class="text-secondary">Under CCPA and other global privacy laws, you have the right to opt-out of the sale of your personal information. TransGlo does not sell your data to third parties, and we emphasize data sovereignty for all clients.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}
+    <script src="{% static 'js/main.js' %}"></script>
+    {% endblock %}
+
+    <!-- Live Chat Widget (Global) -->
+    <div id="liveChatWidget" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:none;width:340px;max-height:500px;border-radius:18px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+        <div style="background:linear-gradient(135deg,#e63946,#c1121f);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                    <i class="bi bi-headset text-white" style="font-size:18px;"></i>
+                </div>
+                <div>
+                    <div style="color:white;font-weight:700;font-size:14px;">TransGlo Support</div>
+                    <div style="color:rgba(255,255,255,0.75);font-size:11px;"><span style="display:inline-block;width:7px;height:7px;background:#4ade80;border-radius:50%;margin-right:4px;"></span>Online now</div>
+                </div>
+            </div>
+            <button onclick="document.getElementById('liveChatWidget').style.display='none'" style="background:none;border:none;color:white;font-size:20px;cursor:pointer;line-height:1;">&times;</button>
+        </div>
+        <div id="chatWidgetMessages" style="background:#f8f9fa;padding:16px;height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;">
+            <div style="background:white;padding:10px 14px;border-radius:12px;border-top-left-radius:0;box-shadow:0 2px 8px rgba(0,0,0,0.06);max-width:85%;font-size:13px;line-height:1.5;">
+                👋 Hi there! Welcome to <strong>TransGlo Logistic Network</strong>.<br>How can we help you today?
+            </div>
+        </div>
+        <div style="background:white;padding:10px 12px;border-top:1px solid #eee;display:flex;gap:8px;">
+            <input id="chatWidgetInput" type="text" placeholder="Type your message..." style="flex:1;border:1px solid #e0e0e0;border-radius:20px;padding:8px 14px;font-size:13px;outline:none;">
+            <button id="chatWidgetSend" style="background:#e63946;border:none;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+                <i class="bi bi-send-fill" style="font-size:13px;"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Floating Live Chat Button -->
+    <button id="liveChatFab" onclick="document.getElementById('liveChatWidget').style.display='flex';document.getElementById('liveChatWidget').style.flexDirection='column';this.style.display='none';" style="position:fixed;bottom:24px;right:24px;z-index:9998;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#e63946,#c1121f);border:none;color:white;box-shadow:0 8px 24px rgba(230,57,70,0.4);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+        <i class="bi bi-chat-dots-fill" style="font-size:22px;"></i>
+    </button>
+
+    <script>
+    // Live Chat logic
+    (function() {
+        const widget = document.getElementById('liveChatWidget');
+        const fab = document.getElementById('liveChatFab');
+        const sendBtn = document.getElementById('chatWidgetSend');
+        const input = document.getElementById('chatWidgetInput');
+        const msgs = document.getElementById('chatWidgetMessages');
+
+        function openChat() {
+            widget.style.display = 'flex';
+            widget.style.flexDirection = 'column';
+            if(fab) fab.style.display = 'none';
+        }
+
+        const agentReplies = [
+            "Thanks for reaching out! One of our agents will be with you shortly.",
+            "Could you please share your tracking number so we can assist you faster?",
+            "We typically respond within 2 minutes. We appreciate your patience!",
+            "Got it! Let me check that for you right away."
+        ];
+        let replyIdx = 0;
+
+        function appendChatMsg(text, isUser) {
+            const el = document.createElement('div');
+            el.style.cssText = `align-self:${isUser?'flex-end':'flex-start'};background:${isUser?'#e63946':'white'};color:${isUser?'white':'#333'};padding:9px 14px;border-radius:${isUser?'12px 12px 0 12px':'12px 12px 12px 0'};max-width:80%;font-size:13px;line-height:1.5;box-shadow:0 2px 8px rgba(0,0,0,0.07);`;
+            el.textContent = text;
+            msgs.appendChild(el);
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        if (sendBtn) {
+            function sendMsg() {
+                const val = input.value.trim();
+                if (!val) return;
+                appendChatMsg(val, true);
+                input.value = '';
+                setTimeout(() => {
+                    appendChatMsg(agentReplies[replyIdx % agentReplies.length], false);
+                    replyIdx++;
+                }, 1200);
+            }
+            sendBtn.addEventListener('click', sendMsg);
+            input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
+        }
+    })();
+
+    // Language switching
+    const translations = {
+        en: { nav_home:'Home', nav_about:'About', nav_features:'Features', nav_testimonials:'Testimonials', nav_contact:'Contact', nav_track:'Track Package', nav_chat:'Live Chat' },
+        fr: { nav_home:'Accueil', nav_about:'À propos', nav_features:'Fonctionnalités', nav_testimonials:'Témoignages', nav_contact:'Contact', nav_track:'Suivre un colis', nav_chat:'Chat en direct' },
+        es: { nav_home:'Inicio', nav_about:'Acerca de', nav_features:'Características', nav_testimonials:'Testimonios', nav_contact:'Contacto', nav_track:'Rastrear paquete', nav_chat:'Chat en vivo' },
+        de: { nav_home:'Startseite', nav_about:'Über uns', nav_features:'Funktionen', nav_testimonials:'Referenzen', nav_contact:'Kontakt', nav_track:'Paket verfolgen', nav_chat:'Live-Chat' },
+        zh: { nav_home:'首页', nav_about:'关于我们', nav_features:'功能', nav_testimonials:'用户评价', nav_contact:'联系我们', nav_track:'追踪包裹', nav_chat:'在线聊天' },
+        ar: { nav_home:'الرئيسية', nav_about:'من نحن', nav_features:'الميزات', nav_testimonials:'الشهادات', nav_contact:'تواصل معنا', nav_track:'تتبع الطرد', nav_chat:'دردشة مباشرة' }
+    };
+    const langLabels = { en:'EN', fr:'FR', es:'ES', de:'DE', zh:'中文', ar:'عر' };
+
+    document.querySelectorAll('.lang-option').forEach(opt => {
+        opt.addEventListener('click', function(e) {
+            e.preventDefault();
+            const lang = this.dataset.lang;
+            const t = translations[lang];
+            if (!t) return;
+            document.getElementById('currentLang').textContent = langLabels[lang];
+            const links = document.querySelectorAll('#navbarNav .nav-link:not(.dropdown-toggle):not([id])');
+            const keys = ['nav_home','nav_about','nav_features','nav_testimonials','nav_contact'];
+            links.forEach((link, i) => { if (keys[i]) link.textContent = t[keys[i]]; });
+            const trackBtn = document.querySelector('#navbarNav a.btn-accent');
+            if (trackBtn) trackBtn.textContent = t.nav_track;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        });
+    });
+
+    // Scroll-triggered card entrance
+    const entranceObserver = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); entranceObserver.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.card-entrance').forEach(el => entranceObserver.observe(el));
+    </script>
+    {% block extra_js %}{% endblock %}
+    <script>
+        // Header Theme Toggle Logic
+        function setHeaderTheme(theme) {
+            const nav = document.getElementById('mainNav');
+            const brandText = nav.querySelector('.navbar-brand span.fs-5');
+            const langText = document.getElementById('currentLang');
+            const langIcon = nav.querySelector('.bi-translate');
+            
+            // Full Reset
+            nav.classList.remove('bg-glass', 'navbar-dark', 'navbar-light');
+            nav.style.backgroundColor = '';
+            
+            if(brandText) brandText.classList.remove('text-dark', 'text-white');
+            if(langText) langText.classList.remove('text-dark', 'text-white');
+            if(langIcon) langIcon.classList.remove('text-dark', 'text-white');
+            
+            if (theme === 'red') {
+                nav.style.backgroundColor = '#d32f2f'; // Red Theme
+                nav.classList.add('navbar-dark');
+                if(brandText) brandText.classList.add('text-white');
+                if(langText) langText.classList.add('text-white');
+                if(langIcon) langIcon.classList.add('text-white');
+            } else if (theme === 'yellow') {
+                nav.style.backgroundColor = '#ffc107'; // Yellow Theme
+                nav.classList.add('navbar-light');
+                if(brandText) brandText.classList.add('text-dark');
+            } else {
+                // Default Glass Theme
+                nav.classList.add('bg-glass', 'navbar-light');
+                if(brandText) brandText.classList.add('text-dark');
+            }
+        }
+    </script>
+</body>
+
+</html>
