@@ -24,10 +24,10 @@
                     Experience the future of business courier services globally. We seamlessly combine thousands of carrier routes into a single intelligent platform. <br class="d-none d-lg-block"> Driven by Data. Powered by AI.
                 </p>
                 <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start mb-4">
-                    <button id="heroChatBtn" onclick="document.getElementById('liveChatWidget').style.display='flex';document.getElementById('liveChatWidget').style.flexDirection='column';document.getElementById('liveChatFab').style.display='none';"
+                    <a href="{% url 'quote' %}"
                         class="btn btn-accent btn-lg rounded-pill px-5 fw-bold transition-btn btn-ripple d-flex align-items-center justify-content-center gap-2 animate-bounce-hover shadow-lg">
-                        <i class="bi bi-chat-dots-fill animate-float"></i> Live Chat
-                    </button>
+                        <i class="bi bi-calculator-fill animate-float"></i> Get a Quote
+                    </a>
                     <a href="{% url 'features' %}"
                         class="btn btn-yellow btn-lg rounded-pill px-5 fw-bold transition-btn btn-ripple animate-bounce-hover shadow-lg">
                         <i class="bi bi-lightning-fill me-1"></i> Explore Features

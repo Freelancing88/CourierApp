@@ -11,6 +11,7 @@
     <!-- Custom CSS -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&display=swap"
@@ -44,9 +45,7 @@
                     <li class="nav-item"><a class="nav-link px-3" href="{% url 'home' %}">Home</a></li>
                     <li class="nav-item"><a class="nav-link px-3" href="{% url 'about' %}">About</a></li>
                     <li class="nav-item"><a class="nav-link px-3" href="{% url 'features' %}">Features</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'quote' %}">Get a Quote</a></li>
                     <li class="nav-item"><a class="nav-link px-3" href="{% url 'testimonials' %}">Testimonials</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'help_center' %}">Help Center</a></li>
                     <li class="nav-item"><a class="nav-link px-3" href="{% url 'contact' %}">Contact</a></li>
                     <!-- Language Selector -->
                     <li class="nav-item dropdown ms-1">

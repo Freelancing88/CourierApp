@@ -99,10 +99,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
 
                 const trackingError = document.getElementById('trackingError');
+                // Hide the input bar when results appear
+                const trackInputWrapper = trackingInput ? trackingInput.closest('.bg-white.rounded-pill, .p-3.rounded-pill, div') : null;
+                // Find the parent container of the input (the pill wrapper)
+                const inputBar = trackBtn.closest('.bg-white') || trackBtn.parentElement;
 
                 if (data.success) {
                     if (trackingError) trackingError.classList.add('d-none');
+                    if (inputBar) inputBar.style.display = 'none';
                     trackingResult.classList.remove('d-none');
+
                     
                     document.getElementById('resStatus').innerText = data.status.toUpperCase();
                     document.getElementById('resEstDelivery').innerText = data.estimated_delivery;
