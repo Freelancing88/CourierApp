@@ -98,9 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`/api/track/${encodeURIComponent(code)}/`);
                 const data = await response.json();
 
-                trackingResult.classList.remove('d-none');
+                const trackingError = document.getElementById('trackingError');
 
                 if (data.success) {
+                    if (trackingError) trackingError.classList.add('d-none');
+                    trackingResult.classList.remove('d-none');
+                    
                     document.getElementById('resStatus').innerText = data.status.toUpperCase();
                     document.getElementById('resEstDelivery').innerText = data.estimated_delivery;
                     document.getElementById('resOrigin').innerText = data.origin;
@@ -130,12 +133,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         setTimeout(() => { if (shipmentMap) shipmentMap.invalidateSize(); }, 300);
                     }
                 } else {
-                    document.getElementById('resStatus').innerText = 'NOT FOUND';
-                    document.getElementById('resOrigin').innerText = 'Unknown';
-                    document.getElementById('resDest').innerText = 'Unknown';
-                    document.getElementById('resUpdate').innerText = data.message;
-                    document.getElementById('resEstDelivery').innerText = '-';
-                    document.getElementById('resStatus').className = 'badge bg-danger text-white tracking-wide';
+                    trackingResult.classList.add('d-none');
+                    if (trackingError) {
+                        trackingError.classList.remove('d-none');
+                        document.getElementById('errorMsg').innerText = data.message || "The tracking number you entered could not be located in our network.";
+                    }
                 }
                 // Subscribe Logic Connection
                 const subForm = document.getElementById('subscribeForm');
