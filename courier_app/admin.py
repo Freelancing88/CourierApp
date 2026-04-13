@@ -1,5 +1,11 @@
 from django.contrib import admin
-from .models import Shipment, CustomStatus, SupportTicket, ShipmentSubscriber
+from .models import Shipment, CustomStatus, SupportTicket, ShipmentSubscriber, TrackingEvent
+
+class TrackingEventInline(admin.TabularInline):
+    model = TrackingEvent
+    extra = 1
+    fields = ('status_name', 'location', 'description', 'timestamp', 'sort_order')
+    readonly_fields = ('timestamp',)
 
 @admin.register(SupportTicket)
 class SupportTicketAdmin(admin.ModelAdmin):
@@ -21,6 +27,7 @@ class ShipmentAdmin(admin.ModelAdmin):
     list_display = ('tracking_number', 'sender_name', 'receiver_name', 'status', 'estimated_delivery')
     search_fields = ('tracking_number', 'sender_name', 'receiver_name')
     list_filter = ('status',)
+    inlines = [TrackingEventInline]
     
     fieldsets = (
         ('Shipment Details', {

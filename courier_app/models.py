@@ -123,3 +123,33 @@ def notify_subscribers_on_event(sender, instance, created, **kwargs):
                 subscribers,
                 fail_silently=True,
             )
+
+@receiver(post_save, sender=Shipment)
+def auto_create_tracking_event(sender, instance, created, **kwargs):
+    """
+    Automatically creates a TrackingEvent whenever a Shipment is updated with new status/location info.
+    This populates the vertical timeline history automatically.
+    """
+    status_name = instance.status.name if instance.status else "Processing"
+    location = instance.current_location_name or instance.origin
+    description = instance.latest_update or "Information received."
+    
+    # Check the latest event to prevent redundant duplicates on every save
+    last_event = instance.events.order_by('-timestamp' , '-sort_order').first()
+    
+    if not last_event or (last_event.status_name != status_name or 
+                          last_event.location != location or 
+                          last_event.description != description):
+        
+        # Determine sort order
+        next_order = 0
+        if last_event:
+            next_order = last_event.sort_order + 10
+            
+        TrackingEvent.objects.create(
+            shipment=instance,
+            status_name=status_name,
+            location=location,
+            description=description,
+            sort_order=next_order
+        )

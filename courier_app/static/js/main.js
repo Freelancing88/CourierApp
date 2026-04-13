@@ -7,13 +7,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let pollingInterval = null;
 
     function renderMap(lat, lng, dLat, dLng, markerColor) {
-        if (!shipmentMap) {
-            shipmentMap = L.map('shipmentMap').setView([lat, lng], 5);
-            // Upgrade to sleek CartoDB Dark Matter tiles for a premium aesthetic
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                maxZoom: 19,
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(shipmentMap);
+        try {
+            // Null safety fallback for newly created admin shipments
+            const safeLat = lat || 40.7128;
+            const safeLng = lng || -74.0060;
+            const safeDLat = dLat || 34.0522;
+            const safeDLng = dLng || -118.2437;
+            
+            if (!shipmentMap) {
+                shipmentMap = L.map('shipmentMap').setView([safeLat, safeLng], 5);
+                // Upgrade to sleek CartoDB Dark Matter tiles for a premium aesthetic
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap'
+                }).addTo(shipmentMap);
         } else {
             if (marker) shipmentMap.removeLayer(marker);
             if (destMarker) shipmentMap.removeLayer(destMarker);
@@ -36,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
             iconSize: [28, 28],
             className: 'custom-status-marker'
         });
-        marker = L.marker([lat, lng], { icon: customIcon }).addTo(shipmentMap);
+        marker = L.marker([safeLat, safeLng], { icon: customIcon }).addTo(shipmentMap);
         
         // Active Destination Pin ( pulsing ring )
         var dIcon = L.divIcon({
@@ -47,12 +54,15 @@ document.addEventListener('DOMContentLoaded', () => {
             iconSize: [28, 28],
             className: 'custom-status-marker'
         });
-        destMarker = L.marker([dLat, dLng], { icon: dIcon }).addTo(shipmentMap);
+        destMarker = L.marker([safeDLat, safeDLng], { icon: dIcon }).addTo(shipmentMap);
 
         // Plane trailing line
-        var latlngs = [[lat, lng], [dLat, dLng]];
+        var latlngs = [[safeLat, safeLng], [safeDLat, safeDLng]];
         L.polyline(latlngs, { color: '#e63946', dashArray: '5, 10', weight: 4, opacity: 0.8 }).addTo(shipmentMap);
         shipmentMap.fitBounds(latlngs, { padding: [50, 50] });
+        } catch (e) {
+            console.error("Map rendering disabled: ", e);
+        }
     }
 
     // Navbar visual change on scroll
