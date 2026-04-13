@@ -506,4 +506,80 @@ body {
 .tl-icon-wrapper i {
     position: relative;
     z-index: 10;
+}
+
+/* ── Custom Print Styling ── */
+@media print {
+    /* Hide non-essential website elements */
+    #mainNav, 
+    footer, 
+    #trackingInput, 
+    #liveChatWidget,
+    .d-print-none,
+    [id*="trackBtn"],
+    #trackingError,
+    .bi-geo-alt-fill.display-1 {
+        display: none !important;
+    }
+
+    body, html {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        color: #000 !important;
+    }
+
+    /* Professional Receipt Layout */
+    .container {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    section {
+        padding: 0 !important;
+        min-height: auto !important;
+        border: none !important;
+        background: none !important;
+    }
+
+    #trackingResult {
+        margin-top: 0 !important;
+        display: block !important;
+    }
+
+    .shadow-sm, .shadow, .shadow-lg {
+        box-shadow: none !important;
+    }
+
+    .card, .p-4, .rounded-4 {
+        border: 1px solid #eee !important;
+        box-shadow: none !important;
+        border-radius: 8px !important;
+    }
+
+    /* Force visibility of tracking timeline connector in print */
+    .tl-line {
+        border-left: 2px solid #64748b !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .status-dot {
+        border: 2px solid #64748b !important;
+        background: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    h1, h2, h3, h5, h4 {
+        color: #000 !important;
+        margin-top: 10px !important;
+    }
+
+    #barcode {
+        max-width: 400px !important;
+        height: 100px !important;
+    }
 }

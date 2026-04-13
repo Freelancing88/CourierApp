@@ -123,6 +123,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (inputBar) inputBar.style.display = 'none';
                     trackingResult.classList.remove('d-none');
 
+                    // Generate Barcode dynamically for the tracking number
+                    if (window.JsBarcode) {
+                        JsBarcode("#barcode", data.tracking_number, {
+                            format: "CODE128",
+                            lineColor: "#212529",
+                            width: 2,
+                            height: 60,
+                            displayValue: true,
+                            fontSize: 14,
+                            fontOptions: "bold",
+                            margin: 10
+                        });
+                    }
+
                     const setElText = (id, text) => {
                         const el = document.getElementById(id);
                         if (el) el.innerText = text;
