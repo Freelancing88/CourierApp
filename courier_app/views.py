@@ -25,15 +25,34 @@ def contact(request):
 
 def track_shipment(request, tracking_number):
     try:
-        shipment = Shipment.objects.get(tracking_number=tracking_number)
+        shipment = Shipment.objects.prefetch_related('events').get(tracking_number=tracking_number)
         status_name = shipment.status.name if shipment.status else "Unassigned"
         marker_color = shipment.status.marker_color if shipment.status else "gray"
+        
+        history_data = [
+            {
+                'status': event.status_name,
+                'location': event.location or "System Data Center",
+                'description': event.description or "",
+                'time': event.timestamp.strftime('%b %d, %I:%M %p')
+            } for event in shipment.events.all()
+        ]
+        
+        # Fallback for legacy shipments that haven't recorded a timeline yet
+        if not history_data:
+            history_data.append({
+                'status': status_name,
+                'location': shipment.current_location_name or shipment.origin,
+                'description': shipment.latest_update or "Status updated",
+                'time': shipment.updated_at.strftime('%b %d, %I:%M %p')
+            })
         
         return JsonResponse({
             'success': True,
             'tracking_number': shipment.tracking_number,
             'airway_bill': shipment.airway_bill_number or "AWB-PENDING",
             'status': status_name,
+            'status_sort_order': shipment.status.sort_order if shipment.status else 0,
             'marker_color': marker_color,
             'origin': shipment.origin,
             'destination': shipment.destination,
@@ -49,6 +68,7 @@ def track_shipment(request, tracking_number):
             'estimated_delivery': shipment.estimated_delivery.strftime('%B %d, %Y'),
             'created_at': shipment.created_at.strftime('%B %d, %Y'),
             'latest_update': shipment.latest_update,
+            'history': history_data,
             'origin_lat': shipment.origin_lat,
             'origin_lng': shipment.origin_lng,
             'dest_lat': shipment.dest_lat,
@@ -125,7 +145,19 @@ def api_subscribe_tracking(request, tracking_number):
                 return JsonResponse({'success': False, 'message': 'Email is required.'})
                 
             shipment = Shipment.objects.get(tracking_number=tracking_number)
-            ShipmentSubscriber.objects.get_or_create(shipment=shipment, email=email)
+            subscriber, created = ShipmentSubscriber.objects.get_or_create(shipment=shipment, email=email)
+            if created:
+                from django.core.mail import send_mail
+                from django.conf import settings
+                subject = f"TransGlo: Subscription Confirmed for {shipment.tracking_number}"
+                message = f"Hello,\n\nYou have successfully subscribed to live tracking updates for shipment {shipment.tracking_number}.\n\nWe will notify you immediately whenever the status changes.\n\nThank you,\nTransGlo Logistics Network"
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=True,
+                )
             return JsonResponse({'success': True, 'message': 'Successfully subscribed to updates!'})
         except Shipment.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Tracking number not found.'}, status=404)

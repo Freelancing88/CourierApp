@@ -220,29 +220,44 @@ body {
     }
 }
 
+/* ── Hero Custom Dynamic Headline ── */
+.hero-title {
+    font-size: clamp(1.8rem, 3.2vw, 3.5rem) !important;
+}
+
 /* ── Hero text slider ── */
 .hero-text-slider {
     display: inline-block;
-    overflow: hidden;
+    position: relative;
+    overflow: visible; /* Prevent cutting off */
     vertical-align: bottom;
     height: 1.25em;
-    min-width: 220px;
+    /* width is now determined dynamically by a hidden placeholder in the HTML */
+    text-align: right; /* Changed from left to right as requested */
 }
 .hero-text-slider .slide-word {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
     display: block;
-    animation: heroSlide 9s cubic-bezier(0.4,0,0.2,1) infinite;
+    white-space: nowrap;
+    animation: heroSlide 15s cubic-bezier(0.4,0,0.2,1) infinite;
     color: var(--primary-red);
+    opacity: 0;
 }
 @keyframes heroSlide {
     0%   { transform: translateY(110%); opacity: 0; }
-    5%   { transform: translateY(0);    opacity: 1; }
-    30%  { transform: translateY(0);    opacity: 1; }
-    35%  { transform: translateY(-110%); opacity: 0; }
+    3%   { transform: translateY(0);    opacity: 1; }
+    17%  { transform: translateY(0);    opacity: 1; }
+    20%  { transform: translateY(-110%); opacity: 0; }
     100% { transform: translateY(-110%); opacity: 0; }
 }
 .hero-text-slider .slide-word:nth-child(1) { animation-delay: 0s; }
 .hero-text-slider .slide-word:nth-child(2) { animation-delay: 3s; }
 .hero-text-slider .slide-word:nth-child(3) { animation-delay: 6s; }
+.hero-text-slider .slide-word:nth-child(4) { animation-delay: 9s; }
+.hero-text-slider .slide-word:nth-child(5) { animation-delay: 12s; }
 
 /* ── Floating icon (playful) ── */
 .animate-float {
@@ -253,6 +268,12 @@ body {
     50%       { transform: translateY(-10px); }
 }
 
+/* Leaflet Pulse Animation */
+@keyframes leaflet-pulse {
+    0% { transform: scale(0.5); opacity: 1; }
+    100% { transform: scale(3.5); opacity: 0; }
+}
+
 /* ── Pulse ring ── */
 .animate-pulse {
     animation: pulseRing 2s ease-in-out infinite;
@@ -260,6 +281,17 @@ body {
 @keyframes pulseRing {
     0%, 100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
     50%       { box-shadow: 0 0 0 14px rgba(211, 47, 47, 0); }
+}
+
+/* ── Primary Blue Pulse ring ── */
+.animate-pulse-blue {
+    animation: pulseRingBlue 2s ease-in-out infinite;
+    border-radius: 50%;
+    background-color: transparent;
+}
+@keyframes pulseRingBlue {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.5); }
+    50%       { box-shadow: 0 0 0 14px rgba(13, 110, 253, 0); }
 }
 
 /* ── Shimmer loader ── */
@@ -455,4 +487,23 @@ body {
     border-color: white;
     transform: scale(1.4);
     box-shadow: 0 0 10px rgba(211, 47, 47, 0.5);
+}
+
+/* Timeline Vertical Line */
+.tl-line::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 120px; /* Increased height to ensure overlap */
+    background-color: #64748b; /* Slate-500: Dark gray, definitely visible */
+    z-index: 1;
+}
+
+.tl-icon-wrapper i {
+    position: relative;
+    z-index: 10;
 }

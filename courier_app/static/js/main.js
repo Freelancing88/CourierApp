@@ -9,16 +9,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderMap(lat, lng, dLat, dLng, markerColor) {
         if (!shipmentMap) {
             shipmentMap = L.map('shipmentMap').setView([lat, lng], 5);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            // Upgrade to sleek CartoDB Dark Matter tiles for a premium aesthetic
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                 maxZoom: 19,
                 attribution: '&copy; OpenStreetMap'
             }).addTo(shipmentMap);
         } else {
-            // clear existing markers
             if (marker) shipmentMap.removeLayer(marker);
             if (destMarker) shipmentMap.removeLayer(destMarker);
             
-            // clear polyline by just removing polylines
             shipmentMap.eachLayer(function (layer) {
                 if (layer instanceof L.Polyline && !(layer instanceof L.Polygon)) {
                     shipmentMap.removeLayer(layer);
@@ -31,23 +30,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (markerColor === 'red') bootstrapColorClass = 'text-danger';
         if (markerColor === 'yellow') bootstrapColorClass = 'text-warning';
 
+        // Sender Location Pin
         var customIcon = L.divIcon({
-            html: `<div style="transform:translate(-25%, -25%);"><i class="bi bi-check-circle-fill ${bootstrapColorClass}" style="font-size: 28px; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3)); background:white; border-radius:50%;"></i></div>`,
+            html: `<div class="pulse-container"><i class="bi bi-geo-alt-fill text-white" style="font-size: 28px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));"></i></div>`,
             iconSize: [28, 28],
             className: 'custom-status-marker'
         });
-
         marker = L.marker([lat, lng], { icon: customIcon }).addTo(shipmentMap);
         
+        // Active Destination Pin ( pulsing ring )
         var dIcon = L.divIcon({
-            html: `<div style="transform:translate(-25%, -25%);"><i class="bi bi-geo-alt-fill text-dark" style="font-size: 28px; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3)); background:white; border-radius:50%;"></i></div>`,
+            html: `<div class="pulse-container" style="position: relative;">
+                    <div style="position: absolute; top:0; left:0; width: 100%; height: 100%; border-radius: 50%; border: 3px solid #4ade80; animation: leaflet-pulse 2s infinite ease-out;"></div>
+                    <i class="bi bi-geo-alt-fill text-success" style="font-size: 28px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));"></i>
+                   </div>`,
             iconSize: [28, 28],
             className: 'custom-status-marker'
         });
         destMarker = L.marker([dLat, dLng], { icon: dIcon }).addTo(shipmentMap);
 
+        // Plane trailing line
         var latlngs = [[lat, lng], [dLat, dLng]];
-        L.polyline(latlngs, { color: '#d32f2f', dashArray: '5, 10', weight: 3 }).addTo(shipmentMap);
+        L.polyline(latlngs, { color: '#e63946', dashArray: '5, 10', weight: 4, opacity: 0.8 }).addTo(shipmentMap);
         shipmentMap.fitBounds(latlngs, { padding: [50, 50] });
     }
 
@@ -109,25 +113,93 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (inputBar) inputBar.style.display = 'none';
                     trackingResult.classList.remove('d-none');
 
+                    const setElText = (id, text) => {
+                        const el = document.getElementById(id);
+                        if (el) el.innerText = text;
+                    };
+
+                    setElText('resTrackingNumTitle', data.tracking_number);
+                    setElText('resStatus', data.status.toUpperCase());
+                    setElText('resEstDelivery', data.estimated_delivery);
+                    setElText('resOrigin', data.origin);
+                    setElText('resDest', data.destination);
+                    setElText('resUpdate', data.latest_update);
                     
-                    document.getElementById('resStatus').innerText = data.status.toUpperCase();
-                    document.getElementById('resEstDelivery').innerText = data.estimated_delivery;
-                    document.getElementById('resOrigin').innerText = data.origin;
-                    document.getElementById('resDest').innerText = data.destination;
-                    document.getElementById('resUpdate').innerText = data.latest_update;
-                    document.getElementById('resStatus').className = 'badge bg-yellow text-dark tracking-wide shadow-sm';
+                    let statusBadgeClass = 'bg-yellow text-dark';
+                    if (data.marker_color === 'green') statusBadgeClass = 'bg-success text-white';
+                    if (data.marker_color === 'red') statusBadgeClass = 'bg-danger text-white';
+                    const statusEl = document.getElementById('resStatus');
+                    if (statusEl) statusEl.className = `badge ${statusBadgeClass} px-4 py-2 fs-6 tracking-wide shadow-sm`;
 
                     // Advanced Fields binding
-                    if (document.getElementById('resAWB')) document.getElementById('resAWB').innerText = data.airway_bill;
-                    if (document.getElementById('resCreated')) document.getElementById('resCreated').innerText = data.created_at;
-                    if (document.getElementById('resContent')) document.getElementById('resContent').innerText = data.content;
-                    if (document.getElementById('resWeight')) document.getElementById('resWeight').innerText = data.weight_kg;
-                    if (document.getElementById('resCost')) document.getElementById('resCost').innerText = data.shipping_cost;
-                    if (document.getElementById('resSenderName')) document.getElementById('resSenderName').innerText = data.sender_name;
-                    if (document.getElementById('resSenderAddr')) document.getElementById('resSenderAddr').innerText = data.sender_address;
-                    if (document.getElementById('resReceiverName')) document.getElementById('resReceiverName').innerText = data.receiver_name;
-                    if (document.getElementById('resReceiverAddr')) document.getElementById('resReceiverAddr').innerText = data.receiver_address;
+                    setElText('resAWB', data.airway_bill);
+                    setElText('resCreated', data.created_at);
+                    setElText('resContent', data.content);
+                    setElText('resWeight', data.weight_kg);
+                    setElText('resCost', data.shipping_cost);
+                    setElText('resSenderName', data.sender_name);
+                    setElText('resSenderAddr', data.sender_address);
+                    setElText('resReceiverName', data.receiver_name);
+                    setElText('resReceiverAddr', data.receiver_address);
+                    
+                    setElText('resSenderNameSide', data.sender_name);
+                    setElText('resSenderAddrSide', data.sender_address);
+                    setElText('resReceiverNameSide', data.receiver_name);
+                    setElText('resReceiverAddrSide', data.receiver_address);
 
+                    // Timeline logic (Dynamic History)
+                    const container = document.getElementById('timelineContainer');
+                    if (container) {
+                        container.innerHTML = ''; // Clear out any existing nodes
+                        
+                        if (data.history && data.history.length > 0) {
+                            const lastIdx = data.history.length - 1;
+                            
+                            data.history.forEach((event, idx) => {
+                                // Timeline logic (Dynamic History)
+                                const isCurrent = (idx === lastIdx);
+                                const isPast = (idx < lastIdx);
+                                const isEntry = (idx === 0);
+                                
+                                let iconWrapperClasses = 'tl-icon-wrapper me-2 position-relative';
+                                let iconClasses = 'tl-icon fs-5 bi';
+                                let rowClasses = 'row align-items-center mb-0 px-2 py-3 d-flex'; // Reduced margin to make line continuous
+                                
+                                // Add vertical line to all but the last icon
+                                if (idx < lastIdx) {
+                                    iconWrapperClasses += ' tl-line';
+                                }
+                                
+                                if (isCurrent) {
+                                    iconWrapperClasses += ' text-primary';
+                                    iconClasses += ' bi-record-circle-fill animate-pulse';
+                                    rowClasses += ' bg-light rounded-3 shadow-sm';
+                                } else if (isPast) {
+                                    iconWrapperClasses += ' text-success';
+                                    iconClasses += ' bi-check-circle-fill';
+                                }
+                                
+                                const nodeHtml = `
+                                    <div class="${rowClasses}" style="min-height: 80px;">
+                                        <div class="col-4 d-flex align-items-center">
+                                            <div class="${iconWrapperClasses}" style="width: 24px; z-index: 2;">
+                                                <i class="${iconClasses}" style="background: white; border-radius: 50%;"></i>
+                                            </div>
+                                            <div class="d-flex flex-column">
+                                                <h6 class="fw-bold mb-0 tl-title ${isCurrent || isPast ? 'text-dark' : 'text-secondary'}">${event.status}</h6>
+                                                <small class="text-muted d-block" style="font-size: 0.70rem;">${event.time}</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4 text-secondary fs-6 fw-medium">${event.location}</div>
+                                        <div class="col-4 text-muted fs-6 small">${event.description}</div>
+                                    </div>
+                                `;
+                                container.insertAdjacentHTML('beforeend', nodeHtml);
+                            });
+                        } else {
+                            container.innerHTML = '<div class="text-center text-muted py-4">No tracking history available yet.</div>';
+                        }
+                    }
                     if (document.getElementById('shipmentMap')) {
                         renderMap(data.current_lat, data.current_lng, data.dest_lat, data.dest_lng, data.marker_color);
                         

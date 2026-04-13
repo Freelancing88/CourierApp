@@ -1,8 +1,9 @@
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
+
 class CustomStatus(models.Model):
     COLOR_CHOICES = [
         ('green', 'Green (In Transit)'),
@@ -66,6 +67,20 @@ class Shipment(models.Model):
         status_name = self.status.name if self.status else "Unassigned"
         return f"{self.tracking_number} - {status_name}"
 
+class TrackingEvent(models.Model):
+    shipment = models.ForeignKey(Shipment, on_delete=models.CASCADE, related_name='events')
+    status_name = models.CharField(max_length=100)
+    location = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    sort_order = models.IntegerField(default=0, help_text="Order in chronological sequence if timestamp is identical")
+
+    def __str__(self):
+        return f"{self.shipment.tracking_number} - {self.status_name} @ {self.location}"
+
+    class Meta:
+        ordering = ['sort_order', 'timestamp']
+
 class ShipmentSubscriber(models.Model):
     shipment = models.ForeignKey(Shipment, on_delete=models.CASCADE, related_name='subscribers')
     email = models.EmailField()
@@ -90,27 +105,21 @@ class SupportTicket(models.Model):
     def __str__(self):
         return f"Ticket {self.id}: {self.subject} ({self.status})"
 
-@receiver(pre_save, sender=Shipment)
-def notify_subscribers_on_update(sender, instance, **kwargs):
-    if instance.pk:
-        try:
-            old_instance = Shipment.objects.get(pk=instance.pk)
-            # Check if status changed
-            if old_instance.status != instance.status:
-                # We need to fetch subscribers. Since we are in pre_save, related managers might be tricky,
-                # but instance.pk exists, so instance.subscribers.all() is safe.
-                subscribers = list(instance.subscribers.all().values_list('email', flat=True))
-                if subscribers:
-                    status_name = instance.status.name if instance.status else "Unassigned"
-                    subject = f"TransGlo Update: Shipment {instance.tracking_number} - {status_name}"
-                    message = f"Hello,\n\nYour shipment {instance.tracking_number} has an updated status: {status_name}.\n\nLatest update notes: {instance.latest_update}\n\nThank you for choosing TransGlo Logistics."
-                    
-                    send_mail(
-                        subject,
-                        message,
-                        'noreply@transglo.com',
-                        subscribers,
-                        fail_silently=True,
-                    )
-        except Shipment.DoesNotExist:
-            pass
+@receiver(post_save, sender=TrackingEvent)
+def notify_subscribers_on_event(sender, instance, created, **kwargs):
+    if created and instance.shipment:
+        from django.conf import settings
+        shipment = instance.shipment
+        subscribers = list(shipment.subscribers.all().values_list('email', flat=True))
+        if subscribers:
+            status_name = instance.status_name
+            subject = f"TransGlo Update: Shipment {shipment.tracking_number} - {status_name}"
+            message = f"Hello,\n\nYour shipment {shipment.tracking_number} has an updated status: {status_name}.\n\nLocation: {instance.location or 'In Transit'}\nNotes: {instance.description or 'No additional remarks'}\n\nThank you for choosing TransGlo Logistics."
+            
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                subscribers,
+                fail_silently=True,
+            )

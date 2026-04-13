@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-a=sb#ao_cob55b+7tj%hdbd)6zzuj@f8o29-eqw!y$d%pbvz6s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['145.223.75.38', 'transgloballogisticsnetwork.com', 'localhost', '127.0.0.1']
 
@@ -121,4 +121,11 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 # Email configuration for simulating tracking notifications
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Email configuration for Zoho Mail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.zoho.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'transgloballogisticnetwork@transgloballogisticsnetwork.com'
+EMAIL_HOST_PASSWORD = '@Obinwugo234'
+DEFAULT_FROM_EMAIL = 'TransGlo Logistic Network <transgloballogisticnetwork@transgloballogisticsnetwork.com>'
