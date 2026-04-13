@@ -123,19 +123,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (inputBar) inputBar.style.display = 'none';
                     trackingResult.classList.remove('d-none');
 
-                    // Generate Barcode dynamically for the tracking number
-                    if (window.JsBarcode) {
-                        JsBarcode("#barcode", data.tracking_number, {
-                            format: "CODE128",
-                            lineColor: "#212529",
-                            width: 2,
-                            height: 60,
-                            displayValue: true,
-                            fontSize: 14,
-                            fontOptions: "bold",
-                            margin: 10
-                        });
-                    }
+                    // Generate Barcode dynamically (with a tiny delay to ensure DOM is ready)
+                    setTimeout(() => {
+                        if (window.JsBarcode && document.getElementById('barcode')) {
+                            console.log("Initializing Barcode for:", data.tracking_number);
+                            JsBarcode("#barcode", data.tracking_number, {
+                                format: "CODE128",
+                                lineColor: "#212529",
+                                width: 2,
+                                height: 60,
+                                displayValue: true,
+                                fontSize: 14,
+                                fontOptions: "bold",
+                                margin: 10
+                            });
+                        } else {
+                            console.error("JsBarcode library or #barcode SVG missing!");
+                        }
+                    }, 100);
 
                     const setElText = (id, text) => {
                         const el = document.getElementById(id);
