@@ -24,9 +24,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-a=sb#ao_cob55b+7tj%hdbd)6zzuj@f8o29-eqw!y$d%pbvz6s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False').lower() in ['true', '1']
 
-ALLOWED_HOSTS = ['145.223.75.38', 'transgloballogisticsnetwork.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = os.environ.get(
+    'ALLOWED_HOSTS',
+    'transgloballogisticsnetwork.com,www.transgloballogisticsnetwork.com,.onrender.com,localhost,127.0.0.1,145.223.75.38'
+).split(',')
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://transgloballogisticsnetwork.com',
+    'https://www.transgloballogisticsnetwork.com',
+    'https://*.onrender.com',
+]
 
 
 # Application definition
@@ -37,12 +46,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'courier_app',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -118,6 +129,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
 
 
 # Email configuration for simulating tracking notifications
