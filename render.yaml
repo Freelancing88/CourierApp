@@ -3,7 +3,7 @@ services:
     name: transglo-logistics
     runtime: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn courier_project.wsgi:application"
+    startCommand: "gunicorn courier_project.wsgi:application --bind 0.0.0.0:$PORT"
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.8
