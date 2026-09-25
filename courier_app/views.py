@@ -15,7 +15,11 @@ def features(request):
     return render(request, 'features.html')
 
 def tracking(request):
-    return render(request, 'tracking.html')
+    initial_track = request.GET.get('track') or request.GET.get('ref') or ''
+    return render(request, 'tracking.html', {'initial_track': initial_track})
+
+def tracking_with_number(request, tracking_number=''):
+    return render(request, 'tracking.html', {'initial_track': tracking_number})
 
 def testimonials(request):
     return render(request, 'testimonials.html')
@@ -23,33 +27,63 @@ def testimonials(request):
 def contact(request):
     return render(request, 'contact.html')
 
+from django.db.models import Q
+
 def track_shipment(request, tracking_number):
     try:
-        shipment = Shipment.objects.prefetch_related('events').get(tracking_number=tracking_number)
+        shipment = Shipment.objects.prefetch_related('events').filter(
+            Q(tracking_number__iexact=tracking_number) | Q(reference_id__iexact=tracking_number)
+        ).order_by('-id').first()
+        if not shipment:
+            raise Shipment.DoesNotExist
         status_name = shipment.status.name if shipment.status else "Unassigned"
         marker_color = shipment.status.marker_color if shipment.status else "gray"
         
-        history_data = [
-            {
+        history_data = []
+        for event in shipment.events.all().order_by('sort_order', 'timestamp'):
+            # Format cleanly like '09:00 EST' or '14:45 GMT'
+            t_str = ""
+            d_str = ""
+            if event.timestamp:
+                tz_name = event.timestamp.strftime('%Z')
+                if not tz_name or tz_name == 'UTC':
+                    tz_name = "GMT"
+                t_str = f"{event.timestamp.strftime('%H:%M')} {tz_name}"
+                d_str = event.timestamp.strftime('%b %d, %Y').upper()
+
+            history_data.append({
+                'id': event.id,
                 'status': event.status_name,
                 'location': event.location or "System Data Center",
                 'description': event.description or "",
-                'time': event.timestamp.strftime('%b %d, %I:%M %p')
-            } for event in shipment.events.all()
-        ]
+                'time': f"{d_str} | {t_str}" if d_str else "",
+                'time_only': t_str,
+                'date_only': d_str,
+                'verification_badge': event.verification_badge or "",
+                'transport_type': event.transport_type or "courier",
+                'sort_order': event.sort_order,
+            })
         
         # Fallback for legacy shipments that haven't recorded a timeline yet
         if not history_data:
             history_data.append({
+                'id': 0,
                 'status': status_name,
                 'location': shipment.current_location_name or shipment.origin,
                 'description': shipment.latest_update or "Status updated",
-                'time': shipment.updated_at.strftime('%b %d, %I:%M %p')
+                'time': shipment.updated_at.strftime('%b %d, %Y | %H:%M %Z'),
+                'time_only': shipment.updated_at.strftime('%H:%M %Z'),
+                'date_only': shipment.updated_at.strftime('%b %d, %Y').upper(),
+                'verification_badge': "VERIFIED: COURIER SECTION" if shipment.is_diplomatic else "",
+                'transport_type': "courier",
+                'sort_order': 0,
             })
         
         return JsonResponse({
             'success': True,
             'tracking_number': shipment.tracking_number,
+            'reference_id': shipment.reference_id or f"DP-{shipment.tracking_number}",
+            'is_diplomatic': shipment.is_diplomatic,
             'airway_bill': shipment.airway_bill_number or "AWB-PENDING",
             'status': status_name,
             'status_sort_order': shipment.status.sort_order if shipment.status else 0,
@@ -59,14 +93,18 @@ def track_shipment(request, tracking_number):
             'current_location_name': shipment.current_location_name,
             'sender_name': shipment.sender_name,
             'sender_address': shipment.sender_address or "Not Provided",
+            'sender_phone': "+86 138 0000 0000" if "GB456789123" in shipment.tracking_number else "+1 800 555 0199",
             'receiver_name': shipment.receiver_name,
             'receiver_address': shipment.receiver_address or "Not Provided",
+            'receiver_phone': "+1 310 555 0123" if "GB456789123" in shipment.tracking_number else "+1 310 555 0123",
+            'dimensions': "30x20x15 cm",
+            'service_type': "Express" if not shipment.is_diplomatic else "Diplomatic Courier Escort",
             'weight_kg': str(shipment.weight_kg),
-            'content': shipment.package_content or "General Merchandise",
-            'description': shipment.package_description or "No description provided.",
+            'content': shipment.package_content or ("Documents" if not shipment.is_diplomatic else "Diplomatic Manifest Documents"),
+            'description': shipment.package_description or "High security diplomatic pouch chain of custody.",
             'shipping_cost': f"${shipment.shipping_cost}",
-            'estimated_delivery': shipment.estimated_delivery.strftime('%B %d, %Y'),
-            'created_at': shipment.created_at.strftime('%B %d, %Y'),
+            'estimated_delivery': shipment.estimated_delivery.strftime('%b %d, %Y').upper(),
+            'created_at': shipment.created_at.strftime('%b %d, %Y') if shipment.created_at else "",
             'latest_update': shipment.latest_update,
             'history': history_data,
             'origin_lat': shipment.origin_lat,
@@ -77,7 +115,7 @@ def track_shipment(request, tracking_number):
             'current_lng': shipment.current_lng
         })
     except Shipment.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'Tracking number not found.'}, status=404)
+        return JsonResponse({'success': False, 'message': 'Tracking number or Diplomatic Reference ID not found.'}, status=404)
 
 def quote_view(request):
     return render(request, 'quote.html')

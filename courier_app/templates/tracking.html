@@ -1,235 +1,1614 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Track Your Cargo - TransGlo Logistics Network{% endblock %}
+{% block title %}TransGlo Logistic Network — Track Your Shipment{% endblock %}
 
 {% block content %}
-<!-- Sec 1 -->
-<section
-    class="py-6 bg-accent text-white border-bottom min-vh-100 d-flex align-items-center position-relative overflow-hidden">
-    <div class="position-absolute top-50 start-50 translate-middle blob-yellow z-0 opacity-50"></div>
-    <div class="container text-center z-2 position-relative animate-fade-up">
-        <i class="bi bi-geo-alt-fill display-1 mb-4 animate-bounce-hover text-yellow"></i>
-        <h1 class="display-3 fw-bold font-outfit mb-4">Track Your Shipment</h1>
-        <p class="lead fw-medium mx-auto mb-5" style="max-width: 600px;">Enter your TransGlo tracking reference below to
-            access millisecond-accurate geospatial data.</p>
-        <div class="bg-white p-3 rounded-pill shadow-lg d-flex align-items-center mx-auto" style="max-width: 600px;">
-            <input type="text" id="trackingInput"
-                class="form-control bg-transparent border-0 text-dark font-inter shadow-none px-4 fs-5 fw-bold"
-                placeholder="Enter your tracking number" />
-            <button id="trackBtn"
-                class="btn btn-yellow text-dark rounded-pill px-5 py-3 fw-bold transition-btn shadow-sm fs-5"
-                style="white-space: nowrap;">TRACK</button>
+
+<!-- TRANSGLO LOGISTIC NETWORK LOADING OVERLAY -->
+<div id="global-loading" class="gi-loading-overlay d-none">
+    <div class="gi-loading-box">
+        <div class="gi-loading-container">
+            <!-- TransGlo Logistic Network Emblem -->
+            <div class="gi-logo-anim">
+                <svg width="110" height="85" viewBox="0 0 130 97" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M36.26 20.12H62.47C63.13 20.12 63.66 20.65 63.66 21.3C63.66 21.42 63.64 21.54 63.6 21.66L28.97 95.71C28.77 96.13 28.36 96.4 27.89 96.4H1.69C1.03 96.4 0.5 95.87 0.5 95.22L0.61 94.72L35.19 20.8C35.38 20.38 35.8 20.12 36.26 20.12ZM64.52 33.35C70.18 52.96 87.68 67.3 109.02 68.38L109.86 68.39C110.49 68.39 111 68.87 111.07 69.47L111.08 69.68V95.14C111.08 95.77 110.61 96.29 110 96.36C85.15 95.83 63.32 83.7 49.61 65.22L64.52 33.35ZM107 0.5C107.18 2.73 107.3 5 107.59 7.22C108.42 12.1 109.58 14.85 111.94 17.21C115.91 21.18 121.01 21.73 126.01 22.03V23.1L124.55 23.37C119.68 23.71 115.91 24.85 113.13 27C110.35 29.16 108.62 32.3 107.76 36.51L107.59 38.1C107.33 40.17 107.2 42.26 107.03 44.46V44.89H106.14C105.9 42.52 105.73 40.11 105.39 37.75L105.17 36.19C104.32 32.33 102.79 29.42 100.39 27.35C97.98 25.29 94.76 24.11 90.6 23.61L84.32 22.18C87.87 21.87 90.18 21.77 92.42 21.39C96.36 20.65 99.15 19.31 101.23 17.21C103.3 15.1 104.63 12.29 105.26 8.75L105.64 6.05C105.81 4.23 105.92 2.4 106.06 0.5H107Z" fill="#21e09a"/>
+                </svg>
+            </div>
+            <!-- TransGlo Angled Light Sheen -->
+            <div class="gi-rect-sheen"></div>
         </div>
-        <!-- Error Result -->
-        <div id="trackingError" class="mt-4 text-center mx-auto animate-fade-up" style="max-width: 600px;">
-            <div class="bg-white p-4 rounded-4 shadow border border-danger" style="border-width: 3px !important;">
-                <i class="bi bi-exclamation-triangle-fill text-danger display-4 mb-2 d-block"></i>
-                <h4 class="fw-bold text-dark font-outfit mb-2">Tracking Not Found</h4>
-                <p class="text-secondary fw-medium mb-0 font-inter" id="errorMsg">The tracking number you entered could not be located in our network.</p>
-                <button id="searchAgainBtn" class="btn btn-outline-primary mt-3">Search Again</button>
+        <div class="gi-loading-status mt-4 text-center">
+            <h5 class="fw-bold text-white font-outfit mb-1" id="giLoadingTitle">Connecting to TransGlo Network...</h5>
+            <div class="text-mint font-mono small" id="giLoadingSub"><i class="bi bi-broadcast me-1 animate-pulse"></i> SYNCHRONIZING REAL-TIME TELEMETRY</div>
+            <div class="gi-loading-bar-wrap mt-3">
+                <div class="gi-loading-bar" id="giLoadingBar"></div>
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- Tracking Result -->
-        <div id="trackingResult" class="mt-5 text-start d-none mx-auto animate-slide-in" style="max-width: 1000px;">
-            <div class="row g-4">
-                <!-- Left Column: Details & Map -->
-                <div class="col-lg-8">
-                    <!-- Header Block -->
-                    <div class="bg-white p-4 rounded-4 shadow-sm mb-4 border border-light">
+<!-- TRANSGLO LOGISTIC NETWORK TOP BANNER -->
+<header class="gi-top-header py-3 px-4 px-md-6">
+    <div class="container max-w-7xl mx-auto d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+            <span class="fw-bold fs-5 tracking-tight text-white font-outfit">TransGlo</span>
+            <span class="badge text-white font-monospace gi-badge-logistics">LOGISTIC NETWORK</span>
+        </div>
+        <span class="text-mint font-mono small"><i class="bi bi-globe2 me-1"></i> Global Tracking System</span>
+    </div>
+</header>
+
+<div id="trackingPage" class="gi-page-container min-vh-100 position-relative pb-5">
+
+    <!-- ══════════════════════════════════════════════════
+         HERO SEARCH SECTION (EXACT REPLICA)
+         ══════════════════════════════════════════════════ -->
+    <section class="gi-hero-search w-100 relative overflow-hidden py-5">
+        <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10 pointer-events-none" style="z-index: 1;">
+            <svg class="w-100 h-100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1E88E5" stroke-width="0.5" opacity="0.15"></path>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid-pattern)"></rect>
+            </svg>
+        </div>
+        <div class="container position-relative text-center" style="z-index: 2;">
+            <div class="max-w-3xl mx-auto">
+                <h1 class="gi-hero-title mb-2">Track Your Shipment</h1>
+                <p class="gi-hero-sub mb-4">Real-time tracking for your packages</p>
+
+                <!-- Classification Toggle -->
+                <div class="d-flex justify-content-center gap-2 mb-4">
+                    <button type="button" class="trk-type-pill active" data-mode="normal" id="pillNormal">
+                        <i class="bi bi-box-seam-fill me-1"></i> Standard Shipment
+                    </button>
+                    <button type="button" class="trk-type-pill" data-mode="diplomatic" id="pillDiplomatic">
+                        <i class="bi bi-shield-lock-fill me-1"></i> Diplomatic Pouch
+                    </button>
+                </div>
+
+                <!-- Search Input Row -->
+                <div class="max-w-2xl mx-auto mb-4">
+                    <div class="d-flex gap-2 align-items-center flex-wrap flex-sm-nowrap">
+                        <input type="text" id="trackingInput" class="gi-search-input flex-grow-1"
+                               placeholder="Enter tracking number" value="{{ initial_track|default:'' }}" autocomplete="off" />
+                        <button type="button" id="trackBtn" class="gi-search-btn">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" class="me-1"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <span id="trackBtnText">Track</span>
+                        </button>
+                    </div>
+                </div>
+
+
+
+                <div id="trackingError" class="trk-error mt-4 d-none mx-auto max-w-2xl text-start">
+                    <i class="bi bi-exclamation-octagon-fill me-2 fs-5"></i><span id="errorMsg">Tracking reference not found.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════
+         TRACKING RESULTS CONTAINER
+         ══════════════════════════════════════════════════ -->
+    <div id="trackingResult" class="d-none mt-2">
+
+        <!-- ──────────────────────────────────────────────
+             MODE A: NORMAL SHIPMENT (EXACT REPLICA)
+             ────────────────────────────────────────────── -->
+        <div id="normalResult" class="d-none">
+            <div class="container max-w-6xl mx-auto px-3 px-md-4 py-4">
+
+                <!-- ── 1. STATUS OVERVIEW SECTION ── -->
+                <section class="mb-5">
+                    <!-- Tracking Number + Share Button -->
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                        <div>
+                            <div class="gi-label-muted">Tracking Number</div>
+                            <h2 class="gi-tracking-num mb-0" id="demoTrackNum">—</h2>
+                        </div>
+                        <button type="button" id="demoShareBtn" onclick="shareTracking()" class="gi-btn-share">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                            <span>Share</span>
+                        </button>
+                    </div>
+
+                    <!-- 3 Metric Cards Grid -->
+                    <div class="row g-4 mb-4">
+                        <!-- Current Status -->
+                        <div class="col-md-4">
+                            <div class="gi-metric-card h-100">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="gi-icon-circle bg-blue">
+                                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                                    </div>
+                                    <div>
+                                        <div class="gi-label-muted">Current Status</div>
+                                        <div class="gi-metric-val text-capitalize" id="demoStatusVal">In Transit</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Est. Delivery -->
+                        <div class="col-md-4">
+                            <div class="gi-metric-card h-100">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="gi-icon-circle bg-cyan">
+                                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                    </div>
+                                    <div>
+                                        <div class="gi-label-muted">Est. Delivery</div>
+                                        <div class="gi-metric-val" id="demoEstDeliveryVal">—</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Current Location -->
+                        <div class="col-md-4">
+                            <div class="gi-metric-card h-100">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="gi-icon-circle bg-purple">
+                                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    </div>
+                                    <div>
+                                        <div class="gi-label-muted">Current Location</div>
+                                        <div class="gi-metric-val" id="demoLocationVal">—</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Progress Card -->
+                    <div class="gi-progress-card mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
-                                <small class="text-uppercase fw-bold text-secondary">Tracking Number</small>
-                                <h3 class="fw-bold font-outfit text-dark mb-0" id="resTrackingNumTitle">TRG-XXXXXXXX</h3>
-                            </div>
-                            <div class="d-flex flex-column align-items-end">
-                                <button onclick="window.print()" class="btn btn-sm btn-outline-dark rounded-pill px-3 mb-2 d-print-none transition-btn">
-                                    <i class="bi bi-printer-fill me-1"></i> Print Report
-                                </button>
-                                <small class="text-uppercase fw-bold text-secondary">Estimated Delivery</small>
-                                <div class="fs-5 fw-bold text-green"><i class="bi bi-calendar-check me-2"></i><span id="resEstDelivery">Oct 24, 2026</span></div>
-                            </div>
+                            <h3 class="gi-card-title mb-0">Delivery Progress</h3>
+                            <span class="gi-progress-percent" id="demoPercentComplete">50% Complete</span>
                         </div>
-                        <hr class="text-muted opacity-25">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-yellow text-dark px-4 py-2 fs-6 tracking-wide shadow-sm" id="resStatus">STATUS</span>
-                            <span class="text-accent fw-bold fs-5">Cost: <span id="resCost" class="text-dark">$0.00</span></span>
+                        <div class="gi-progress-track">
+                            <div class="gi-progress-bar" id="demoProgressBar" style="width: 50%;"></div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-3 text-sm">
+                            <span id="stepPlaced" class="gi-step-text active">Order Placed</span>
+                            <span id="stepTransit" class="gi-step-text active">In Transit</span>
+                            <span id="stepOut" class="gi-step-text">Out for Delivery</span>
+                            <span id="stepDelivered" class="gi-step-text">Delivered</span>
                         </div>
                     </div>
 
-                    <!-- 2-Column Grid for Metadata -->
-                    <div class="bg-white p-4 rounded-4 shadow-sm mb-4 border border-light position-relative">
-                        <!-- Barcode for Print -->
-                        <div class="text-center mb-4 d-flex flex-column align-items-center justify-content-center border-bottom pb-4" style="min-height: 120px;">
-                            <svg id="barcode" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"></svg>
-                            <small class="text-uppercase fw-bold text-secondary mt-1" style="font-size: 0.65rem; letter-spacing: 2px;">Official TransGlo System Barcode</small>
-                        </div>
-                        <h5 class="fw-bold font-outfit text-dark mb-4 border-bottom pb-2">Shipment Details</h5>
-                        <div class="row g-4 font-inter position-relative">
-                            <!-- Larger Red Airplane Icon Central Demarcation -->
-                            <div class="position-absolute top-50 start-50 translate-middle d-none d-md-flex align-items-center justify-content-center z-2 rounded-circle border border-white bg-white" style="width: 44px; height: 44px; box-shadow: 0 6px 16px rgba(211,47,47,0.25);">
-                                <i class="bi bi-airplane-fill text-accent" style="transform: rotate(45deg); font-size: 1.6rem;"></i>
-                            </div>
+                    <!-- Interactive Route Map -->
+                    <div class="gi-map-card overflow-hidden shadow-sm">
+                        <div id="normalMap" style="width:100%; height:380px;"></div>
+                    </div>
+                </section>
 
-                            <div class="col-md-6">
-                                <div class="bg-offwhite p-3 rounded-3 h-100">
-                                    <small class="text-uppercase fw-bold text-secondary d-block mb-1">From</small>
-                                    <div class="fw-bold text-dark fs-6 text-truncate" id="resSenderName">Name</div>
-                                    <small class="text-muted d-block" id="resSenderAddr">Address</small>
+                <!-- ── 2. SHIPMENT HISTORY SECTION ── -->
+                <section class="mb-5">
+                    <h2 class="gi-section-heading mb-4">Shipment History</h2>
+                    <div class="gi-timeline-wrapper" id="demoTimelineContainer">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </section>
+
+                <!-- ── 3. SHIPMENT DETAILS SECTION ── -->
+                <section class="mb-5">
+                    <h2 class="gi-section-heading mb-4">Shipment Details</h2>
+
+                    <!-- Sender & Recipient Information Row -->
+                    <div class="row g-4 mb-4">
+                        <!-- Sender Information -->
+                        <div class="col-lg-6">
+                            <div class="gi-detail-panel h-100">
+                                <h3 class="gi-panel-title mb-4">Sender Information</h3>
+                                <div class="d-flex flex-column gap-3">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <svg class="gi-detail-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        <div>
+                                            <div class="gi-label-muted">Name</div>
+                                            <div class="gi-info-text" id="demoSenderName">—</div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-start gap-3">
+                                        <svg class="gi-detail-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                        <div>
+                                            <div class="gi-label-muted">Address</div>
+                                            <div class="gi-info-text" id="demoSenderAddress">—</div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-start gap-3">
+                                        <svg class="gi-detail-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                        <div>
+                                            <div class="gi-label-muted">Contact</div>
+                                            <div class="gi-info-text" id="demoSenderContact">+86 138 0000 0000</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="bg-offwhite p-3 rounded-3 h-100 border-start border-3 border-accent">
-                                    <small class="text-uppercase fw-bold text-secondary d-block mb-1">To</small>
-                                    <div class="fw-bold text-dark fs-6 text-truncate" id="resReceiverName">Name</div>
-                                    <small class="text-muted d-block" id="resReceiverAddr">Address</small>
+                        </div>
+
+                        <!-- Recipient Information -->
+                        <div class="col-lg-6">
+                            <div class="gi-detail-panel h-100">
+                                <h3 class="gi-panel-title mb-4">Recipient Information</h3>
+                                <div class="d-flex flex-column gap-3">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <svg class="gi-detail-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        <div>
+                                            <div class="gi-label-muted">Name</div>
+                                            <div class="gi-info-text" id="demoReceiverName">—</div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-start gap-3">
+                                        <svg class="gi-detail-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                        <div>
+                                            <div class="gi-label-muted">Address</div>
+                                            <div class="gi-info-text" id="demoReceiverAddress">—</div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-start gap-3">
+                                        <svg class="gi-detail-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                        <div>
+                                            <div class="gi-label-muted">Contact</div>
+                                            <div class="gi-info-text" id="demoReceiverContact">+1 310 555 0123</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <small class="text-uppercase fw-bold text-secondary">Airway Bill</small>
-                                <div id="resAWB" class="fw-bold text-dark text-truncate">AWB-PENDING</div>
-                            </div>
-                            <div class="col-md-4">
-                                <small class="text-uppercase fw-bold text-secondary">Weight</small>
-                                <div class="fw-bold text-dark"><span id="resWeight">0</span> kg</div>
-                            </div>
-                            <div class="col-md-4">
-                                <small class="text-uppercase fw-bold text-secondary">Content</small>
-                                <div id="resContent" class="fw-bold text-dark text-truncate">General</div>
-                            </div>
-                        </div>
-
-                        <!-- Tracking Progress Timeline -->
-                        <h5 class="fw-bold font-outfit text-dark mt-5 mb-4 border-bottom pb-2">Tracking Progress</h5>
-                        
-                        <!-- Header Row -->
-                        <div class="row fw-bold text-secondary mb-3 border-bottom pb-2 px-2">
-                            <div class="col-4">Status</div>
-                            <div class="col-4">Location</div>
-                            <div class="col-4">Description/Remark</div>
-                        </div>
-
-                        <div id="timelineContainer">
-                            <!-- Dynamic Tracking History Rows Generated via JS -->
                         </div>
                     </div>
 
+                    <!-- Package Details & Additional Services Row -->
+                    <div class="row g-4">
+                        <!-- Package Details -->
+                        <div class="col-lg-6">
+                            <div class="gi-detail-panel h-100">
+                                <h3 class="gi-panel-title mb-4">Package Details</h3>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="gi-label-muted">Weight</div>
+                                        <div class="gi-info-text" id="demoWeight">2.5 kg</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="gi-label-muted">Dimensions</div>
+                                        <div class="gi-info-text" id="demoDimensions">30x20x15 cm</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="gi-label-muted">Service Type</div>
+                                        <div class="gi-info-text" id="demoServiceType">Express</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="gi-label-muted">Contents</div>
+                                        <div class="gi-info-text" id="demoContents">Documents</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Services -->
+                        <div class="col-lg-6">
+                            <div class="gi-detail-panel h-100">
+                                <h3 class="gi-panel-title mb-4">Additional Services</h3>
+                                <div class="d-flex flex-column gap-3 mb-4">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <svg class="gi-detail-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                                        <span class="gi-service-item-text">Insurance Coverage</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <svg class="gi-detail-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                        <span class="gi-service-item-text">Signature Required</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <svg class="gi-detail-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                        <span class="gi-service-item-text">SMS Notifications</span>
+                                    </div>
+                                </div>
+                                <div class="gi-cost-divider pt-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="gi-cost-label">Total Cost</span>
+                                        <span class="gi-cost-val" id="demoTotalCost">$45.99</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-5">
+                        <button type="button" onclick="window.print()" class="gi-btn-action-primary">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            <span>Download Receipt</span>
+                        </button>
+                        <button type="button" onclick="window.print()" class="gi-btn-action-secondary">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                            <span>Print Label</span>
+                        </button>
+                        <a href="/help/" class="gi-btn-action-teal text-decoration-none">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+                            <span>Contact Support</span>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Hidden IDs kept for legacy JS compatibility -->
+                <div class="d-none">
+                    <span id="fdxMainStatus"></span>
+                    <span id="fdxEstDelivery"></span>
+                    <span id="fdxTrackNum"></span>
+                    <span id="giBannerOrigin"></span>
+                    <span id="giBannerDest"></span>
+                    <span id="giBannerWeight"></span>
+                    <span id="fdxCountdown"></span>
+                    <span id="fdxCountdownWrap"></span>
+                    <span id="fdxHudLocation"></span>
+                    <span id="fdxHudActivity"></span>
+                    <span id="fdxHudTime"></span>
+                    <span id="fdxCoordinates"></span>
+                    <span id="giHistoryCount"></span>
+                    <div id="fdxHistoryList"></div>
+                    <div id="fdxProgressFill"></div>
+                    <div id="fdxStep1"></div>
+                    <div id="fdxStep2"></div>
+                    <div id="fdxStep3"></div>
+                    <div id="fdxStep4"></div>
+                    <div id="fdxStep5"></div>
+                    <span id="fdxStep1Time"></span>
+                    <span id="fdxStep2Time"></span>
+                    <span id="fdxStep3Time"></span>
+                    <span id="fdxStep4Time"></span>
+                    <span id="fdxStep5Time"></span>
+                    <span id="factTrackNum"></span>
+                    <span id="factWeight"></span>
+                    <span id="factAWB"></span>
+                    <span id="factSender"></span>
+                    <span id="factSenderAddr"></span>
+                    <span id="factReceiver"></span>
+                    <span id="factReceiverAddr"></span>
+                    <span id="factContent"></span>
+                    <span id="factCost"></span>
                 </div>
 
-                <!-- Right Column: Live Map -->
-                <div class="col-lg-4">
-                    <!-- Live Map Tracker -->
-                    <div class="bg-offwhite p-3 rounded-4 border d-flex flex-column mb-4 shadow-sm">
-                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-geo-alt text-primary me-2"></i>Live Map Tracker</h6>
-                        
-                        <div id="shipmentMap" class="w-100 rounded-3 mb-3 border shadow-inner" style="height: 250px; z-index: 10;"></div>
-                        
-                        <div class="d-flex justify-content-between align-items-center mb-3 px-1 border-bottom pb-2">
-                            <small class="text-uppercase fw-bold text-primary" style="font-size: 0.70rem;">GPS STREAM</small>
-                            <small class="text-uppercase fw-bold text-primary" style="font-size: 0.70rem;"><i class="bi bi-broadcast animate-pulse-blue"></i> LIVE</small>
-                        </div>
-                        
-                        <div class="row g-2 mb-3 position-relative">
-                            <!-- Airplane Icon Central Demarcation -->
-                            <div class="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center z-2 rounded-circle border border-white bg-light" style="width: 32px; height: 32px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
-                                <i class="bi bi-airplane-fill text-dark" style="transform: rotate(45deg);"></i>
-                            </div>
-                            
-                            <div class="col-6">
-                                <div class="p-3 bg-white rounded-3 border h-100 shadow-sm hover-scale delay-1">
-                                    <small class="text-uppercase fw-bold text-dark d-block mb-2" style="font-size: 0.65rem;">SENDER</small>
-                                    <h6 class="fw-bold text-dark mb-1 d-block text-truncate" style="font-size: 0.85rem;" id="resSenderNameSide">Data Center</h6>
-                                    <small class="text-secondary d-block lh-sm text-truncate" style="font-size: 0.75rem;" id="resSenderAddrSide">Pending</small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="p-3 bg-white rounded-3 border h-100 shadow-sm hover-scale delay-2">
-                                    <small class="text-uppercase fw-bold text-danger d-block mb-2" style="font-size: 0.65rem;">RECEIVER</small>
-                                    <h6 class="fw-bold text-dark mb-1 d-block text-truncate" style="font-size: 0.85rem;" id="resReceiverNameSide">Destination</h6>
-                                    <small class="text-secondary d-block lh-sm text-truncate" style="font-size: 0.75rem;" id="resReceiverAddrSide">Pending</small>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="w-100 rounded-3 overflow-hidden position-relative border" style="height: 120px;">
-                            <img src="{% static 'img/tracking_phone.jpg' %}" alt="Tracker Mobile" class="object-fit-cover w-100 h-100">
-                        </div>
+            </div>
+        </div><!-- /normalResult -->
+
+
+        <!-- ──────────────────────────────────────────────
+             MODE B: DIPLOMATIC POUCH (MATCHES USER IMAGE)
+             ────────────────────────────────────────────── -->
+        <div id="diplomaticResult" class="d-none">
+            <div class="container-xl px-3 px-md-4 py-3">
+
+                <!-- Clearance Bar -->
+                <div class="dip-clearance-bar mb-3">
+                    <div class="dip-clearance-left">
+                        <span class="dip-clearance-badge">
+                            <i class="bi bi-shield-lock-fill text-warning me-1"></i>
+                            <span id="dipClearanceLevel">LEVEL 4 DIPLOMATIC CLEARANCE</span>
+                        </span>
+                        <span class="dip-sys-ver d-none d-md-inline">MIL-SPEC PROTOCOL: DISA-STIG-2026</span>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-danger active" id="dipCustodyBtn">
+                            <i class="bi bi-diagram-3-fill me-1"></i> CHAIN OF CUSTODY
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" id="dipMapBtn">
+                            <i class="bi bi-globe-americas me-1"></i> LIVE MAP MATRIX
+                        </button>
                     </div>
                 </div>
+
+                <!-- Custody View: Rugged Tablet Chassis -->
+                <div id="dipCustodyView">
+                    <div class="dip-tablet-frame mx-auto">
+                        <!-- Tablet Bezel Camera Notch -->
+                        <div class="dip-tablet-bezel-top">
+                            <div class="dip-cam-notch"></div>
+                        </div>
+
+                        <div class="dip-tablet-screen">
+                            <!-- Header Bar -->
+                            <div class="dip-tablet-header">
+                                <div class="d-flex flex-column">
+                                    <h3 class="dip-tablet-title mb-1">DIPLOMATIC POUCH: CHAIN OF CUSTODY TRACKING</h3>
+                                    <div class="dip-tablet-meta">
+                                        <span>REFERENCE ID: <strong id="dipRefId" class="text-white font-mono">DP-CAN-9812-α</strong></span>
+                                        <span class="mx-2 text-secondary">|</span>
+                                        <span>STATUS: <strong id="dipStatus" class="text-white">IN TRANSIT / SECURE</strong></span>
+                                    </div>
+                                </div>
+                                <!-- Official Gold Diplomatic Seal -->
+                                <div class="dip-official-seal">
+                                    <div class="dip-seal-crest">
+                                        <i class="bi bi-shield-shaded"></i>
+                                    </div>
+                                    <div class="dip-seal-text">
+                                        <span class="dip-seal-gov">OFFICIAL COURIER</span>
+                                        <span class="dip-seal-sub">VALIDATED SEAL</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Red Security Line -->
+                            <div class="dip-red-line"></div>
+
+                            <!-- Timeline List -->
+                            <div class="dip-timeline-body mt-4">
+                                <div class="dip-track-line"></div>
+                                <div id="dipEventsList" class="d-flex flex-column gap-3">
+                                    <!-- Populated dynamically via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Footer Meta -->
+                            <div class="dip-tablet-footer mt-4 pt-3 border-top border-secondary-subtle">
+                                <div class="row g-2 font-mono small text-secondary">
+                                    <div class="col-md-3">ORIGIN: <span id="dipOrigin" class="text-white">—</span></div>
+                                    <div class="col-md-3">DESTINATION: <span id="dipDest" class="text-white">—</span></div>
+                                    <div class="col-md-3">SENDER: <span id="dipSender" class="text-white">—</span></div>
+                                    <div class="col-md-3">EST. ARRIVAL: <span id="dipEstDelivery" class="text-mint fw-bold">—</span></div>
+                                </div>
+                            </div>
+
+                        </div><!-- /dip-tablet-screen -->
+                    </div><!-- /dip-tablet-frame -->
+                </div><!-- /dipCustodyView -->
+
+                <!-- Full Map Matrix View -->
+                <div id="dipMapView" class="d-none">
+                    <div class="dip-map-container rounded-4 overflow-hidden border border-secondary shadow position-relative" style="height:70vh;min-height:520px;">
+                        <div id="diplomaticMap" class="w-100 h-100"></div>
+                        <div class="position-absolute top-0 start-0 p-3" style="z-index:400;">
+                            <div class="dip-map-overlay-card">
+                                <div class="text-danger small font-mono fw-bold"><i class="bi bi-shield-shaded me-1"></i>SAT-LINK ACTIVE</div>
+                                <div class="text-white fw-bold font-mono" id="dipMapRefId">—</div>
+                                <div class="text-secondary small mt-1 font-mono">STATUS: <span class="text-mint" id="dipMapStatus">—</span></div>
+                                <div class="text-secondary small font-mono">LOCATION: <span class="text-white" id="dipMapLoc">—</span></div>
+                                <div class="text-secondary small font-mono">EST. ARRIVAL: <span class="text-mint" id="dipMapDel">—</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /dipMapView -->
+
             </div>
-        </div>
-    </div>
-</section>
-<!-- Sec 2 -->
-<section class="py-6 bg-white border-bottom text-center">
-    <div class="container animate-fade-up">
-        <h2 class="display-5 fw-bold font-outfit text-dark mb-4">How TransGlo Tracker Works</h2>
-        <p class="lead text-secondary fw-medium mx-auto mb-5" style="max-width: 800px;">The TransGlo Tracker is not just a static database query. It is a live, predictive engine drawing from thousands of geographic sensors and weather APIs to show you not just where your package is, but entirely ensuring its security.</p>
-        <div class="row g-4 justify-content-center">
-            <div class="col-md-4 hover-scale"><i
-                    class="bi bi-satellite-fill fs-1 text-accent mb-3 d-block d-inline-block animate-bounce-hover"></i>
-                <h4 class="fw-bold text-dark">Satellite Synced</h4>
-                <p class="text-secondary fw-medium">Connected to global GPS nodes.</p>
-            </div>
-            <div class="col-md-4 hover-scale delay-1"><i
-                    class="bi bi-shield-lock fs-1 text-green mb-3 d-block d-inline-block animate-bounce-hover"></i>
-                <h4 class="fw-bold text-dark">Blockchain Verified</h4>
-                <p class="text-secondary fw-medium">Immutable ledger validation.</p>
-            </div>
-            <div class="col-md-4 hover-scale delay-2"><i
-                    class="bi bi-robot fs-1 text-yellow mb-3 d-block d-inline-block animate-bounce-hover"></i>
-                <h4 class="fw-bold text-dark">AI Predicted</h4>
-                <p class="text-secondary fw-medium">The system predicts delays instantly.</p>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Sec 3 -->
-<section class="py-6 bg-white overflow-hidden text-center z-3 position-relative">
-    <div class="container animate-fade-up bg-yellow rounded-4 p-5 shadow-lg">
-        <h2 class="display-5 fw-bold font-outfit mb-4">Enterprise Tracking API</h2>
-        <p class="lead fw-bold mx-auto mb-5 text-secondary" style="max-width: 800px;">Embed our real-time tracking engine directly into
-            your e-commerce platform. Provide your customers with live map visualizations natively within your checkout pages. Our WebSocket-powered GraphQL API guarantees sub-millisecond response times under peak holiday traffic.</p>
-        <a href="{% url 'features' %}" class="btn btn-dark btn-lg px-5 rounded-pill shadow-lg hover-scale animate-bounce-hover">Read Developers
-            Info</a>
-    </div>
-</section>
-<!-- Sec 4 -->
-<section class="py-6 bg-white shadow-sm text-center z-3 position-relative">
-    <div class="container animate-grow bg-green text-white rounded-4 p-5 shadow-lg">
-        <i class="bi bi-phone-vibrate display-2 mb-4 d-inline-block animate-bounce-hover"></i>
-        <h2 class="display-5 fw-bold font-outfit mb-4">Track on the Go</h2>
-        <p class="lead fw-medium mx-auto mb-5" style="max-width: 800px;">Download the TransGlo Mobile app for push
-            notifications regarding your freight. Our award-winning mobile platform allows you to intercept packages, reroute destinations mid-transit, and sign digital receipts from anywhere in the world.</p>
-        <a href="#" class="btn btn-white text-green btn-lg fw-bold rounded-pill mx-2 hover-scale shadow-lg"><i
-                class="bi bi-apple"></i> iOS App</a>
-        <a href="#" class="btn btn-dark btn-lg fw-bold rounded-pill mx-2 hover-scale shadow-lg"><i
-                class="bi bi-google-play"></i> Android App</a>
-    </div>
-</section>
-<!-- Sec 5 -->
-<section class="py-6 bg-white border-bottom text-center">
-    <div class="container animate-fade-up">
-        <h2 class="display-5 fw-bold font-outfit text-dark mb-4">99.99% Uptime SLA</h2>
-        <p class="text-secondary lead fw-medium mx-auto mb-0" style="max-width: 800px;">Our tracking network is hosted across
-            distributed nodes globally to ensure you always have access to your routing manifest. We recognize that blind spots in logistics cost money. Therefore we financially guarantee our uptime. Dual-redundant satellite backups ensure that even during widespread outages, your tracking data remains immediately accessible.</p>
-    </div>
-</section>
-<!-- Sec 6 -->
-<section class="py-6 bg-white text-center position-relative overflow-hidden">
-    <div class="position-absolute bottom-0 start-0 translate-middle-y blob-yellow z-0 opacity-50"></div>
-    <div class="container z-2 position-relative animate-fade-up bg-accent text-white rounded-4 p-5 shadow-lg">
-        <h2 class="display-4 fw-bold font-outfit mb-4">Need Intervention?</h2>
-        <p class="lead fw-medium mx-auto mb-5" style="max-width: 700px;">Is your tracking number showing an anomaly? Let
-            our agents sort it immediately. Whether customs requires additional paperwork or you accidentally provided an incorrect address, our 24/7 rapid response team intervenes to resolve administrative roadblocks instantly.</p>
-        <a href="{% url 'contact' %}"
-            class="btn btn-white text-accent btn-lg fw-bold px-5 rounded-pill hover-scale animate-bounce-hover shadow-lg">Contact
-            Support</a>
-    </div>
-</section>
+        </div><!-- /diplomaticResult -->
+
+    </div><!-- /trackingResult -->
+
+</div>
+
+<style>
+/* ═════════════════════════════════════════════════════
+   GLOBAL INTERNATIONAL DEMO DESIGN SYSTEM TOKENS
+   ═════════════════════════════════════════════════════ */
+:root {
+    --gi-bg-page: #f8fafc;
+    --gi-blue-navy: #01579B;
+    --gi-blue-primary: #1E88E5;
+    --gi-blue-hover: #1565C0;
+    --gi-blue-light: #E3F2FD;
+    --gi-blue-track: #BBDEFB;
+    --gi-blue-border: #90CAF9;
+    --gi-blue-chip-border: #42A5F5;
+    --gi-teal: #00ACC1;
+    --gi-teal-light: #E0F7FA;
+    --gi-purple: #5E35B1;
+    --gi-header-purple: #4D148C;
+    --gi-badge-orange: #FF6200;
+    --gi-text-muted: #5f6368;
+    --gi-text-subtle: #80868b;
+    --gi-mint: #21e09a;
+}
+
+body {
+    background-color: var(--gi-bg-page);
+}
+
+.gi-page-container {
+    background-color: var(--gi-bg-page);
+}
+
+/* Header */
+.gi-top-header {
+    background-color: var(--gi-header-purple);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.gi-badge-logistics {
+    background-color: var(--gi-badge-orange) !important;
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 4px;
+}
+.gi-fedex-link {
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.gi-fedex-link:hover {
+    color: var(--gi-badge-orange);
+}
+
+/* Hero Section */
+.gi-hero-search {
+    background: linear-gradient(135deg, #E3F2FD 0%, #FFFFFF 100%);
+    border-bottom: 1px solid #e2e8f0;
+}
+.gi-hero-title {
+    font-size: clamp(2rem, 3.8vw, 39px);
+    font-weight: 700;
+    color: var(--gi-blue-navy);
+    line-height: 1.2;
+}
+.gi-hero-sub {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--gi-blue-navy);
+    opacity: 0.9;
+}
+.gi-search-input {
+    padding: 16px 24px;
+    border-radius: 8px;
+    border: 2px solid var(--gi-blue-border);
+    background-color: #ffffff;
+    font-size: 16px;
+    color: var(--gi-blue-navy);
+    outline: none;
+    transition: all 0.2s ease;
+}
+.gi-search-input::placeholder {
+    color: var(--gi-blue-border);
+}
+.gi-search-input:focus {
+    border-color: var(--gi-blue-primary);
+    box-shadow: 0 0 0 4px rgba(30, 136, 229, 0.15);
+}
+.gi-search-btn {
+    padding: 16px 32px;
+    border-radius: 8px;
+    background-color: var(--gi-blue-primary);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.gi-search-btn:hover {
+    background-color: var(--gi-blue-hover);
+    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+    transform: translateY(-1px);
+}
+.gi-search-btn:active {
+    transform: scale(0.98);
+}
+.gi-demo-label {
+    color: var(--gi-blue-navy);
+    font-weight: 500;
+    font-size: 14px;
+    padding: 8px 4px;
+}
+.gi-chip-blue {
+    border: 2px solid var(--gi-blue-chip-border);
+    color: var(--gi-blue-primary);
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.gi-chip-blue:hover, .gi-chip-blue.active {
+    background-color: var(--gi-blue-light);
+    border-color: var(--gi-blue-primary);
+    box-shadow: 0 2px 8px rgba(30, 136, 229, 0.2);
+}
+.gi-chip-dip {
+    border: 2px solid #ef4444;
+    color: #dc2626;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.gi-chip-dip:hover {
+    background-color: #fee2e2;
+    border-color: #b91c1c;
+}
+
+/* Classification Pills */
+.trk-type-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+.trk-type-pill {
+    padding: 8px 20px;
+    border-radius: 30px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    color: #64748b;
+    font-size: .88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .25s ease;
+}
+.trk-type-pill:hover { border-color: var(--gi-blue-primary); color: var(--gi-blue-primary); }
+.trk-type-pill.active {
+    background: var(--gi-blue-primary);
+    border-color: var(--gi-blue-primary);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(30, 136, 229, 0.35);
+}
+#pillDiplomatic.active {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+}
+
+/* Status Overview Card */
+.gi-label-muted {
+    font-size: 14px;
+    color: var(--gi-blue-navy);
+    opacity: 0.7;
+    margin-bottom: 2px;
+}
+.gi-tracking-num {
+    font-size: 31px;
+    font-weight: 600;
+    color: var(--gi-blue-navy);
+}
+.gi-btn-share {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: var(--gi-blue-primary);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.gi-btn-share:hover {
+    background-color: var(--gi-blue-hover);
+    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+}
+
+/* Metric Cards */
+.gi-metric-card {
+    background-color: var(--gi-blue-light);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s ease;
+}
+.gi-metric-card:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+.gi-icon-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    flex-shrink: 0;
+}
+.gi-icon-circle.bg-blue { background-color: var(--gi-blue-primary); }
+.gi-icon-circle.bg-cyan { background-color: var(--gi-teal); }
+.gi-icon-circle.bg-purple { background-color: var(--gi-purple); }
+.gi-metric-val {
+    font-size: 25px;
+    font-weight: 600;
+    color: var(--gi-blue-navy);
+    line-height: 1.2;
+}
+
+/* Progress Card */
+.gi-progress-card {
+    background-color: var(--gi-blue-light);
+    border-radius: 12px;
+    padding: 24px;
+}
+.gi-card-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gi-blue-navy);
+}
+.gi-progress-percent {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gi-blue-navy);
+}
+.gi-progress-track {
+    width: 100%;
+    height: 12px;
+    border-radius: 9999px;
+    background-color: var(--gi-blue-track);
+    overflow: hidden;
+}
+.gi-progress-bar {
+    height: 100%;
+    border-radius: 9999px;
+    background-color: var(--gi-blue-primary);
+    transition: width 0.5s ease;
+}
+.gi-step-text {
+    font-size: 14px;
+    color: var(--gi-blue-navy);
+    opacity: 0.7;
+}
+.gi-step-text.active {
+    font-weight: 600;
+    opacity: 1;
+}
+
+/* Map Card */
+.gi-map-card {
+    border-radius: 12px;
+    background-color: var(--gi-blue-light);
+    height: 380px;
+}
+
+/* Section Headings */
+.gi-section-heading {
+    font-size: 31px;
+    font-weight: 600;
+    color: var(--gi-blue-navy);
+}
+
+/* Details Panels */
+.gi-detail-panel {
+    background-color: var(--gi-blue-light);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s ease;
+}
+.gi-detail-panel:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+.gi-panel-title {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--gi-blue-navy);
+}
+.gi-detail-icon-svg {
+    width: 20px;
+    height: 20px;
+    color: var(--gi-blue-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+.gi-info-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--gi-blue-navy);
+}
+.gi-service-item-text {
+    font-size: 16px;
+    color: var(--gi-blue-navy);
+}
+.gi-cost-divider {
+    border-top: 1px solid var(--gi-blue-chip-border);
+}
+.gi-cost-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gi-blue-navy);
+}
+.gi-cost-val {
+    font-size: 25px;
+    font-bold;
+    font-weight: 700;
+    color: var(--gi-blue-primary);
+}
+
+/* Action Buttons */
+.gi-btn-action-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 24px;
+    height: 48px;
+    border-radius: 8px;
+    background-color: var(--gi-blue-primary);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.gi-btn-action-primary:hover {
+    background-color: var(--gi-blue-hover);
+    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+}
+.gi-btn-action-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 24px;
+    height: 48px;
+    border-radius: 8px;
+    background-color: transparent;
+    border: 2px solid var(--gi-blue-primary);
+    color: var(--gi-blue-primary);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.gi-btn-action-secondary:hover {
+    background-color: var(--gi-blue-light);
+}
+.gi-btn-action-teal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 24px;
+    height: 48px;
+    border-radius: 8px;
+    background-color: transparent;
+    border: 2px solid var(--gi-teal);
+    color: var(--gi-teal);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.gi-btn-action-teal:hover {
+    background-color: var(--gi-teal-light);
+}
+
+/* Error message */
+.trk-error {
+    background: #fef2f2;
+    border: 1.5px solid #f87171;
+    border-radius: 10px;
+    padding: 14px 20px;
+    color: #b91c1c;
+    font-weight: 600;
+}
+
+/* ═════════════════════════════════════════════════════
+   LOADING OVERLAY & EMBLEM
+   ═════════════════════════════════════════════════════ */
+.gi-loading-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(5, 11, 20, 0.94);
+    backdrop-filter: blur(14px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.gi-loading-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 440px;
+    padding: 30px;
+}
+.gi-loading-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 180px;
+    height: 140px;
+    overflow: hidden;
+    background: rgba(15, 28, 48, 0.6);
+    border-radius: 20px;
+    border: 1px solid rgba(0, 140, 242, 0.25);
+    box-shadow: 0 0 30px rgba(0, 140, 242, 0.2);
+}
+.gi-logo-anim {
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 0 16px rgba(33, 224, 154, 0.6));
+    animation: gi-pulse 2s infinite ease-in-out;
+}
+.gi-rect-sheen {
+    position: absolute;
+    top: -20px;
+    left: -100px;
+    width: 64px;
+    height: 180px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(33, 224, 154, 0.8) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    filter: blur(5px);
+    transform: rotate(-30deg);
+    transform-origin: center center;
+    animation: rectAnimation 2s linear infinite;
+    box-shadow: 0 0 16px rgba(33, 224, 154, 0.4), inset 0 0 6px rgba(255, 255, 255, 0.4);
+    z-index: 3;
+}
+@keyframes rectAnimation {
+    0% { left: -100px; opacity: 0; }
+    30% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { left: 240px; opacity: 0; }
+}
+@keyframes gi-pulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 12px rgba(33, 224, 154, 0.5)); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 24px rgba(33, 224, 154, 0.9)); }
+}
+.gi-loading-bar-wrap {
+    width: 220px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+.gi-loading-bar {
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(90deg, #1E88E5, var(--gi-mint));
+    border-radius: 4px;
+    animation: gi-bar-slide 1.5s infinite ease-in-out;
+}
+@keyframes gi-bar-slide {
+    0% { transform: translateX(-100%); width: 20%; }
+    50% { width: 60%; }
+    100% { transform: translateX(250%); width: 20%; }
+}
+
+/* ═════════════════════════════════════════════════════
+   DIPLOMATIC POUCH CHASSIS (PRESERVED)
+   ═════════════════════════════════════════════════════ */
+.dip-clearance-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.dip-clearance-left { display: flex; align-items: center; gap: 12px; }
+.dip-clearance-badge {
+    background: rgba(220, 38, 38, 0.15);
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+.dip-sys-ver { font-size: .75rem; color: #64748b; font-family: 'Fira Code', monospace; }
+
+/* Rugged Tablet Frame */
+.dip-tablet-frame {
+    max-width: 1050px;
+    background: #11151c;
+    border: 12px solid #1a202c;
+    border-radius: 28px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(0, 0, 0, 0.9);
+    position: relative;
+    padding: 4px;
+}
+.dip-tablet-bezel-top {
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.dip-cam-notch {
+    width: 8px;
+    height: 8px;
+    background: #090d14;
+    border: 1px solid #2d3748;
+    border-radius: 50%;
+}
+.dip-tablet-screen {
+    background: #1e2638;
+    border-radius: 16px;
+    padding: 24px 30px;
+    border: 1px solid #2d3748;
+}
+.dip-tablet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding-bottom: 12px;
+}
+.dip-tablet-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #f1f5f9;
+    font-family: 'Fira Code', monospace;
+    letter-spacing: 1px;
+}
+.dip-tablet-meta { font-size: .85rem; color: #94a3b8; font-family: 'Fira Code', monospace; }
+.dip-official-seal {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(10, 14, 22, 0.7);
+    border: 1.5px solid #d97706;
+    border-radius: 30px;
+    padding: 8px 16px;
+    box-shadow: 0 0 16px rgba(217, 119, 6, 0.3);
+}
+.dip-seal-crest { font-size: 1.8rem; color: #f59e0b; }
+.dip-seal-text { display: flex; flex-direction: column; text-align: left; }
+.dip-seal-gov { font-size: .7rem; font-weight: 800; color: #f59e0b; letter-spacing: 1.5px; font-family: 'Fira Code', monospace; }
+.dip-seal-sub { font-size: .62rem; color: #cbd5e1; font-family: 'Fira Code', monospace; }
+.dip-red-line {
+    height: 4px;
+    background: linear-gradient(90deg, #dc2626 0%, #ef4444 50%, rgba(220, 38, 38, 0.1) 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+    margin: 12px 0 20px;
+}
+
+/* Vertical Chain of Custody */
+.dip-timeline-body { position: relative; padding-left: 36px; }
+.dip-track-line { position: absolute; top: 16px; bottom: 16px; left: 6px; width: 3px; background: #374151; z-index: 1; }
+.dip-custody-card {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+.dip-node-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #1f2937;
+    border: 2px solid #4b5563;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 6px;
+    margin-left: -48px;
+    z-index: 2;
+}
+.dip-custody-card.done .dip-node-icon { background: #0f172a; border-color: var(--gi-mint); color: var(--gi-mint); }
+.dip-custody-card.active .dip-node-icon {
+    background: #dc2626;
+    border-color: #ef4444;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.9);
+}
+.dip-card-inner {
+    background: #232c3f;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 16px 20px;
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+.dip-custody-card.active .dip-card-inner {
+    background: linear-gradient(135deg, #1f293d 0%, #152033 100%);
+    border: 2px solid #1E88E5;
+    box-shadow: 0 0 25px rgba(30, 136, 229, 0.25);
+}
+.dip-event-header { font-size: .95rem; font-weight: 800; color: #fff; font-family: 'Fira Code', monospace; }
+.dip-event-meta-line { font-size: .82rem; color: #94a3b8; font-family: 'Fira Code', monospace; }
+.dip-stamp-box {
+    display: inline-flex;
+    align-items: center;
+    border: 1.5px dashed #38bdf8;
+    background: rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: .72rem;
+    font-family: 'Fira Code', monospace;
+    font-weight: 700;
+}
+.dip-mini-flight-map {
+    width: 170px;
+    height: 85px;
+    background: #090e17;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.dip-map-overlay-card {
+    background: rgba(5, 11, 20, 0.9);
+    border: 1px solid rgba(0, 140, 242, 0.25);
+    border-radius: 12px;
+    padding: 14px 18px;
+    max-width: 280px;
+    backdrop-filter: blur(12px);
+}
+</style>
 {% endblock %}
+
 {% block scripts %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-curve@1.0.0/leaflet.curve.js"></script>
 {{ block.super }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    let currentMode = 'normal';
+    let normalMap = null, dipMap = null;
+    let normalMarkers = [], normalPaths = [], dipMarkers = [], dipPaths = [];
+
+    // ── Classification Toggle ─────────────────────
+    document.querySelectorAll('.trk-type-pill').forEach(pill => {
+        pill.addEventListener('click', function () {
+            document.querySelectorAll('.trk-type-pill').forEach(p => p.classList.remove('active'));
+            this.classList.add('active');
+            currentMode = this.dataset.mode;
+            updateBtn();
+        });
+    });
+
+    function updateBtn() {
+        const btnTxt = document.getElementById('trackBtnText');
+        if (!btnTxt) return;
+        btnTxt.innerHTML = currentMode === 'diplomatic'
+            ? '<i class="bi bi-shield-check me-1"></i> Verify & Track'
+            : 'Track';
+    }
+
+    // ── Search & Enter Key ────────────────────────
+    const trackBtn = document.getElementById('trackBtn');
+    const trackingInput = document.getElementById('trackingInput');
+    if (trackBtn) trackBtn.addEventListener('click', () => doTrack());
+    if (trackingInput) trackingInput.addEventListener('keyup', e => { if (e.key === 'Enter') doTrack(); });
+
+    window.quickTrack = function (num, mode) {
+        document.getElementById('trackingInput').value = num;
+        currentMode = mode;
+        document.querySelectorAll('.trk-type-pill').forEach(p => p.classList.remove('active'));
+        const pill = document.querySelector(`[data-mode="${mode}"]`);
+        if (pill) pill.classList.add('active');
+        
+        // Highlight active demo chip
+        document.querySelectorAll('.gi-chip-blue').forEach(btn => {
+            if (btn.textContent.trim() === num) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        updateBtn();
+        doTrack();
+    };
+
+    window.shareTracking = function () {
+        const num = document.getElementById('trackingInput').value.trim() || document.getElementById('demoTrackNum').textContent.trim().replace('—','');
+        const shareUrl = window.location.origin + '/track/' + encodeURIComponent(num) + '/';
+        if (navigator.share) {
+            navigator.share({
+                title: 'Track Shipment - ' + num,
+                text: 'Track shipment status for: ' + num,
+                url: shareUrl
+            }).catch(() => {
+                copyUrl(shareUrl);
+            });
+        } else {
+            copyUrl(shareUrl);
+        }
+    };
+
+    function copyUrl(url) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Tracking link copied to clipboard: ' + url);
+            });
+        } else {
+            prompt('Copy tracking link:', url);
+        }
+    }
+
+    // ── Loading Animation Driver ──────────────────
+    const globalLoader = document.getElementById('global-loading');
+    const loadingTitle = document.getElementById('giLoadingTitle');
+    const loadingSub   = document.getElementById('giLoadingSub');
+
+    function showLoader(text) {
+        if (!globalLoader) return;
+        globalLoader.classList.remove('d-none');
+        if (loadingTitle) loadingTitle.textContent = text || 'Connecting to Global SatCom...';
+        if (loadingSub) loadingSub.innerHTML = '<i class="bi bi-broadcast me-1 animate-pulse"></i> SYNCHRONIZING REAL-TIME TELEMETRY';
+    }
+
+    function hideLoader() {
+        if (!globalLoader) return;
+        globalLoader.classList.add('d-none');
+    }
+
+    // ── Main Track Handler ────────────────────────
+    function doTrack() {
+        const num = document.getElementById('trackingInput').value.trim();
+        if (!num) return;
+
+        const errEl = document.getElementById('trackingError');
+        const resEl = document.getElementById('trackingResult');
+        errEl.classList.add('d-none');
+
+        showLoader('Accessing Satellite Telemetry for ' + num);
+
+        const startTime = Date.now();
+
+        fetch(`/api/track/${encodeURIComponent(num)}/`)
+            .then(r => r.json())
+            .then(data => {
+                const elapsed = Date.now() - startTime;
+                const remaining = Math.max(0, 750 - elapsed);
+
+                setTimeout(() => {
+                    hideLoader();
+                    if (data.success) {
+                        errEl.classList.add('d-none');
+                        resEl.classList.remove('d-none');
+
+                        const mode = data.is_diplomatic ? 'diplomatic' : 'normal';
+
+                        // Sync classification selector
+                        document.querySelectorAll('.trk-type-pill').forEach(p => p.classList.remove('active'));
+                        const pill = document.querySelector(`[data-mode="${mode}"]`);
+                        if (pill) pill.classList.add('active');
+                        currentMode = mode;
+                        updateBtn();
+
+                        renderResult(data, mode);
+                    } else {
+                        errEl.classList.remove('d-none');
+                        document.getElementById('errorMsg').textContent = data.message || 'Tracking reference not found in logistics network.';
+                        resEl.classList.add('d-none');
+                    }
+                }, remaining);
+            })
+            .catch(err => {
+                console.error('Track error:', err);
+                hideLoader();
+                errEl.classList.remove('d-none');
+                document.getElementById('errorMsg').textContent = 'Network error. Please try again.';
+            });
+    }
+
+    function renderResult(data, mode) {
+        document.getElementById('normalResult').classList.toggle('d-none', mode !== 'normal');
+        document.getElementById('diplomaticResult').classList.toggle('d-none', mode !== 'diplomatic');
+
+        if (mode === 'diplomatic') {
+            renderDipView(data);
+        } else {
+            renderNormalDemoView(data);
+        }
+
+        document.getElementById('trackingResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ══════════════════════════════════════════════
+    //  MODE A: EXACT GLOBAL INTERNATIONAL REPLICA
+    // ══════════════════════════════════════════════
+    function renderNormalDemoView(d) {
+        // 1. Status Overview Section
+        setText('demoTrackNum', d.tracking_number);
+        setText('demoStatusVal', d.status);
+        setText('demoEstDeliveryVal', d.estimated_delivery);
+        setText('demoLocationVal', d.current_location_name || d.destination);
+
+        // Progress Calculation
+        let pct = 50;
+        const st = (d.status || '').toLowerCase();
+        if (st.includes('delivered') || st.includes('received')) pct = 100;
+        else if (st.includes('out for delivery')) pct = 75;
+        else if (st.includes('transit') || st.includes('en route') || st.includes('departed')) pct = 50;
+        else if (st.includes('picked') || st.includes('collected')) pct = 35;
+        else pct = 25;
+
+        setText('demoPercentComplete', `${pct}% Complete`);
+        const pBar = document.getElementById('demoProgressBar');
+        if (pBar) pBar.style.width = `${pct}%`;
+
+        // Update step status labels
+        const sPlaced = document.getElementById('stepPlaced');
+        const sTransit = document.getElementById('stepTransit');
+        const sOut = document.getElementById('stepOut');
+        const sDelivered = document.getElementById('stepDelivered');
+        if (sPlaced) sPlaced.className = pct >= 25 ? 'gi-step-text active' : 'gi-step-text';
+        if (sTransit) sTransit.className = pct >= 50 ? 'gi-step-text active' : 'gi-step-text';
+        if (sOut) sOut.className = pct >= 75 ? 'gi-step-text active' : 'gi-step-text';
+        if (sDelivered) sDelivered.className = pct >= 100 ? 'gi-step-text active' : 'gi-step-text';
+
+        // 2. Shipment Details Section
+        setText('demoSenderName', d.sender_name || 'Zhang Wei');
+        setText('demoSenderAddress', d.sender_address || '123 Nanjing Rd, Shanghai, China 200001');
+        setText('demoSenderContact', d.sender_phone || '+86 138 0000 0000');
+
+        setText('demoReceiverName', d.receiver_name || 'John Smith');
+        setText('demoReceiverAddress', d.receiver_address || '456 Main Street, Los Angeles, CA 90001');
+        setText('demoReceiverContact', d.receiver_phone || '+1 310 555 0123');
+
+        setText('demoWeight', d.weight_kg ? `${d.weight_kg} kg` : '2.5 kg');
+        setText('demoDimensions', d.dimensions || '30x20x15 cm');
+        setText('demoServiceType', d.service_type || 'Express');
+        setText('demoContents', d.content || 'Documents');
+
+        setText('demoTotalCost', d.shipping_cost || '$45.99');
+
+        // 3. Shipment History Timeline
+        renderDemoTimeline(d.history);
+
+        // 4. Interactive Map
+        renderNormalMap(d);
+    }
+
+    function renderDemoTimeline(history) {
+        const container = document.getElementById('demoTimelineContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        if (!history || !history.length) {
+            container.innerHTML = '<div class="text-muted p-3">No checkpoint events recorded yet.</div>';
+            return;
+        }
+
+        const list = [...history].reverse();
+
+        list.forEach((evt, idx) => {
+            const isFirst = (idx === 0);
+            const isLast = (idx === list.length - 1);
+
+            let iconSvg = '';
+            const st = (evt.status || '').toLowerCase();
+            if (st.includes('delivered') || st.includes('arrived')) {
+                iconSvg = '<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+            } else if (st.includes('transit') || st.includes('way') || st.includes('departed')) {
+                iconSvg = '<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>';
+            } else if (st.includes('picked') || st.includes('collected')) {
+                iconSvg = '<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>';
+            } else {
+                iconSvg = '<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>';
+            }
+
+            const dotBg = isFirst ? '#1E88E5' : '#90CAF9';
+            const dotSize = isFirst ? 'width:48px;height:48px;box-shadow:0 4px 12px rgba(30,136,229,0.3);' : 'width:40px;height:40px;opacity:0.85;';
+            const cardBg = isFirst ? 'background:#E3F2FD;box-shadow:0 1px 3px rgba(0,0,0,0.05);' : 'background:#FAFAFA;border:1px solid #f1f5f9;';
+            const statusColor = isFirst ? '#01579B' : '#5f6368';
+            const statusWeight = isFirst ? '700' : '600';
+            const lineBg = isFirst ? '#1E88E5' : '#90CAF9';
+            const lineOpacity = isFirst ? '1' : '0.4';
+
+            const row = document.createElement('div');
+            row.className = 'd-flex gap-4' + (!isLast ? ' pb-4' : '');
+            row.innerHTML = `
+                <div class="d-flex flex-column align-items-center flex-shrink-0" style="width:48px;">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white" style="${dotSize} background:${dotBg};">
+                        ${iconSvg}
+                    </div>
+                    ${!isLast ? `<div class="flex-grow-1 mt-2" style="width:2px; min-height:45px; background:${lineBg}; opacity:${lineOpacity};"></div>` : ''}
+                </div>
+                <div class="flex-grow-1 rounded-3 p-4 mb-2" style="${cardBg}">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <h3 class="mb-0" style="font-size:20px; font-weight:${statusWeight}; color:${statusColor};">
+                            ${evt.status}
+                        </h3>
+                        ${isFirst ? '<span style="font-size:14px; font-weight:600; color:#00ACC1;">Latest Update</span>' : ''}
+                    </div>
+                    <div style="font-size:16px; color:#5f6368; margin-top:4px;">
+                        ${evt.location}
+                    </div>
+                    <div style="font-size:14px; color:#80868b; margin-top:4px;">
+                        ${evt.time || (evt.date_only ? evt.date_only + ' | ' + evt.time_only : '')}
+                    </div>
+                </div>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function renderNormalMap(d) {
+        if (!normalMap) {
+            normalMap = L.map('normalMap', { zoomControl: true, attributionControl: false })
+                .setView([d.current_lat || 34.05, d.current_lng || -118.24], 4);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { subdomains: 'abcd', maxZoom: 19 }).addTo(normalMap);
+        } else {
+            normalMarkers.forEach(m => normalMap.removeLayer(m));
+            normalPaths.forEach(p => normalMap.removeLayer(p));
+            normalMarkers = []; normalPaths = [];
+            setTimeout(() => normalMap.invalidateSize(), 200);
+        }
+
+        const mk = (color, title) => L.divIcon({
+            className: 'custom-gi-pin',
+            html: `<div style="background:${color};width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,0.2);color:#fff;font-size:14px;"><i class="bi bi-geo-alt-fill"></i></div>`,
+            iconSize: [34,34], iconAnchor: [17,34]
+        });
+
+        const mO = L.marker([d.origin_lat, d.origin_lng], { icon: mk('#01579B', 'Origin') }).addTo(normalMap).bindPopup(`<b>Origin:</b> ${d.origin}`);
+        const mD = L.marker([d.dest_lat, d.dest_lng],     { icon: mk('#00ACC1', 'Destination') }).addTo(normalMap).bindPopup(`<b>Destination:</b> ${d.destination}`);
+        const mC = L.marker([d.current_lat, d.current_lng],{ icon: mk('#1E88E5', 'Current') }).addTo(normalMap).bindPopup(`<b>Current:</b> ${d.current_location_name}`);
+        mC.openPopup();
+        normalMarkers.push(mO, mD, mC);
+
+        try {
+            const offX = (d.dest_lng - d.origin_lng) * 0.2, offY = (d.dest_lat - d.origin_lat) * 0.5;
+            const curve = L.curve(['M',[d.origin_lat,d.origin_lng],'Q',[d.origin_lat+offY,d.origin_lng+offX],[d.dest_lat,d.dest_lng]],
+                { color:'#1E88E5', fill:false, weight:3, dashArray:'6 6', animate:{duration:2500} }).addTo(normalMap);
+            normalPaths.push(curve);
+        } catch(e) {
+            normalPaths.push(L.polyline([[d.origin_lat,d.origin_lng],[d.current_lat,d.current_lng],[d.dest_lat,d.dest_lng]],
+                { color:'#1E88E5', weight:3, dashArray:'6 6' }).addTo(normalMap));
+        }
+
+        normalMap.fitBounds(L.featureGroup(normalMarkers).getBounds().pad(0.35));
+    }
+
+
+    // ══════════════════════════════════════════════
+    //  MODE B: DIPLOMATIC POUCH RENDERER (PRESERVED)
+    // ══════════════════════════════════════════════
+    const dipCustodyBtn  = document.getElementById('dipCustodyBtn');
+    const dipMapBtn      = document.getElementById('dipMapBtn');
+    const dipCustodyView = document.getElementById('dipCustodyView');
+    const dipMapView     = document.getElementById('dipMapView');
+
+    if (dipCustodyBtn && dipMapBtn) {
+        dipCustodyBtn.addEventListener('click', () => {
+            dipCustodyBtn.classList.add('active'); dipMapBtn.classList.remove('active');
+            dipCustodyView.classList.remove('d-none'); dipMapView.classList.add('d-none');
+        });
+        dipMapBtn.addEventListener('click', () => {
+            dipMapBtn.classList.add('active'); dipCustodyBtn.classList.remove('active');
+            dipMapView.classList.remove('d-none'); dipCustodyView.classList.add('d-none');
+            if (dipMap) setTimeout(() => dipMap.invalidateSize(), 200);
+        });
+    }
+
+    function renderDipView(d) {
+        setText('dipRefId',       d.reference_id || d.tracking_number);
+        setText('dipStatus',      d.status.toUpperCase() + ' / SECURE');
+        setText('dipOrigin',      d.origin);
+        setText('dipDest',        d.destination);
+        setText('dipSender',      d.sender_name || 'Embassy Consular');
+        setText('dipEstDelivery', d.estimated_delivery);
+        setText('dipMapRefId',    d.reference_id || d.tracking_number);
+        setText('dipMapStatus',   d.status.toUpperCase() + ' / SECURE');
+        setText('dipMapLoc',      d.current_location_name || d.origin);
+        setText('dipMapDel',      d.estimated_delivery);
+
+        renderDipTimeline(d.history);
+        renderDipMap(d);
+    }
+
+    function renderDipTimeline(history) {
+        const container = document.getElementById('dipEventsList');
+        container.innerHTML = '';
+        if (!history || !history.length) {
+            container.innerHTML = '<div class="text-secondary p-3">No custody events logged yet.</div>';
+            return;
+        }
+
+        const activeIdx = history.length - 1;
+
+        history.forEach((evt, idx) => {
+            const isActive = idx === activeIdx;
+            const isDone = idx < activeIdx;
+
+            const card = document.createElement('div');
+            card.className = 'dip-custody-card' + (isActive ? ' active' : isDone ? ' done' : '');
+
+            const stamp = evt.verification_badge
+                ? `<div class="dip-stamp-box mt-2"><i class="bi bi-shield-lock-fill me-1"></i>${evt.verification_badge}</div>`
+                : '';
+
+            const mapInset = isActive
+                ? `<div class="dip-mini-flight-map d-none d-sm-block ms-auto">
+                    <svg width="100%" height="100%" viewBox="0 0 170 85" style="background:#090e17;">
+                        <path d="M10,25 Q45,15 80,30 T150,22" fill="none" stroke="#1e293b" stroke-width="2"/>
+                        <path d="M20,55 Q70,65 120,48" fill="none" stroke="#1e293b" stroke-width="2"/>
+                        <circle cx="35" cy="38" r="4" fill="#ef4444"/>
+                        <path d="M35,38 Q85,15 135,32" fill="none" stroke="#21e09a" stroke-width="2.5" stroke-dasharray="4,4"/>
+                        <circle cx="135" cy="32" r="4" fill="#38bdf8"/>
+                        <text x="135" y="24" fill="#38bdf8" font-size="9" font-family="monospace" font-weight="bold" text-anchor="middle">LHR</text>
+                        <text x="85" y="14" fill="#21e09a" font-size="8" font-family="monospace" text-anchor="middle">SECURE AIR ROUTE</text>
+                    </svg>
+                   </div>`
+                : evt.transport_type === 'armored'
+                    ? `<div class="ms-auto d-none d-sm-block text-secondary fs-3 pe-2"><i class="bi bi-truck-front-fill"></i></div>`
+                    : '';
+
+            card.innerHTML = `
+                <div class="dip-node-icon">
+                    <i class="bi ${isActive ? 'bi-check-lg' : 'bi-check'}"></i>
+                </div>
+                <div class="dip-card-inner">
+                    <div>
+                        <div class="dip-event-header">EVENT: ${evt.status.toUpperCase()}</div>
+                        <div class="dip-event-meta-line mt-1">
+                            <span class="text-white">POSITION: ${evt.location}</span>
+                            <span class="mx-2 text-secondary">|</span>
+                            <span>TIME: <strong class="text-white">${evt.time_only || '—'}</strong></span>
+                            <span class="mx-2 text-secondary">|</span>
+                            <span>DATE: <strong class="text-white">${evt.date_only || '—'}</strong></span>
+                        </div>
+                        ${stamp}
+                    </div>
+                    ${mapInset}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function renderDipMap(d) {
+        if (!dipMap) {
+            dipMap = L.map('diplomaticMap', { zoomControl: true, attributionControl: false })
+                .setView([d.current_lat || 40, d.current_lng || 0], 3);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { subdomains: 'abcd', maxZoom: 19 }).addTo(dipMap);
+        } else {
+            dipMarkers.forEach(m => dipMap.removeLayer(m));
+            dipPaths.forEach(p => dipMap.removeLayer(p));
+            dipMarkers = []; dipPaths = [];
+            setTimeout(() => dipMap.invalidateSize(), 200);
+        }
+
+        const mk = (color, cls) => L.divIcon({
+            className: 'custom-div-icon',
+            html: `<div style="background:${color};width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid #fff;box-shadow:0 0 14px ${color};color:#fff;"><i class="bi ${cls}"></i></div>`,
+            iconSize: [32,32], iconAnchor: [16,16]
+        });
+
+        const mO = L.marker([d.origin_lat, d.origin_lng], { icon: mk('#008cf2','bi-building') }).addTo(dipMap).bindPopup(`<b>Origin:</b> ${d.origin}`);
+        const mD = L.marker([d.dest_lat, d.dest_lng],     { icon: mk('#21e09a','bi-house-check') }).addTo(dipMap).bindPopup(`<b>Destination:</b> ${d.destination}`);
+        const mC = L.marker([d.current_lat, d.current_lng],{ icon: mk('#ef4444','bi-airplane-fill') }).addTo(dipMap).bindPopup(`<b>Current:</b> ${d.current_location_name}`);
+        dipMarkers.push(mO, mD, mC);
+
+        try {
+            const offX = (d.dest_lng - d.origin_lng) * 0.2, offY = (d.dest_lat - d.origin_lat) * 0.5;
+            dipPaths.push(L.curve(['M',[d.origin_lat,d.origin_lng],'Q',[d.origin_lat+offY,d.origin_lng+offX],[d.dest_lat,d.dest_lng]],
+                { color:'#ef4444', fill:false, weight:3.5, dashArray:'6 6', animate:{duration:2000} }).addTo(dipMap));
+        } catch(e) {
+            dipPaths.push(L.polyline([[d.origin_lat,d.origin_lng],[d.current_lat,d.current_lng],[d.dest_lat,d.dest_lng]],
+                { color:'#ef4444', weight:3.5, dashArray:'6 6' }).addTo(dipMap));
+        }
+
+        dipMap.fitBounds(L.featureGroup(dipMarkers).getBounds().pad(0.4));
+    }
+
+    // ── Helper Function ───────────────────────────
+    function setText(id, val) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+    }
+
+    // ── Auto-track on load if parameter is present ─
+    {% if initial_track %}
+    document.getElementById('trackingInput').value = "{{ initial_track|escapejs }}";
+    doTrack();
+    {% endif %}
+});
+</script>
 {% endblock %}

@@ -4,8 +4,7 @@ from .models import Shipment, CustomStatus, SupportTicket, ShipmentSubscriber, T
 class TrackingEventInline(admin.TabularInline):
     model = TrackingEvent
     extra = 1
-    fields = ('status_name', 'location', 'description', 'timestamp', 'sort_order')
-    readonly_fields = ('timestamp',)
+    fields = ('timestamp', 'location', 'status_name', 'verification_badge', 'transport_type', 'description', 'sort_order')
 
 @admin.register(SupportTicket)
 class SupportTicketAdmin(admin.ModelAdmin):
@@ -24,16 +23,21 @@ class CustomStatusAdmin(admin.ModelAdmin):
 
 @admin.register(Shipment)
 class ShipmentAdmin(admin.ModelAdmin):
-    list_display = ('tracking_number', 'sender_name', 'receiver_name', 'status', 'estimated_delivery')
-    search_fields = ('tracking_number', 'sender_name', 'receiver_name')
-    list_filter = ('status',)
+    list_display = ('tracking_number', 'reference_id', 'sender_name', 'receiver_name', 'status', 'estimated_delivery', 'is_diplomatic')
+    search_fields = ('tracking_number', 'reference_id', 'sender_name', 'receiver_name')
+    list_filter = ('status', 'is_diplomatic')
+    readonly_fields = ('tracking_number', 'airway_bill_number')
     inlines = [TrackingEventInline]
     
     fieldsets = (
-        ('Shipment Details', {
+        ('Shipment Identity & Security', {
             'fields': (
-                'tracking_number', 'airway_bill_number', 'weight_kg', 
-                'package_content', 'package_description', 'shipping_cost', 'estimated_delivery'
+                'tracking_number', 'reference_id', 'is_diplomatic', 'airway_bill_number'
+            )
+        }),
+        ('Package Details', {
+            'fields': (
+                'weight_kg', 'package_content', 'package_description', 'shipping_cost', 'estimated_delivery'
             )
         }),
         ('Sender & Receiver', {
@@ -48,13 +52,13 @@ class ShipmentAdmin(admin.ModelAdmin):
                 ('destination', 'dest_lat', 'dest_lng')
             )
         }),
-        ('Update Shipment Location', {
+        ('Current Status & Location (Auto-updated by events)', {
             'fields': (
                 'status',
                 'current_location_name',
                 ('current_lat', 'current_lng'),
                 'latest_update'
             ),
-            'description': "MANUAL UPDATE: Choose the status, set the text location, provide map coordinates, and provide an update log for the customer tracker."
+            'description': "These fields summarize the current state. Detailed tracking events should be added below."
         }),
     )

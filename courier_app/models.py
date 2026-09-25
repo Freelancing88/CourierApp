@@ -3,6 +3,7 @@ from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 class CustomStatus(models.Model):
     COLOR_CHOICES = [
@@ -25,6 +26,8 @@ class CustomStatus(models.Model):
 class Shipment(models.Model):
     tracking_number = models.CharField(max_length=20, unique=True, blank=True)
     airway_bill_number = models.CharField(max_length=50, blank=True, null=True, help_text="AWB Number")
+    reference_id = models.CharField(max_length=50, blank=True, null=True, help_text="e.g. DP-CAN-9812-α")
+    is_diplomatic = models.BooleanField(default=False, verbose_name="Diplomatic Pouch Security Clearance")
     
     sender_name = models.CharField(max_length=100)
     sender_address = models.TextField(blank=True, null=True)
@@ -61,6 +64,8 @@ class Shipment(models.Model):
             self.tracking_number = f"TRG-{get_random_string(8).upper()}"
         if not self.airway_bill_number:
             self.airway_bill_number = f"AWB-{get_random_string(10).upper()}"
+        if not self.reference_id:
+            self.reference_id = f"DP-{self.tracking_number}"
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -68,11 +73,19 @@ class Shipment(models.Model):
         return f"{self.tracking_number} - {status_name}"
 
 class TrackingEvent(models.Model):
+    TRANSPORT_CHOICES = [
+        ('courier', 'Courier Escort'),
+        ('armored', 'Armored Transport'),
+        ('air', 'Secure Air Transfer'),
+        ('embassy', 'Embassy / High Commission'),
+    ]
     shipment = models.ForeignKey(Shipment, on_delete=models.CASCADE, related_name='events')
     status_name = models.CharField(max_length=100)
     location = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(default=timezone.now)
+    verification_badge = models.CharField(max_length=100, blank=True, null=True, help_text="e.g. VERIFIED: COURIER SECTION")
+    transport_type = models.CharField(max_length=50, choices=TRANSPORT_CHOICES, default='courier', blank=True)
     sort_order = models.IntegerField(default=0, help_text="Order in chronological sequence if timestamp is identical")
 
     def __str__(self):
