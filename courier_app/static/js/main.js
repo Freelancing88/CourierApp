@@ -16,10 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (!shipmentMap) {
                 shipmentMap = L.map('shipmentMap').setView([safeLat, safeLng], 5);
-                // Upgrade to sleek CartoDB Dark Matter tiles for a premium aesthetic
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                // OpenStreetMap standard tiles - 100% free, reliable, no API key required
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
-                    attribution: '&copy; OpenStreetMap'
+                    attribution: '&copy; OpenStreetMap contributors'
                 }).addTo(shipmentMap);
         } else {
             if (marker) shipmentMap.removeLayer(marker);

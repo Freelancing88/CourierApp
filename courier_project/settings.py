@@ -28,7 +28,7 @@ DEBUG = os.environ.get('DEBUG', 'False').lower() in ['true', '1']
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS',
-    'transgloballogisticsnetwork.com,www.transgloballogisticsnetwork.com,.onrender.com,localhost,127.0.0.1,145.223.75.38'
+    'transgloballogisticsnetwork.com,www.transgloballogisticsnetwork.com,.onrender.com,localhost,127.0.0.1,145.223.75.38,testserver'
 ).split(',')
 
 CSRF_TRUSTED_ORIGINS = [
@@ -89,6 +89,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'OPTIONS': {
+            'timeout': 20,
+        },
     }
 }
 

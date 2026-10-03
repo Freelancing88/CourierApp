@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipping Label — {{ shipment.tracking_number }} — TransGlo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&family=Outfit:wght@800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f1f5f9;
+            color: #000000;
+            padding: 20px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .action-bar {
+            max-width: 480px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background-color: #000000;
+            color: #ffffff;
+        }
+        .btn-outline {
+            background-color: #ffffff;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* 4x6 Thermal Label Container */
+        .shipping-label {
+            width: 100mm;
+            min-height: 148mm;
+            max-width: 460px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 3px solid #000000;
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        /* Top Carrier Routing Header */
+        .label-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #000000;
+            padding-bottom: 6px;
+        }
+        .brand-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+        .brand-sub {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .routing-code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 900;
+            text-align: right;
+            line-height: 1.1;
+        }
+        .service-badge {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: 1.5px solid #000;
+            padding: 1px 6px;
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        /* Diplomatic Pouch Banner if applicable */
+        .diplomatic-banner {
+            background: #000000;
+            color: #ffffff;
+            text-align: center;
+            padding: 4px;
+            font-weight: 900;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            margin-top: 6px;
+            text-transform: uppercase;
+            border: 2px dashed #000;
+        }
+        .diplomatic-warning {
+            font-size: 7.5px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #000;
+            padding-bottom: 3px;
+        }
+
+        /* Parties Grid */
+        .parties-box {
+            border-bottom: 2px solid #000000;
+            padding: 8px 0;
+        }
+        .party-block {
+            margin-bottom: 8px;
+        }
+        .party-block:last-child {
+            margin-bottom: 0;
+        }
+        .label-tag {
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 2px;
+        }
+        .deliver-tag {
+            background: #000000;
+            color: #ffffff;
+            padding: 1px 6px;
+            font-size: 11px;
+        }
+        .name-line {
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        .phone-line {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 800;
+            color: #000000;
+            margin: 2px 0;
+        }
+        .address-line {
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1.3;
+            color: #1e293b;
+        }
+
+        /* Mid Specs & QR */
+        .mid-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #000000;
+            padding: 8px 0;
+            gap: 12px;
+        }
+        .specs-list {
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+        .qr-placeholder {
+            width: 72px;
+            height: 72px;
+            border: 2px solid #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2px;
+        }
+        .qr-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Giant Scannable Barcode */
+        .barcode-section {
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 2px solid #000000;
+        }
+        .main-barcode {
+            display: inline-flex;
+            gap: 2.5px;
+            height: 60px;
+            align-items: stretch;
+            background: #fff;
+            padding: 2px 4px;
+        }
+        .main-barcode span {
+            display: inline-block;
+            background: #000000;
+        }
+        .tracking-human {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin-top: 4px;
+        }
+
+        /* Footer Meta */
+        .label-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-top: 6px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        @media print {
+            body {
+                background: #ffffff;
+                padding: 0;
+                margin: 0;
+            }
+            .action-bar {
+                display: none !important;
+            }
+            .shipping-label {
+                box-shadow: none;
+                border: 2px solid #000000;
+                max-width: 100%;
+                width: 100%;
+                min-height: 100vh;
+                margin: 0;
+                padding: 8mm;
+            }
+            @page {
+                size: 100mm 150mm;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="action-bar">
+        <a href="/track/{{ shipment.tracking_number }}/" class="btn btn-outline">
+            <i class="bi bi-arrow-left"></i> Live Tracking
+        </a>
+        <button onclick="window.print()" class="btn btn-primary">
+            <i class="bi bi-printer-fill"></i> Print Package Label
+        </button>
+    </div>
+
+    <div class="shipping-label">
+        <!-- Top Carrier Header -->
+        <div class="label-header">
+            <div>
+                <div class="brand-name">TransGlo</div>
+                <div class="brand-sub">Express Global Logistics</div>
+            </div>
+            <div style="text-align: right;">
+                <div class="routing-code">{{ shipment.origin|slice:":3"|upper }}-{{ shipment.destination|slice:":3"|upper }}</div>
+                <div class="service-badge">
+                    {% if shipment.is_diplomatic %}
+                    DIPLOMATIC ESCORT
+                    {% else %}
+                    PRIORITY EXPRESS AIR
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if shipment.is_diplomatic %}
+        <div class="diplomatic-banner">
+            <i class="bi bi-shield-lock-fill"></i> OFFICIAL DIPLOMATIC POUCH &bull; SEALED
+        </div>
+        <div class="diplomatic-warning">
+            STRICTLY PROTECTED UNDER ARTICLE 27, VIENNA CONVENTION 1961. DO NOT OPEN OR DETAIN.
+        </div>
+        {% endif %}
+
+        <!-- Address Section with Phone Numbers -->
+        <div class="parties-box">
+            <!-- SHIP FROM -->
+            <div class="party-block">
+                <span class="label-tag">SHIP FROM:</span>
+                <div class="name-line">{{ shipment.sender_name }}</div>
+                {% if shipment.sender_phone %}
+                <div class="phone-line">TEL: {{ shipment.sender_phone }}</div>
+                {% endif %}
+                <div class="address-line">{{ shipment.sender_address|linebreaksbr|default:shipment.origin }}</div>
+            </div>
+
+            <div style="height: 1px; background: #e2e8f0; margin: 6px 0;"></div>
+
+            <!-- DELIVER TO -->
+            <div class="party-block">
+                <span class="label-tag deliver-tag">DELIVER TO:</span>
+                <div class="name-line" style="font-size: 16px;">{{ shipment.receiver_name }}</div>
+                {% if shipment.receiver_phone %}
+                <div class="phone-line" style="font-size: 13px;">TEL: {{ shipment.receiver_phone }}</div>
+                {% endif %}
+                <div class="address-line" style="font-size: 12px; font-weight: 700;">
+                    {{ shipment.receiver_address|linebreaksbr|default:shipment.destination }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Specifications & QR Code -->
+        <div class="mid-section">
+            <div class="specs-list">
+                <div><strong>AWB:</strong> {{ shipment.airway_bill_number|default:"AWB-STANDARD" }}</div>
+                <div><strong>REF:</strong> {{ shipment.reference_id|default:shipment.tracking_number }}</div>
+                <div><strong>WEIGHT:</strong> {{ shipment.weight_kg }} KG / {{ shipment.weight_kg|floatformat:1 }} LBS</div>
+                <div><strong>DIMS:</strong> {{ shipment.dimensions|default:"30 x 20 x 15 cm" }}</div>
+                <div><strong>PIECES:</strong> 1 of {{ shipment.pieces_count|default:1 }}</div>
+                {% if shipment.courier_phone %}
+                <div><strong>HOTLINE:</strong> {{ shipment.courier_phone }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Scannable 2D QR Code SVG -->
+            <div class="qr-placeholder" title="Scan for Live Telemetry">
+                <svg class="qr-svg" viewBox="0 0 100 100" fill="#000000">
+                    <!-- Standard QR corner markers -->
+                    <rect x="5" y="5" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+                    <rect x="13" y="13" width="14" height="14" fill="#000"/>
+                    <rect x="65" y="5" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+                    <rect x="73" y="13" width="14" height="14" fill="#000"/>
+                    <rect x="5" y="65" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+                    <rect x="13" y="73" width="14" height="14" fill="#000"/>
+                    <!-- Data pixels -->
+                    <rect x="42" y="10" width="6" height="6"/>
+                    <rect x="52" y="10" width="6" height="6"/>
+                    <rect x="42" y="22" width="6" height="6"/>
+                    <rect x="48" y="28" width="6" height="6"/>
+                    <rect x="10" y="42" width="6" height="6"/>
+                    <rect x="22" y="48" width="6" height="6"/>
+                    <rect x="42" y="42" width="16" height="16"/>
+                    <rect x="65" y="42" width="6" height="6"/>
+                    <rect x="78" y="48" width="6" height="6"/>
+                    <rect x="85" y="42" width="6" height="6"/>
+                    <rect x="42" y="65" width="6" height="6"/>
+                    <rect x="52" y="72" width="6" height="6"/>
+                    <rect x="48" y="85" width="6" height="6"/>
+                    <rect x="65" y="65" width="8" height="8"/>
+                    <rect x="80" y="75" width="8" height="8"/>
+                    <rect x="68" y="85" width="10" height="6"/>
+                </svg>
+                <div style="font-size: 7px; font-weight: 800; letter-spacing: 0.5px; margin-top: 1px;">SCAN VERIFY</div>
+            </div>
+        </div>
+
+        <!-- Giant High-Density Scannable Barcode -->
+        <div class="barcode-section">
+            <div class="main-barcode">
+                <span style="width:3px;"></span><span style="width:1px;"></span><span style="width:4px;"></span><span style="width:2px;"></span>
+                <span style="width:1px;"></span><span style="width:4px;"></span><span style="width:2px;"></span><span style="width:1px;"></span>
+                <span style="width:3px;"></span><span style="width:2px;"></span><span style="width:5px;"></span><span style="width:1px;"></span>
+                <span style="width:2px;"></span><span style="width:3px;"></span><span style="width:1px;"></span><span style="width:4px;"></span>
+                <span style="width:2px;"></span><span style="width:1px;"></span><span style="width:3px;"></span><span style="width:4px;"></span>
+                <span style="width:1px;"></span><span style="width:2px;"></span><span style="width:4px;"></span><span style="width:1px;"></span>
+                <span style="width:3px;"></span><span style="width:2px;"></span><span style="width:1px;"></span><span style="width:4px;"></span>
+                <span style="width:2px;"></span><span style="width:3px;"></span><span style="width:1px;"></span><span style="width:2px;"></span>
+                <span style="width:5px;"></span><span style="width:1px;"></span><span style="width:3px;"></span><span style="width:2px;"></span>
+                <span style="width:1px;"></span><span style="width:4px;"></span><span style="width:2px;"></span><span style="width:3px;"></span>
+            </div>
+            <div class="tracking-human">{{ shipment.tracking_number }}</div>
+        </div>
+
+        <!-- Footer Meta -->
+        <div class="label-footer">
+            <div>EST. DELIVERY: <strong>{{ shipment.estimated_delivery|date:"M d, Y" }}</strong></div>
+            <div>STATUS: <strong>{{ shipment.status.name|default:"PROCESSING" }}</strong></div>
+            <div>SECURITY CLEARED &bull; IATA</div>
+        </div>
+    </div>
+
+</body>
+</html>

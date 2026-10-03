@@ -30,9 +30,17 @@ class Shipment(models.Model):
     is_diplomatic = models.BooleanField(default=False, verbose_name="Diplomatic Pouch Security Clearance")
     
     sender_name = models.CharField(max_length=100)
+    sender_phone = models.CharField(max_length=50, blank=True, null=True, verbose_name="Sender Contact Phone", help_text="e.g. +1 (555) 019-2834")
     sender_address = models.TextField(blank=True, null=True)
+    
     receiver_name = models.CharField(max_length=100)
+    receiver_phone = models.CharField(max_length=50, blank=True, null=True, verbose_name="Receiver Contact Phone", help_text="e.g. +44 20 7946 0912")
     receiver_address = models.TextField(blank=True, null=True)
+    
+    courier_phone = models.CharField(max_length=50, blank=True, null=True, verbose_name="Courier / Dispatch Agent Phone", help_text="e.g. +1 (800) 555-TRANSGLO or Courier Hotline")
+    service_type = models.CharField(max_length=100, default="Express Air Delivery", blank=True, null=True, verbose_name="Shipping Service Type", help_text="e.g. Express Air Delivery, Diplomatic Courier Escort, Priority International")
+    dimensions = models.CharField(max_length=50, default="30 x 20 x 15 cm", blank=True, null=True, verbose_name="Dimensions (L x W x H)")
+    pieces_count = models.IntegerField(default=1, verbose_name="Number of Pieces / Pouches")
     
     origin = models.CharField(max_length=100)
     destination = models.CharField(max_length=100)

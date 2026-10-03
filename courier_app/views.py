@@ -93,12 +93,14 @@ def track_shipment(request, tracking_number):
             'current_location_name': shipment.current_location_name,
             'sender_name': shipment.sender_name,
             'sender_address': shipment.sender_address or "Not Provided",
-            'sender_phone': "+86 138 0000 0000" if "GB456789123" in shipment.tracking_number else "+1 800 555 0199",
+            'sender_phone': shipment.sender_phone or "+1 (800) 555-0199",
             'receiver_name': shipment.receiver_name,
             'receiver_address': shipment.receiver_address or "Not Provided",
-            'receiver_phone': "+1 310 555 0123" if "GB456789123" in shipment.tracking_number else "+1 310 555 0123",
-            'dimensions': "30x20x15 cm",
-            'service_type': "Express" if not shipment.is_diplomatic else "Diplomatic Courier Escort",
+            'receiver_phone': shipment.receiver_phone or "+1 (310) 555-0123",
+            'courier_phone': shipment.courier_phone or "+1 (800) 555-TRANSGLO",
+            'dimensions': shipment.dimensions or "30x20x15 cm",
+            'pieces_count': shipment.pieces_count or 1,
+            'service_type': shipment.service_type or ("Diplomatic Courier Escort" if shipment.is_diplomatic else "Express Priority"),
             'weight_kg': str(shipment.weight_kg),
             'content': shipment.package_content or ("Documents" if not shipment.is_diplomatic else "Diplomatic Manifest Documents"),
             'description': shipment.package_description or "High security diplomatic pouch chain of custody.",
@@ -116,6 +118,25 @@ def track_shipment(request, tracking_number):
         })
     except Shipment.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Tracking number or Diplomatic Reference ID not found.'}, status=404)
+
+def shipment_receipt_view(request, tracking_number):
+    shipment = Shipment.objects.prefetch_related('events').filter(
+        Q(tracking_number__iexact=tracking_number) | Q(reference_id__iexact=tracking_number)
+    ).order_by('-id').first()
+    if not shipment:
+        messages.error(request, f"Shipment '{tracking_number}' not found.")
+        return redirect('tracking')
+    events = shipment.events.all().order_by('sort_order', 'timestamp')
+    return render(request, 'receipt.html', {'shipment': shipment, 'events': events})
+
+def shipment_label_view(request, tracking_number):
+    shipment = Shipment.objects.filter(
+        Q(tracking_number__iexact=tracking_number) | Q(reference_id__iexact=tracking_number)
+    ).order_by('-id').first()
+    if not shipment:
+        messages.error(request, f"Shipment '{tracking_number}' not found.")
+        return redirect('tracking')
+    return render(request, 'label.html', {'shipment': shipment})
 
 def quote_view(request):
     return render(request, 'quote.html')
