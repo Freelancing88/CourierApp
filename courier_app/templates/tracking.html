@@ -882,7 +882,7 @@
                 <!-- Left 8 Columns: Live Route Map + Timeline Checkpoints -->
                 <div class="col-lg-8">
 
-                    <!-- Live Route Map (Commercial CARTO Voyager + Esri Satellite) -->
+                    <!-- Live Route Map (OpenFreeMap + Esri Satellite, no API key) -->
                     <div class="trk-map-card">
                         <div class="trk-map-header">
                             <div>
@@ -1374,7 +1374,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 6. Interactive Route Map (Commercial CARTO Voyager + Esri Satellite)
+    // 6. Interactive Route Map (OpenFreeMap Liberty + Esri Satellite)
     function renderMap(d) {
         const mapContainer = document.getElementById('liveTrackingMap');
         if (!mapContainer) return;
@@ -1393,47 +1393,22 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => leafletMap.invalidateSize(), 200);
         }
 
-        // Setup Map Layer (Commercial CARTO Voyager, Esri Satellite, or custom env-configured provider)
+        // Setup Map Layer -- free, no API key required
         if (baseTileLayer && leafletMap) {
             leafletMap.removeLayer(baseTileLayer);
         }
 
-        const mapboxToken = "{{ MAPBOX_ACCESS_TOKEN|default:'' }}";
-        const mapTilerKey = "{{ MAPTILER_API_KEY|default:'' }}";
-        const stadiaKey = "{{ STADIA_API_KEY|default:'' }}";
-        const customTileUrl = "{{ CUSTOM_MAP_TILE_URL|default:'' }}";
-
         if (currentMapLayer === 'satellite') {
+            // Esri World Imagery -- free, no registration required
             baseTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 maxZoom: 19,
                 attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
             });
-        } else if (customTileUrl) {
-            baseTileLayer = L.tileLayer(customTileUrl, {
-                maxZoom: 19,
-                attribution: '&copy; Map Data & Telemetry Service'
-            });
-        } else if (mapboxToken) {
-            baseTileLayer = L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${mapboxToken}`, {
-                maxZoom: 19,
-                attribution: '&copy; <a href="https://www.mapbox.com/about/maps/" target="_blank">Mapbox</a> contributors'
-            });
-        } else if (mapTilerKey) {
-            baseTileLayer = L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${mapTilerKey}`, {
-                maxZoom: 19,
-                attribution: '&copy; <a href="https://www.maptiler.com/copyright/" target="_blank">MapTiler</a> &copy; OpenStreetMap'
-            });
-        } else if (stadiaKey) {
-            baseTileLayer = L.tileLayer(`https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png?api_key=${stadiaKey}`, {
-                maxZoom: 19,
-                attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; OpenStreetMap'
-            });
         } else {
-            // Default Commercial-compliant CARTO Voyager (zero OSM volunteer server block)
-            baseTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            // OpenFreeMap Liberty -- completely free, no API key required
+            baseTileLayer = L.tileLayer('https://tiles.openfreemap.org/styles/liberty/{z}/{x}/{y}.png', {
                 maxZoom: 19,
-                subdomains: 'abcd',
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>'
+                attribution: '&copy; <a href=https://openfreemap.org target=_blank>OpenFreeMap</a> &copy; <a href=https://www.openstreetmap.org/copyright target=_blank>OpenStreetMap</a> contributors'
             });
         }
         baseTileLayer.addTo(leafletMap);

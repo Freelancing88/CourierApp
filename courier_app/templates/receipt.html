@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --primary: #0f172a;
@@ -344,8 +347,11 @@
             <i class="bi bi-arrow-left"></i> Return to Live Tracking
         </a>
         <div style="display: flex; gap: 8px;">
-            <button onclick="window.print()" class="btn btn-primary">
-                <i class="bi bi-printer-fill"></i> Print / Download PDF
+            <button onclick="generatePDF()" class="btn btn-primary">
+                <i class="bi bi-file-earmark-pdf-fill"></i> Download PDF
+            </button>
+            <button onclick="window.print()" class="btn btn-outline">
+                <i class="bi bi-printer-fill"></i> Print
             </button>
         </div>
     </div>
@@ -524,12 +530,60 @@
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const action = urlParams.get('action') || '{{ action|default:"" }}';
-            if (action === 'download' || action === 'print') {
-                setTimeout(function() {
-                    window.print();
-                }, 400);
+
+            if (action === 'download') {
+                // Auto-generate and download PDF using jsPDF + html2canvas
+                setTimeout(generatePDF, 600);
+            } else if (action === 'print') {
+                setTimeout(function() { window.print(); }, 400);
             }
         });
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const receiptEl = document.querySelector('.receipt-card');
+            if (!receiptEl) { window.print(); return; }
+
+            // Temporarily hide the action bar so it doesn't appear in PDF
+            const actionBar = document.querySelector('.action-bar');
+            if (actionBar) actionBar.style.display = 'none';
+
+            html2canvas(receiptEl, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false
+            }).then(function(canvas) {
+                const imgData = canvas.toDataURL('image/jpeg', 0.92);
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                const imgWidth = pageWidth - 20; // 10mm margin each side
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                let yPos = 10;
+                let heightRemaining = imgHeight;
+
+                // Handle multi-page receipts
+                pdf.addImage(imgData, 'JPEG', 10, yPos, imgWidth, imgHeight);
+                while (heightRemaining > pageHeight - 20) {
+                    pdf.addPage();
+                    yPos -= (pageHeight - 20);
+                    heightRemaining -= (pageHeight - 20);
+                    pdf.addImage(imgData, 'JPEG', 10, yPos, imgWidth, imgHeight);
+                }
+
+                const trackNum = '{{ shipment.tracking_number }}';
+                pdf.save('TransGlo-Receipt-' + trackNum + '.pdf');
+
+                if (actionBar) actionBar.style.display = '';
+            }).catch(function() {
+                // Fallback to browser print dialog
+                if (document.querySelector('.action-bar')) document.querySelector('.action-bar').style.display = '';
+                window.print();
+            });
+        }
     </script>
 </body>
 </html>

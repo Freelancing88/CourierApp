@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&family=Outfit:wght@800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -273,6 +276,9 @@
         <button onclick="window.print()" class="btn btn-primary">
             <i class="bi bi-printer-fill"></i> Print Package Label
         </button>
+        <button onclick="generateLabelPDF()" class="btn btn-outline" style="margin-left:8px;">
+            <i class="bi bi-file-earmark-pdf-fill"></i> Download PDF
+        </button>
     </div>
 
     <div class="shipping-label">
@@ -404,12 +410,39 @@
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const action = urlParams.get('action') || '{{ action|default:"" }}';
-            if (action === 'print' || action === 'download') {
-                setTimeout(function() {
-                    window.print();
-                }, 400);
+            if (action === 'print') {
+                setTimeout(function() { window.print(); }, 400);
+            } else if (action === 'download') {
+                setTimeout(generateLabelPDF, 600);
             }
         });
+
+        function generateLabelPDF() {
+            const { jsPDF } = window.jspdf;
+            const labelEl = document.querySelector('.shipping-label');
+            if (!labelEl) { window.print(); return; }
+
+            const actionBar = document.querySelector('.action-bar');
+            if (actionBar) actionBar.style.display = 'none';
+
+            html2canvas(labelEl, {
+                scale: 3,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false
+            }).then(function(canvas) {
+                // 100mm x 150mm label size
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [100, 150] });
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                pdf.addImage(imgData, 'JPEG', 0, 0, 100, 150);
+                const trackNum = '{{ shipment.tracking_number }}';
+                pdf.save('TransGlo-Label-' + trackNum + '.pdf');
+                if (actionBar) actionBar.style.display = '';
+            }).catch(function() {
+                if (document.querySelector('.action-bar')) document.querySelector('.action-bar').style.display = '';
+                window.print();
+            });
+        }
     </script>
 </body>
 </html>

@@ -156,11 +156,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_NAME = 'transglo_sessionid'
 
-# Map Tile Provider Configuration (Loaded securely from Environment Variables)
-MAPBOX_ACCESS_TOKEN = os.environ.get('MAPBOX_ACCESS_TOKEN', '')
-MAPTILER_API_KEY = os.environ.get('MAPTILER_API_KEY', '')
-STADIA_API_KEY = os.environ.get('STADIA_API_KEY', '')
-CUSTOM_MAP_TILE_URL = os.environ.get('MAP_TILE_URL', '')
+# Map provider configuration removed — using OpenFreeMap (no API key required)
 
 
 # Password validation

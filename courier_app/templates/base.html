@@ -31,8 +31,8 @@
 
 <body class="bg-white text-dark">
     <!-- FedEx-Inspired Global Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top py-2 transition-nav shadow-sm"
-        id="mainNav" style="border-bottom: 3px solid var(--fedex-purple);">
+    <nav class="navbar navbar-expand-lg fixed-top py-2 transition-nav" id="mainNav"
+        style="background-color: var(--fedex-purple); box-shadow: 0 3px 20px rgba(77,20,140,0.35);">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center gap-2 animate-slide-in"
                 href="{% url 'home' %}">
@@ -42,27 +42,26 @@
                 </div>
                 <div class="d-flex flex-column lh-1">
                     <div style="font-size:25px;font-weight:900;letter-spacing:-0.5px;font-family:'Outfit',sans-serif;">
-                        <span style="color:var(--fedex-purple);">Trans</span><span style="color:var(--fedex-orange);">Glo</span>
+                        <span style="color:#ffffff;">Trans</span><span style="color:var(--fedex-orange);">Glo</span>
                     </div>
-                    <span style="font-size:8.5px;color:var(--fedex-purple);font-weight:800;letter-spacing:1.5px;">LOGISTICS NETWORK</span>
+                    <span style="font-size:8.5px;color:rgba(255,255,255,0.75);font-weight:800;letter-spacing:1.5px;">LOGISTICS NETWORK</span>
                 </div>
             </a>
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse animate-fade-up" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center fw-bold font-inter" style="font-size:14px;">
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'home' %}">Home</a></li>
+                <ul class="navbar-nav ms-auto align-items-center fw-semibold font-inter" style="font-size:14px;">
+                    <li class="nav-item"><a class="nav-link px-3 text-white" href="{% url 'home' %}">Home</a></li>
                     <li class="nav-item"><a class="nav-link px-3" href="{% url 'features' %}">Shipping & Services</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'tracking' %}">Tracking</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'quote' %}">Get a Quote</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'about' %}">About</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'contact' %}">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 text-white" href="{% url 'quote' %}">Get a Quote</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 text-white" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 text-white" href="{% url 'contact' %}">Contact</a></li>
                     
                     <!-- Language Selector -->
                     <li class="nav-item dropdown ms-lg-2">
-                        <a class="nav-link dropdown-toggle px-2 d-flex align-items-center gap-1 text-secondary" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-globe fs-6 text-purple"></i> <span id="currentLang">EN</span>
+                        <a class="nav-link dropdown-toggle px-2 d-flex align-items-center gap-1" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:rgba(255,255,255,0.85);">
+                            <i class="bi bi-globe fs-6"></i> <span id="currentLang">EN</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3" aria-labelledby="langDropdown">
                             <li><a class="dropdown-item lang-option" href="#" data-lang="en" data-label="EN">🇬🇧 English</a></li>
@@ -76,18 +75,11 @@
                         </ul>
                     </li>
 
+                    <!-- Single Track Package CTA (not duplicated) -->
                     <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
                         <a href="{% url 'tracking' %}"
                             class="btn btn-fedex-orange rounded-pill px-4 py-2 fw-bold shadow-sm d-flex align-items-center gap-2">
                             <i class="bi bi-geo-alt-fill"></i> Track Package
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
-                        <a href="/admin/" target="_blank"
-                            class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 fw-bold text-dark border-secondary-subtle d-flex align-items-center gap-1"
-                            title="Operations Management Console">
-                            <i class="bi bi-shield-lock-fill text-purple"></i> Admin Portal
                         </a>
                     </li>
                 </ul>
@@ -139,7 +131,7 @@
                         <li class="mb-2"><a href="{% url 'about' %}" class="text-white text-decoration-none footer-link">Our Company</a></li>
                         <li class="mb-2"><a href="{% url 'contact' %}#careers" class="text-white text-decoration-none footer-link">Careers & Culture</a></li>
                         <li class="mb-2"><a href="{% url 'testimonials' %}" class="text-white text-decoration-none footer-link">Global Newsroom</a></li>
-                        <li class="mb-2"><a href="/admin/" target="_blank" class="text-white text-decoration-none footer-link"><i class="bi bi-shield-lock me-1"></i> Admin Console</a></li>
+
                     </ul>
                 </div>
                 <!-- Col 2: Services -->
