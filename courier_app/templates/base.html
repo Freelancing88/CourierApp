@@ -30,36 +30,39 @@
 </head>
 
 <body class="bg-white text-dark">
-    <!-- Sticky Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-glass fixed-top py-3 transition-nav border-bottom shadow-sm"
-        id="mainNav">
+    <!-- FedEx-Inspired Global Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top py-2 transition-nav shadow-sm"
+        id="mainNav" style="border-bottom: 3px solid var(--fedex-purple);">
         <div class="container">
-            <a class="navbar-brand fw-bold font-outfit d-flex align-items-center gap-2 animate-slide-in"
+            <a class="navbar-brand d-flex align-items-center gap-2 animate-slide-in"
                 href="{% url 'home' %}">
-                <!-- TransGlo Globe + Delivery Icon Logo -->
-                <div class="d-flex align-items-center justify-content-center position-relative" style="width:42px;height:42px;">
-                    <i class="bi bi-globe-americas text-accent logo-globe" style="font-size:28px;"></i>
-                    <i class="bi bi-box-fill text-yellow position-absolute" style="font-size:13px;bottom:0;right:0;"></i>
+                <!-- FedEx-Style Logo -->
+                <div class="d-flex align-items-center justify-content-center position-relative" style="width:38px;height:38px;background:var(--fedex-purple-light);border-radius:8px;">
+                    <i class="bi bi-box-seam-fill" style="font-size:22px;color:var(--fedex-purple);"></i>
                 </div>
                 <div class="d-flex flex-column lh-1">
-                    <span class="fs-5 fw-bold text-dark">TransGlo</span>
-                    <span style="font-size:10px;" class="text-secondary fw-normal tracking-wide">LOGISTIC NETWORK</span>
+                    <div style="font-size:25px;font-weight:900;letter-spacing:-0.5px;font-family:'Outfit',sans-serif;">
+                        <span style="color:var(--fedex-purple);">Trans</span><span style="color:var(--fedex-orange);">Glo</span>
+                    </div>
+                    <span style="font-size:8.5px;color:var(--fedex-purple);font-weight:800;letter-spacing:1.5px;">LOGISTICS NETWORK</span>
                 </div>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse animate-fade-up" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center fw-medium font-inter">
+                <ul class="navbar-nav ms-auto align-items-center fw-bold font-inter" style="font-size:14px;">
                     <li class="nav-item"><a class="nav-link px-3" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'features' %}">Shipping & Services</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'tracking' %}">Tracking</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'quote' %}">Get a Quote</a></li>
                     <li class="nav-item"><a class="nav-link px-3" href="{% url 'about' %}">About</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'features' %}">Features</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="{% url 'testimonials' %}">Testimonials</a></li>
                     <li class="nav-item"><a class="nav-link px-3" href="{% url 'contact' %}">Contact</a></li>
+                    
                     <!-- Language Selector -->
-                    <li class="nav-item dropdown ms-1">
-                        <a class="nav-link dropdown-toggle px-2 d-flex align-items-center gap-1" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-translate fs-6"></i> <span id="currentLang">EN</span>
+                    <li class="nav-item dropdown ms-lg-2">
+                        <a class="nav-link dropdown-toggle px-2 d-flex align-items-center gap-1 text-secondary" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-globe fs-6 text-purple"></i> <span id="currentLang">EN</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3" aria-labelledby="langDropdown">
                             <li><a class="dropdown-item lang-option" href="#" data-lang="en" data-label="EN">🇬🇧 English</a></li>
@@ -73,20 +76,19 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                    <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
                         <a href="{% url 'tracking' %}"
-                            class="btn btn-accent rounded-pill px-4 fw-bold shadow-accent animate-bounce-hover">Track
-                            Package</a>
+                            class="btn btn-fedex-orange rounded-pill px-4 py-2 fw-bold shadow-sm d-flex align-items-center gap-2">
+                            <i class="bi bi-geo-alt-fill"></i> Track Package
+                        </a>
                     </li>
                     
-                    <!-- Header Theme Toggle -->
-                    <li class="nav-item ms-lg-3 mt-3 mt-lg-0 d-flex align-items-center justify-content-center">
-                        <div class="d-flex align-items-center bg-white rounded-pill px-2 py-1 shadow-sm border border-secondary-subtle gap-2">
-                            <span class="small fw-bold text-secondary ps-1" style="font-size: 0.75rem;">THEME:</span>
-                            <button class="btn btn-sm rounded-circle p-0 border border-secondary border-1 shadow-sm" style="width: 18px; height: 18px; background-color: #ffffff;" onclick="setHeaderTheme('default')" title="Default Glass"></button>
-                            <button class="btn btn-sm rounded-circle p-0 border border-secondary border-1 shadow-sm" style="width: 18px; height: 18px; background-color: #d32f2f;" onclick="setHeaderTheme('red')" title="Red Header"></button>
-                            <button class="btn btn-sm rounded-circle p-0 border border-secondary border-1 shadow-sm" style="width: 18px; height: 18px; background-color: #ffc107;" onclick="setHeaderTheme('yellow')" title="Yellow Header"></button>
-                        </div>
+                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                        <a href="/admin/" target="_blank"
+                            class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 fw-bold text-dark border-secondary-subtle d-flex align-items-center gap-1"
+                            title="Operations Management Console">
+                            <i class="bi bi-shield-lock-fill text-purple"></i> Admin Portal
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -127,64 +129,64 @@
       </div>
     </div>
 
-    <footer class="mt-6" style="background-color: #1a1a1a; color: #ffffff; padding-top: 60px;">
+    <footer class="mt-6" style="background-color: var(--fedex-purple-dark, #2b0a52); color: #ffffff; padding-top: 60px;">
         <div class="container animate-fade-up">
             <div class="row gx-5 mb-5 text-start">
                 <!-- Col 1: About -->
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <h6 class="fw-bold mb-3 text-uppercase font-outfit text-yellow" style="letter-spacing: 1px;">About TransGlo</h6>
+                    <h6 class="fw-bold mb-3 text-uppercase font-outfit" style="letter-spacing: 1px; color: var(--fedex-orange);">About TransGlo</h6>
                     <ul class="list-unstyled mb-0">
-                        <li class="mb-2"><a href="{% url 'about' %}" class="text-white text-decoration-none footer-link">About Us</a></li>
-                        <li class="mb-2"><a href="{% url 'contact' %}#careers" class="text-white text-decoration-none footer-link">Careers</a></li>
-                        <li class="mb-2"><a href="{% url 'testimonials' %}" class="text-white text-decoration-none footer-link">Newsroom</a></li>
+                        <li class="mb-2"><a href="{% url 'about' %}" class="text-white text-decoration-none footer-link">Our Company</a></li>
+                        <li class="mb-2"><a href="{% url 'contact' %}#careers" class="text-white text-decoration-none footer-link">Careers & Culture</a></li>
+                        <li class="mb-2"><a href="{% url 'testimonials' %}" class="text-white text-decoration-none footer-link">Global Newsroom</a></li>
+                        <li class="mb-2"><a href="/admin/" target="_blank" class="text-white text-decoration-none footer-link"><i class="bi bi-shield-lock me-1"></i> Admin Console</a></li>
                     </ul>
                 </div>
                 <!-- Col 2: Services -->
                 <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
-                    <h6 class="fw-bold mb-3 text-uppercase font-outfit text-yellow" style="letter-spacing: 1px;">Our Services</h6>
+                    <h6 class="fw-bold mb-3 text-uppercase font-outfit" style="letter-spacing: 1px; color: var(--fedex-orange);">Services</h6>
                     <ul class="list-unstyled mb-0">
-                        <li class="mb-2"><a href="{% url 'features' %}" class="text-white text-decoration-none footer-link">Shipping</a></li>
-                        <li class="mb-2"><a href="{% url 'tracking' %}" class="text-white text-decoration-none footer-link">Tracking</a></li>
-                        <li class="mb-2"><a href="{% url 'home' %}#services" class="text-white text-decoration-none footer-link">Freight</a></li>
-                        <li class="mb-2"><a href="{% url 'features' %}" class="text-white text-decoration-none footer-link">Supply Chain</a></li>
+                        <li class="mb-2"><a href="{% url 'features' %}" class="text-white text-decoration-none footer-link">Express Air</a></li>
+                        <li class="mb-2"><a href="{% url 'tracking' %}" class="text-white text-decoration-none footer-link">Tracking Corridor</a></li>
+                        <li class="mb-2"><a href="{% url 'home' %}#services" class="text-white text-decoration-none footer-link">Ground Hauling</a></li>
+                        <li class="mb-2"><a href="{% url 'features' %}" class="text-white text-decoration-none footer-link">Diplomatic Escort</a></li>
                     </ul>
                 </div>
                 <!-- Col 3: Support -->
                 <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
-                    <h6 class="fw-bold mb-3 text-uppercase font-outfit text-yellow" style="letter-spacing: 1px;">Support</h6>
+                    <h6 class="fw-bold mb-3 text-uppercase font-outfit" style="letter-spacing: 1px; color: var(--fedex-orange);">Support</h6>
                     <ul class="list-unstyled mb-0">
                         <li class="mb-2"><a href="{% url 'help_center' %}" class="text-white text-decoration-none footer-link">Help Center</a></li>
                         <li class="mb-2"><a href="{% url 'contact' %}" class="text-white text-decoration-none footer-link">Contact Us</a></li>
-                        <li class="mb-2"><a href="#" onclick="document.getElementById('liveChatWidget').style.display='flex';document.getElementById('liveChatWidget').style.flexDirection='column';return false;" class="text-white text-decoration-none footer-link">Live Chat</a></li>
+                        <li class="mb-2"><a href="#" onclick="document.getElementById('liveChatWidget').style.display='flex';document.getElementById('liveChatWidget').style.flexDirection='column';return false;" class="text-white text-decoration-none footer-link">24/7 Live Chat</a></li>
                     </ul>
                 </div>
                 <!-- Col 4: Account -->
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <h6 class="fw-bold mb-3 text-uppercase font-outfit text-yellow" style="letter-spacing: 1px;">Account & Billing</h6>
+                    <h6 class="fw-bold mb-3 text-uppercase font-outfit" style="letter-spacing: 1px; color: var(--fedex-orange);">Shipping & Tools</h6>
                     <ul class="list-unstyled mb-0">
-                        <li class="mb-2"><a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" class="text-white text-decoration-none footer-link">Sign Up / Register</a></li>
-                        <li class="mb-2"><a href="{% url 'quote' %}" class="text-white text-decoration-none footer-link">Get a Quote</a></li>
-                        <li class="mb-2"><a href="#" class="text-white text-decoration-none footer-link">Invoice</a></li>
-                        <li class="mb-2"><a href="#" class="text-white text-decoration-none footer-link">Payment Options</a></li>
+                        <li class="mb-2"><a href="{% url 'quote' %}" class="text-white text-decoration-none footer-link">Get Rate Quote</a></li>
+                        <li class="mb-2"><a href="{% url 'tracking' %}" class="text-white text-decoration-none footer-link">Track Consignment</a></li>
+                        <li class="mb-2"><a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" class="text-white text-decoration-none footer-link">Sign In / Register</a></li>
                     </ul>
                 </div>
                 <!-- Col 5: Connect -->
                 <div class="col-lg-2 col-md-6 mb-4 text-lg-end">
-                    <h6 class="fw-bold mb-3 text-uppercase font-outfit text-yellow" style="letter-spacing: 1px;">Connect</h6>
+                    <h6 class="fw-bold mb-3 text-uppercase font-outfit" style="letter-spacing: 1px; color: var(--fedex-orange);">Connect</h6>
                     <div class="d-flex justify-content-lg-end gap-3">
-                        <a href="https://www.facebook.com/ups" target="_blank" class="text-white fs-4 hover-accent"><i class="bi bi-facebook"></i></a>
-                        <a href="https://twitter.com/ups" target="_blank" class="text-white fs-4 hover-accent"><i class="bi bi-twitter"></i></a>
-                        <a href="https://www.linkedin.com/company/ups" target="_blank" class="text-white fs-4 hover-accent"><i class="bi bi-linkedin"></i></a>
-                        <a href="https://www.instagram.com/ups" target="_blank" class="text-white fs-4 hover-accent"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-white fs-4 hover-accent"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white fs-4 hover-accent"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="text-white fs-4 hover-accent"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="text-white fs-4 hover-accent"><i class="bi bi-instagram"></i></a>
                     </div>
                 </div>
             </div>
         </div>
         
         <!-- Bottom Legal Bar -->
-        <div style="background-color: #111111; padding: 20px 0;">
+        <div style="background-color: #1a0533; padding: 20px 0;">
             <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
-                <p class="text-secondary font-inter mb-3 mb-md-0 small">&copy; 2026 TransGlo Logistic Network. <br class="d-block d-md-none">All rights reserved.</p>
+                <p class="text-secondary font-inter mb-3 mb-md-0 small">&copy; 2026 TransGlo Logistic Network. All rights reserved.</p>
                 <ul class="list-inline mb-0 flex-wrap d-flex justify-content-center justify-content-md-end small">
                     <li class="list-inline-item mx-2 mb-2 mb-md-0"><a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal" class="text-secondary text-decoration-none footer-legal-link">Privacy Notice</a></li>
                     <li class="list-inline-item mx-2 mb-2 mb-md-0"><a href="#" data-bs-toggle="modal" data-bs-target="#termsModal" class="text-secondary text-decoration-none footer-legal-link">Terms of Use</a></li>
@@ -197,11 +199,11 @@
         <style>
             .footer-link {
                 transition: all 0.2s ease;
-                opacity: 0.8;
+                opacity: 0.85;
                 font-size: 0.95rem;
             }
             .footer-link:hover {
-                color: var(--accent-yellow) !important;
+                color: var(--fedex-orange) !important;
                 opacity: 1;
                 text-decoration: underline !important;
             }
@@ -216,7 +218,7 @@
                 transition: transform 0.2s ease, color 0.2s ease;
             }
             .hover-accent:hover {
-                color: var(--accent-yellow) !important;
+                color: var(--fedex-orange) !important;
                 transform: translateY(-3px);
             }
         </style>
@@ -315,8 +317,8 @@
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <!-- Live Chat Widget (Global) -->
-    <div id="liveChatWidget" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:none;width:340px;max-height:500px;border-radius:18px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
-        <div style="background:linear-gradient(135deg,#e63946,#c1121f);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;">
+    <div id="liveChatWidget" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:none;width:340px;max-height:500px;border-radius:18px;overflow:hidden;box-shadow:0 20px 60px rgba(77,20,140,0.25);border:1px solid rgba(77,20,140,0.15);">
+        <div style="background:linear-gradient(135deg,var(--fedex-purple),var(--fedex-purple-dark));padding:14px 18px;display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:10px;">
                 <div style="width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;">
                     <i class="bi bi-headset text-white" style="font-size:18px;"></i>
@@ -330,23 +332,23 @@
         </div>
         <div id="chatWidgetMessages" style="background:#f8f9fa;padding:16px;height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;">
             <div style="background:white;padding:10px 14px;border-radius:12px;border-top-left-radius:0;box-shadow:0 2px 8px rgba(0,0,0,0.06);max-width:85%;font-size:13px;line-height:1.5;">
-                👋 Hi there! Welcome to <strong>TransGlo Logistic Network</strong>.<br>How can we help you today?
+                👋 Hi there! Welcome to <strong>TransGlo Logistic Network</strong>.<br>How can our courier specialists help you today?
             </div>
         </div>
         <div style="background:white;padding:10px 12px;border-top:1px solid #eee;display:flex;gap:8px;">
             <input id="chatWidgetInput" type="text" placeholder="Type your message..." style="flex:1;border:1px solid #e0e0e0;border-radius:20px;padding:8px 14px;font-size:13px;outline:none;">
-            <button id="chatWidgetSend" style="background:#e63946;border:none;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+            <button id="chatWidgetSend" style="background:var(--fedex-orange);border:none;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
                 <i class="bi bi-send-fill" style="font-size:13px;"></i>
             </button>
         </div>
     </div>
     <!-- Floating Live Chat Button -->
-    <button id="liveChatFab" onclick="document.getElementById('liveChatWidget').style.display='flex';document.getElementById('liveChatWidget').style.flexDirection='column';this.style.display='none';" style="position:fixed;bottom:24px;right:24px;z-index:9998;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#e63946,#c1121f);border:none;color:white;box-shadow:0 8px 24px rgba(230,57,70,0.4);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+    <button id="liveChatFab" onclick="document.getElementById('liveChatWidget').style.display='flex';document.getElementById('liveChatWidget').style.flexDirection='column';this.style.display='none';" style="position:fixed;bottom:24px;right:24px;z-index:9998;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--fedex-purple),var(--fedex-purple-dark));border:none;color:white;box-shadow:0 8px 24px rgba(77,20,140,0.4);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
         <i class="bi bi-chat-dots-fill" style="font-size:22px;"></i>
     </button>
     
     <!-- Floating Get a Quote Button -->
-    <a id="quoteFab" href="{% url 'quote' %}" style="position:fixed;bottom:24px;left:24px;z-index:9998;padding: 0 20px;height:56px;border-radius:28px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;color:white;box-shadow:0 8px 24px rgba(245, 158, 11, 0.4);cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:transform 0.2s;font-weight:bold;font-family:'Outfit',sans-serif;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+    <a id="quoteFab" href="{% url 'quote' %}" style="position:fixed;bottom:24px;left:24px;z-index:9998;padding: 0 20px;height:56px;border-radius:28px;background:linear-gradient(135deg,var(--fedex-orange),var(--fedex-orange-hover));border:none;color:white;box-shadow:0 8px 24px rgba(255,102,0,0.4);cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:transform 0.2s;font-weight:bold;font-family:'Outfit',sans-serif;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
         <i class="bi bi-calculator-fill" style="font-size:20px;margin-right:10px;"></i> Get a Quote
     </a>
 

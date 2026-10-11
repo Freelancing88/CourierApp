@@ -16,10 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (!shipmentMap) {
                 shipmentMap = L.map('shipmentMap').setView([safeLat, safeLng], 5);
-                // OpenStreetMap standard tiles - 100% free, reliable, no API key required
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                // Commercial-compliant CARTO Voyager basemap (avoids OSM volunteer server rate limit/blocks)
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
                     maxZoom: 19,
-                    attribution: '&copy; OpenStreetMap contributors'
+                    subdomains: 'abcd',
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>'
                 }).addTo(shipmentMap);
         } else {
             if (marker) shipmentMap.removeLayer(marker);

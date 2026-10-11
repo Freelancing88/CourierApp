@@ -19,18 +19,22 @@
         --trk-card-bg: #ffffff;
         --trk-card-border: #e2e8f0;
         --trk-card-hover: #f8fafc;
-        --trk-navy: #0f172a;
-        --trk-slate: #334155;
-        --trk-muted: #64748b;
-        --trk-light-muted: #94a3b8;
-        --trk-blue: #2563eb;
-        --trk-blue-light: #eff6ff;
+        --trk-navy: #1e1e1e;
+        --trk-slate: #374151;
+        --trk-muted: #6b7280;
+        --trk-light-muted: #9ca3af;
+        --trk-purple: #4D148C;
+        --trk-purple-light: #F4ECFB;
+        --trk-orange: #FF6600;
+        --trk-orange-light: #FFF0E6;
+        --trk-blue: #4D148C;
+        --trk-blue-light: #F4ECFB;
         --trk-green: #059669;
         --trk-green-light: #ecfdf5;
         --trk-red: #dc2626;
         --trk-red-light: #fef2f2;
-        --trk-amber: #d97706;
-        --trk-amber-light: #fffbeb;
+        --trk-amber: #FF6600;
+        --trk-amber-light: #FFF0E6;
         --trk-gold: #b45309;
     }
 
@@ -99,17 +103,17 @@
     }
 
     .trk-input:focus {
-        border-color: var(--trk-blue);
-        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+        border-color: var(--trk-purple);
+        box-shadow: 0 0 0 4px rgba(77, 20, 140, 0.12);
         outline: none;
     }
 
     .trk-btn-search {
         padding: 14px 28px;
         font-size: 15px;
-        font-weight: 700;
+        font-weight: 800;
         color: #ffffff;
-        background-color: var(--trk-blue);
+        background-color: var(--trk-orange);
         border: none;
         border-radius: 10px;
         cursor: pointer;
@@ -117,12 +121,13 @@
         align-items: center;
         gap: 8px;
         transition: all 0.2s ease;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        box-shadow: 0 4px 14px rgba(255, 102, 0, 0.35);
     }
 
     .trk-btn-search:hover {
-        background-color: #1d4ed8;
+        background-color: #e05a00;
         transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(255, 102, 0, 0.45);
     }
 
     .trk-btn-clear {
@@ -216,33 +221,35 @@
     }
 
     .btn-receipt {
-        background-color: var(--trk-green-light);
-        color: var(--trk-green);
-        border-color: #a7f3d0;
+        background-color: var(--trk-purple);
+        color: #ffffff;
+        border-color: var(--trk-purple);
+        box-shadow: 0 2px 8px rgba(77, 20, 140, 0.25);
     }
     .btn-receipt:hover {
-        background-color: #d1fae5;
-        color: #047857;
+        background-color: #360d63;
+        color: #ffffff;
     }
 
     .btn-label {
-        background-color: var(--trk-amber-light);
-        color: var(--trk-amber);
-        border-color: #fde68a;
+        background-color: var(--trk-orange);
+        color: #ffffff;
+        border-color: var(--trk-orange);
+        box-shadow: 0 2px 8px rgba(255, 102, 0, 0.25);
     }
     .btn-label:hover {
-        background-color: #fef3c7;
-        color: #b45309;
+        background-color: #e05a00;
+        color: #ffffff;
     }
 
     .btn-notify {
-        background-color: var(--trk-blue-light);
-        color: var(--trk-blue);
-        border-color: #bfdbfe;
+        background-color: var(--trk-purple-light);
+        color: var(--trk-purple);
+        border-color: rgba(77, 20, 140, 0.2);
     }
     .btn-notify:hover {
-        background-color: #dbeafe;
-        color: #1d4ed8;
+        background-color: #ebd7f9;
+        color: var(--trk-purple);
     }
 
     .btn-share {
@@ -284,7 +291,7 @@
 
     .stepper-progress-fill {
         height: 100%;
-        background: linear-gradient(90deg, #2563eb, #059669);
+        background: linear-gradient(90deg, var(--fedex-purple), var(--fedex-orange));
         width: 50%;
         transition: width 0.6s ease;
     }
@@ -314,16 +321,16 @@
     }
 
     .step-item.completed .step-node {
-        background-color: #059669;
-        border-color: #059669;
+        background-color: var(--fedex-purple);
+        border-color: var(--fedex-purple);
         color: #ffffff;
     }
 
     .step-item.active .step-node {
-        background-color: #2563eb;
-        border-color: #93c5fd;
+        background-color: var(--fedex-orange);
+        border-color: var(--fedex-orange);
         color: #ffffff;
-        box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.2);
+        box-shadow: 0 0 0 6px rgba(255, 102, 0, 0.25);
         animation: step-pulse 2s infinite ease-in-out;
     }
 
@@ -875,16 +882,24 @@
                 <!-- Left 8 Columns: Live Route Map + Timeline Checkpoints -->
                 <div class="col-lg-8">
 
-                    <!-- Live Route Map (100% Free OpenStreetMap - ZERO API KEY REQUIRED) -->
+                    <!-- Live Route Map (Commercial CARTO Voyager + Esri Satellite) -->
                     <div class="trk-map-card">
                         <div class="trk-map-header">
                             <div>
-                                <span class="fw-bold text-dark fs-6"><i class="bi bi-globe-americas me-1 text-primary"></i> Real-Time Satellite & Route Matrix</span>
-                                <div class="text-muted small">OpenStreetMap Verified Corridor Telemetry &bull; No API Key Dependency</div>
+                                <span class="fw-bold text-dark fs-6"><i class="bi bi-globe-americas me-1 text-purple"></i> Real-Time Satellite & Route Matrix</span>
+                                <div class="text-muted small">Global Corridor Telemetry &bull; Commercial Multi-Layer Network</div>
                             </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="badge bg-light text-dark font-mono border">
-                                    <i class="bi bi-broadcast text-danger me-1"></i> LIVE TELEMETRY
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Map Layer Toggle">
+                                    <button type="button" class="btn btn-outline-secondary active fw-bold font-inter" id="btnMapCourier" onclick="setMapLayer('courier')">
+                                        <i class="bi bi-map-fill me-1"></i> Courier Map
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary fw-bold font-inter" id="btnMapSatellite" onclick="setMapLayer('satellite')">
+                                        <i class="bi bi-globe2 me-1"></i> Satellite
+                                    </button>
+                                </div>
+                                <span class="badge font-mono border" style="background:var(--fedex-orange-light); color:var(--fedex-orange); border-color:rgba(255,102,0,0.3) !important;">
+                                    <i class="bi bi-broadcast me-1"></i> LIVE TELEMETRY
                                 </span>
                             </div>
                         </div>
@@ -1051,11 +1066,60 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     let leafletMap = null;
+    let baseTileLayer = null;
     let mapMarkers = [];
     let mapPaths = [];
     let currentTrackData = null;
+    let currentMapLayer = 'courier';
 
     const STORAGE_KEY = 'transglo_active_tracking';
+
+    // Wire up Download Receipt Button Handler
+    const receiptBtn = document.getElementById('btnDownloadReceipt');
+    if (receiptBtn) {
+        receiptBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const trackNum = (currentTrackData && currentTrackData.tracking_number) || document.getElementById('trackingQueryInput').value.trim();
+            if (!trackNum) {
+                showError("Please enter a tracking number or search a shipment first.");
+                return;
+            }
+            window.open(`/track/${encodeURIComponent(trackNum)}/receipt/?action=download`, '_blank');
+        });
+    }
+
+    // Wire up Print Label Button Handler
+    const labelBtn = document.getElementById('btnPrintLabel');
+    if (labelBtn) {
+        labelBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const trackNum = (currentTrackData && currentTrackData.tracking_number) || document.getElementById('trackingQueryInput').value.trim();
+            if (!trackNum) {
+                showError("Please enter a tracking number or search a shipment first.");
+                return;
+            }
+            window.open(`/track/${encodeURIComponent(trackNum)}/label/?action=print`, '_blank');
+        });
+    }
+
+    // Map Layer Switcher: Courier Map vs Satellite View
+    window.setMapLayer = function(layerType) {
+        currentMapLayer = layerType;
+        const btnCourier = document.getElementById('btnMapCourier');
+        const btnSat = document.getElementById('btnMapSatellite');
+        if (btnCourier && btnSat) {
+            if (layerType === 'courier') {
+                btnCourier.classList.add('active');
+                btnSat.classList.remove('active');
+            } else {
+                btnSat.classList.add('active');
+                btnCourier.classList.remove('active');
+            }
+        }
+        if (leafletMap && currentTrackData) {
+            renderMap(currentTrackData);
+        }
+    };
 
     // 1. Initial State & Persistent Memory
     initPersistentTracking();
@@ -1171,9 +1235,9 @@ document.addEventListener('DOMContentLoaded', function () {
         setText('dispRefNum', d.reference_id || d.tracking_number);
         setText('dispBarcodeText', d.tracking_number);
 
-        // Buttons
-        document.getElementById('btnDownloadReceipt').href = `/track/${encodeURIComponent(d.tracking_number)}/receipt/`;
-        document.getElementById('btnPrintLabel').href = `/track/${encodeURIComponent(d.tracking_number)}/label/`;
+        // Buttons with Action Handlers
+        document.getElementById('btnDownloadReceipt').href = `/track/${encodeURIComponent(d.tracking_number)}/receipt/?action=download`;
+        document.getElementById('btnPrintLabel').href = `/track/${encodeURIComponent(d.tracking_number)}/label/?action=print`;
 
         // Type & Status Badges
         const typeBadge = document.getElementById('shipmentTypeBadge');
@@ -1310,7 +1374,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 6. Interactive Route Map (100% Free OpenStreetMap - ZERO API KEY REQUIRED)
+    // 6. Interactive Route Map (Commercial CARTO Voyager + Esri Satellite)
     function renderMap(d) {
         const mapContainer = document.getElementById('liveTrackingMap');
         if (!mapContainer) return;
@@ -1319,14 +1383,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const defaultLng = d.current_lng || -74.0060;
 
         if (!leafletMap) {
-            leafletMap = L.map('liveTrackingMap', { zoomControl: true, attributionControl: false })
+            leafletMap = L.map('liveTrackingMap', { zoomControl: true, attributionControl: true })
                 .setView([defaultLat, defaultLng], 4);
-
-            // STANDARD OPENSTREETMAP TILES: 100% Free, Reliable, No API Key Required!
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(leafletMap);
         } else {
             mapMarkers.forEach(m => leafletMap.removeLayer(m));
             mapPaths.forEach(p => leafletMap.removeLayer(p));
@@ -1335,6 +1393,51 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => leafletMap.invalidateSize(), 200);
         }
 
+        // Setup Map Layer (Commercial CARTO Voyager, Esri Satellite, or custom env-configured provider)
+        if (baseTileLayer && leafletMap) {
+            leafletMap.removeLayer(baseTileLayer);
+        }
+
+        const mapboxToken = "{{ MAPBOX_ACCESS_TOKEN|default:'' }}";
+        const mapTilerKey = "{{ MAPTILER_API_KEY|default:'' }}";
+        const stadiaKey = "{{ STADIA_API_KEY|default:'' }}";
+        const customTileUrl = "{{ CUSTOM_MAP_TILE_URL|default:'' }}";
+
+        if (currentMapLayer === 'satellite') {
+            baseTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                maxZoom: 19,
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            });
+        } else if (customTileUrl) {
+            baseTileLayer = L.tileLayer(customTileUrl, {
+                maxZoom: 19,
+                attribution: '&copy; Map Data & Telemetry Service'
+            });
+        } else if (mapboxToken) {
+            baseTileLayer = L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${mapboxToken}`, {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.mapbox.com/about/maps/" target="_blank">Mapbox</a> contributors'
+            });
+        } else if (mapTilerKey) {
+            baseTileLayer = L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${mapTilerKey}`, {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.maptiler.com/copyright/" target="_blank">MapTiler</a> &copy; OpenStreetMap'
+            });
+        } else if (stadiaKey) {
+            baseTileLayer = L.tileLayer(`https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png?api_key=${stadiaKey}`, {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; OpenStreetMap'
+            });
+        } else {
+            // Default Commercial-compliant CARTO Voyager (zero OSM volunteer server block)
+            baseTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19,
+                subdomains: 'abcd',
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>'
+            });
+        }
+        baseTileLayer.addTo(leafletMap);
+
         const createPin = (color, iconClass, label) => L.divIcon({
             className: 'custom-map-pin',
             html: `<div style="background:${color}; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; border:2.5px solid #fff; box-shadow:0 3px 10px rgba(0,0,0,0.3); font-size:15px;" title="${label}"><i class="bi ${iconClass}"></i></div>`,
@@ -1342,34 +1445,49 @@ document.addEventListener('DOMContentLoaded', function () {
             iconAnchor: [17, 34]
         });
 
+        const createLivePin = (label) => L.divIcon({
+            className: 'custom-live-pin',
+            html: `
+                <div style="position:relative; width:44px; height:44px; display:flex; align-items:center; justify-content:center;">
+                    <div style="position:absolute; width:44px; height:44px; border-radius:50%; border:3px solid #FF6600; animation: leaflet-pulse 2s infinite ease-out;"></div>
+                    <div style="background:#FF6600; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; border:2.5px solid #fff; box-shadow:0 4px 14px rgba(255,102,0,0.6); font-size:16px;" title="${label}">
+                        <i class="bi bi-airplane-fill"></i>
+                    </div>
+                </div>
+            `,
+            iconSize: [44, 44],
+            iconAnchor: [22, 22]
+        });
+
+        // FedEx Purple for Origin, Dark Slate for Destination, FedEx Orange for Live In-Transit
         const oMarker = L.marker([d.origin_lat, d.origin_lng], {
-            icon: createPin('#2563eb', 'bi-building-fill', 'Origin')
+            icon: createPin('#4D148C', 'bi-building-fill', 'Origin Hub')
         }).addTo(leafletMap).bindPopup(`<b>Origin Hub:</b> ${d.origin}`);
 
         const dMarker = L.marker([d.dest_lat, d.dest_lng], {
-            icon: createPin('#059669', 'bi-house-check-fill', 'Destination')
+            icon: createPin('#1e293b', 'bi-house-check-fill', 'Destination')
         }).addTo(leafletMap).bindPopup(`<b>Destination:</b> ${d.destination}`);
 
         const cMarker = L.marker([d.current_lat, d.current_lng], {
-            icon: createPin('#dc2626', 'bi-airplane-fill', 'Current Live Position')
+            icon: createLivePin('Current Live Position')
         }).addTo(leafletMap).bindPopup(`<b>Current Live Location:</b> ${d.current_location_name || 'In Transit'}`);
 
         cMarker.openPopup();
         mapMarkers.push(oMarker, dMarker, cMarker);
 
-        // Smooth flight curve or polyline
+        // Smooth flight curve or polyline in FedEx Purple
         try {
             const offX = (d.dest_lng - d.origin_lng) * 0.2;
             const offY = (d.dest_lat - d.origin_lat) * 0.4;
             const curve = L.curve(
                 ['M', [d.origin_lat, d.origin_lng], 'Q', [d.origin_lat + offY, d.origin_lng + offX], [d.dest_lat, d.dest_lng]],
-                { color: '#2563eb', weight: 3.5, dashArray: '6 6', fill: false }
+                { color: '#4D148C', weight: 3.5, dashArray: '6 6', fill: false }
             ).addTo(leafletMap);
             mapPaths.push(curve);
         } catch (e) {
             const poly = L.polyline(
                 [[d.origin_lat, d.origin_lng], [d.current_lat, d.current_lng], [d.dest_lat, d.dest_lng]],
-                { color: '#2563eb', weight: 3.5, dashArray: '6 6' }
+                { color: '#4D148C', weight: 3.5, dashArray: '6 6' }
             ).addTo(leafletMap);
             mapPaths.push(poly);
         }

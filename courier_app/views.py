@@ -31,8 +31,11 @@ from django.db.models import Q
 
 def track_shipment(request, tracking_number):
     try:
+        clean_code = (tracking_number or '').strip()
         shipment = Shipment.objects.prefetch_related('events').filter(
-            Q(tracking_number__iexact=tracking_number) | Q(reference_id__iexact=tracking_number)
+            Q(tracking_number__iexact=clean_code) | 
+            Q(reference_id__iexact=clean_code) |
+            Q(airway_bill_number__iexact=clean_code)
         ).order_by('-id').first()
         if not shipment:
             raise Shipment.DoesNotExist
@@ -40,7 +43,7 @@ def track_shipment(request, tracking_number):
         marker_color = shipment.status.marker_color if shipment.status else "gray"
         
         history_data = []
-        for event in shipment.events.all().order_by('sort_order', 'timestamp'):
+        for event in shipment.events.all().order_by('sort_order', 'timestamp', 'id'):
             # Format cleanly like '09:00 EST' or '14:45 GMT'
             t_str = ""
             d_str = ""
@@ -105,7 +108,7 @@ def track_shipment(request, tracking_number):
             'content': shipment.package_content or ("Documents" if not shipment.is_diplomatic else "Diplomatic Manifest Documents"),
             'description': shipment.package_description or "High security diplomatic pouch chain of custody.",
             'shipping_cost': f"${shipment.shipping_cost}",
-            'estimated_delivery': shipment.estimated_delivery.strftime('%b %d, %Y').upper(),
+            'estimated_delivery': shipment.estimated_delivery.strftime('%b %d, %Y').upper() if shipment.estimated_delivery else "IN TRANSIT",
             'created_at': shipment.created_at.strftime('%b %d, %Y') if shipment.created_at else "",
             'latest_update': shipment.latest_update,
             'history': history_data,
@@ -120,23 +123,31 @@ def track_shipment(request, tracking_number):
         return JsonResponse({'success': False, 'message': 'Tracking number or Diplomatic Reference ID not found.'}, status=404)
 
 def shipment_receipt_view(request, tracking_number):
+    clean_code = (tracking_number or '').strip()
     shipment = Shipment.objects.prefetch_related('events').filter(
-        Q(tracking_number__iexact=tracking_number) | Q(reference_id__iexact=tracking_number)
+        Q(tracking_number__iexact=clean_code) | 
+        Q(reference_id__iexact=clean_code) |
+        Q(airway_bill_number__iexact=clean_code)
     ).order_by('-id').first()
     if not shipment:
         messages.error(request, f"Shipment '{tracking_number}' not found.")
         return redirect('tracking')
-    events = shipment.events.all().order_by('sort_order', 'timestamp')
-    return render(request, 'receipt.html', {'shipment': shipment, 'events': events})
+    events = shipment.events.all().order_by('sort_order', 'timestamp', 'id')
+    action = request.GET.get('action', '')
+    return render(request, 'receipt.html', {'shipment': shipment, 'events': events, 'action': action})
 
 def shipment_label_view(request, tracking_number):
+    clean_code = (tracking_number or '').strip()
     shipment = Shipment.objects.filter(
-        Q(tracking_number__iexact=tracking_number) | Q(reference_id__iexact=tracking_number)
+        Q(tracking_number__iexact=clean_code) | 
+        Q(reference_id__iexact=clean_code) |
+        Q(airway_bill_number__iexact=clean_code)
     ).order_by('-id').first()
     if not shipment:
         messages.error(request, f"Shipment '{tracking_number}' not found.")
         return redirect('tracking')
-    return render(request, 'label.html', {'shipment': shipment})
+    action = request.GET.get('action', '')
+    return render(request, 'label.html', {'shipment': shipment, 'action': action})
 
 def quote_view(request):
     return render(request, 'quote.html')

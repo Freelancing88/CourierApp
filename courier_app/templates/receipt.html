@@ -520,5 +520,16 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action') || '{{ action|default:"" }}';
+            if (action === 'download' || action === 'print') {
+                setTimeout(function() {
+                    window.print();
+                }, 400);
+            }
+        });
+    </script>
 </body>
 </html>

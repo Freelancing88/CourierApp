@@ -2,83 +2,165 @@
 {% load static %}
 
 {% block content %}
-<!-- Section 1: Hero -->
-<section id="hero" class="d-flex align-items-center min-vh-100 position-relative border-bottom overflow-hidden bg-white">
-    <div class="container position-relative z-2">
+<!-- ══════════════════════════════════════════════════════
+     Section 1: FedEx-Inspired Hero with Tabbed Action Card
+     ══════════════════════════════════════════════════════ -->
+<section id="hero" class="fedex-hero-wrapper border-bottom overflow-hidden">
+    <div class="container position-relative z-2 pt-2 pb-5">
         <div class="row align-items-center g-5">
-            <!-- Left Column: Text & CTA -->
-            <div class="col-lg-6 text-center text-lg-start animate-fade-up">
-                <span class="badge bg-yellow text-dark rounded-pill px-3 py-2 mb-3 fw-bold tracking-wide shadow-sm animate-fade-up">
-                    <i class="bi bi-globe-americas icon-wiggle me-1"></i> TRANSGLO DELIVERY NETWORK
-                </span>
-                <h1 class="hero-title fw-bold font-outfit mb-4 text-dark d-flex align-items-end flex-nowrap" style="white-space: nowrap; overflow: visible;">
-                    <span>Deliver&nbsp;</span>
-                    <span class="hero-text-slider">
-                        <!-- Hidden structural placeholder to perfectly scale the parent container -->
-                        <span style="visibility: hidden; display: inline-block;">Door-to-Door.</span>
-                        <span class="slide-word">Smarter.</span>
-                        <span class="slide-word">Faster.</span>
-                        <span class="slide-word">Globally.</span>
-                        <span class="slide-word">Worldwide.</span>
-                        <span class="slide-word">Door-to-Door.</span>
-                    </span>
-                    <span class="cursor-blink"></span>
+            <!-- Left Column: Typography & Tabbed Action Card -->
+            <div class="col-lg-7 text-center text-lg-start animate-fade-up">
+                
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3 shadow-sm border" style="background:#ffffff; border-color:var(--fedex-border) !important;">
+                    <span style="width:8px; height:8px; border-radius:50%; background:var(--fedex-orange); display:inline-block;"></span>
+                    <span class="small fw-bold font-inter" style="color:var(--fedex-purple); letter-spacing:0.5px;">GLOBAL EXPRESS LOGISTICS NETWORK</span>
+                </div>
+
+                <h1 class="display-4 fw-bolder font-outfit text-dark mb-3 lh-sm" style="letter-spacing: -1px;">
+                    Where now <span style="color:var(--fedex-purple);">meets next.</span>
                 </h1>
-                <p class="lead text-secondary mb-5 font-inter pe-lg-4 fw-bold animate-fade-up">
-                    Experience the future of business courier services globally. We seamlessly combine thousands of carrier routes into a single intelligent platform. <br class="d-none d-lg-block"> Driven by Data. Powered by AI.
+                
+                <p class="lead font-inter text-secondary mb-4 fw-normal" style="font-size: 1.15rem; max-width: 620px;">
+                    Fast, reliable courier delivery, air freight, and high-security diplomatic consignments across 220+ countries and territories worldwide.
                 </p>
-                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start mb-4">
-                    <a href="{% url 'quote' %}"
-                        class="btn btn-accent btn-lg rounded-pill px-5 fw-bold transition-btn btn-ripple d-flex align-items-center justify-content-center gap-2 animate-bounce-hover shadow-lg">
-                        <i class="bi bi-calculator-fill animate-float"></i> Get a Quote
-                    </a>
-                    <a href="{% url 'features' %}"
-                        class="btn btn-yellow btn-lg rounded-pill px-5 fw-bold transition-btn btn-ripple animate-bounce-hover shadow-lg">
-                        <i class="bi bi-lightning-fill me-1"></i> Explore Features
-                    </a>
+
+                <!-- ── FedEx Iconic Tabbed Action Card ── -->
+                <div class="fedex-action-card shadow-lg mb-4 text-start">
+                    <!-- Tab Headers -->
+                    <ul class="fedex-nav-tabs" id="heroActionTabs" role="tablist">
+                        <li class="fedex-tab-item">
+                            <button class="fedex-tab-btn active" id="tab-track-btn" type="button" onclick="switchHeroTab('track')">
+                                <i class="bi bi-geo-alt-fill text-orange"></i> TRACK
+                            </button>
+                        </li>
+                        <li class="fedex-tab-item">
+                            <button class="fedex-tab-btn" id="tab-ship-btn" type="button" onclick="switchHeroTab('ship')">
+                                <i class="bi bi-box-seam-fill text-purple"></i> SHIP
+                            </button>
+                        </li>
+                        <li class="fedex-tab-item">
+                            <button class="fedex-tab-btn" id="tab-rate-btn" type="button" onclick="switchHeroTab('rate')">
+                                <i class="bi bi-calculator-fill text-purple"></i> RATES
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab 1: TRACK (Active by Default) -->
+                    <div id="hero-tab-track" class="fedex-tab-content">
+                        <form action="{% url 'tracking' %}" method="GET" class="d-flex flex-column flex-sm-row gap-2">
+                            <div class="position-relative flex-grow-1">
+                                <i class="bi bi-upc-scan position-absolute top-50 translate-middle-y text-muted" style="left: 16px; font-size: 18px;"></i>
+                                <input type="text" name="track" id="heroTrackingInput"
+                                    class="form-control form-control-lg font-inter fw-semibold"
+                                    style="padding-left: 48px; border: 2px solid #D1D5DB; border-radius: 8px; font-size: 15px;"
+                                    placeholder="Enter Tracking #, AWB or Ref (e.g. XB3713635315U)" required />
+                            </div>
+                            <button type="submit" id="heroTrackSubmitBtn"
+                                class="btn btn-fedex-orange btn-lg px-4 fw-bolder font-inter d-flex align-items-center justify-content-center gap-2"
+                                style="border-radius: 8px; min-width: 140px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                <span>Track</span> <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </form>
+
+                        <!-- Quick Test Chips -->
+                        <div class="d-flex align-items-center gap-2 mt-3 flex-wrap font-inter" style="font-size: 12px;">
+                            <span class="text-secondary fw-bold">Live Reference Samples:</span>
+                            <a href="{% url 'tracking' %}?track=XB3713635315U" class="badge text-decoration-none px-2 py-1 rounded-pill" style="background:var(--fedex-purple-light); color:var(--fedex-purple); border:1px solid rgba(77,20,140,0.2);">
+                                <i class="bi bi-box-seam me-1"></i>XB3713635315U
+                            </a>
+                            <a href="{% url 'tracking' %}?track=DP-CAN-9812-alpha" class="badge text-decoration-none px-2 py-1 rounded-pill" style="background:var(--fedex-orange-light); color:var(--fedex-orange); border:1px solid rgba(255,102,0,0.2);">
+                                <i class="bi bi-shield-lock-fill me-1"></i>DP-CAN-9812-alpha
+                            </a>
+                            <a href="{% url 'tracking' %}?track=TEST-FULL" class="badge text-decoration-none px-2 py-1 rounded-pill bg-light text-dark border">
+                                <i class="bi bi-check-circle-fill text-success me-1"></i>TEST-FULL
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: SHIP -->
+                    <div id="hero-tab-ship" class="fedex-tab-content d-none">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-sm-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Origin Country / City</label>
+                                <input type="text" class="form-control" placeholder="e.g. New York, USA" value="New York, USA" readonly>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Destination Country / City</label>
+                                <input type="text" class="form-control" placeholder="e.g. London, UK" value="London, UK" readonly>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                            <span class="small text-muted font-inter">Express Air, Diplomatic Courier, and Ground freight options available.</span>
+                            <a href="{% url 'quote' %}" class="btn btn-fedex-orange fw-bold font-inter btn-sm px-4">
+                                Create Consignment <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: RATES -->
+                    <div id="hero-tab-rate" class="fedex-tab-content d-none">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                            <div>
+                                <h6 class="fw-bold mb-1 font-outfit" style="color:var(--fedex-purple);">Instant Rate Calculator</h6>
+                                <p class="small text-muted mb-0 font-inter">Calculate exact volumetric shipping rates across Standard, Express, and Overnight corridors.</p>
+                            </div>
+                            <a href="{% url 'quote' %}" class="btn btn-fedex-purple fw-bold font-inter px-4 py-2">
+                                <i class="bi bi-calculator me-1"></i> Open Calculator
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Tracking Widget (Now Below CTA) -->
-                <form action="{% url 'tracking' %}" method="GET" class="animate-fade-up delay-1" style="max-width: 480px;">
-                    <div class="p-1 bg-white rounded-pill shadow-lg d-flex align-items-center mx-auto mx-lg-0 border border-2 border-accent">
-                        <input type="text" name="track" id="trackingInput"
-                            class="form-control bg-transparent border-0 text-dark font-inter shadow-none px-4 fw-medium"
-                            placeholder="Tracking # (e.g. XB3713635315U)" required />
-                        <button type="submit" id="trackBtn"
-                            class="btn btn-accent rounded-circle p-0 fw-bold transition-btn shadow-sm d-flex align-items-center justify-content-center"
-                            style="width: 48px; height: 48px; min-width: 48px;">
-                            <i class="bi bi-search" style="font-size: 1.2rem;"></i>
-                        </button>
+                <!-- Trust Badges -->
+                <div class="d-flex align-items-center gap-4 flex-wrap text-secondary font-inter" style="font-size: 13px;">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-shield-check text-purple fs-5"></i>
+                        <span>IATA & Diplomatic Cleared</span>
                     </div>
-                    <div class="d-flex align-items-center gap-2 mt-2 px-2 flex-wrap">
-                        <span class="text-secondary small fw-bold">Test:</span>
-                        <a href="{% url 'tracking' %}?track=XB3713635315U" class="badge bg-light text-dark border text-decoration-none font-mono py-1 px-2">
-                            <i class="bi bi-box-seam text-primary me-1"></i>XB3713635315U
-                        </a>
-                        <a href="{% url 'tracking' %}?track=DP-CAN-9812-alpha" class="badge bg-light text-danger border text-decoration-none font-mono py-1 px-2">
-                            <i class="bi bi-shield-lock-fill me-1"></i>DP-CAN-9812-alpha
-                        </a>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-clock-history text-orange fs-5"></i>
+                        <span>24/7 Satellite Telemetry</span>
                     </div>
-                </form>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-patch-check-fill text-purple fs-5"></i>
+                        <span>Official Proof of Delivery</span>
+                    </div>
+                </div>
+
             </div>
-            <!-- Right Column: Contained Slideshow -->
-            <div class="col-lg-6 animate-fade-up delay-2">
-                <div class="hero-slideshow-container">
-                    <!-- Background Slideshow -->
-                    <div class="hero-slideshow">
-                        <div class="hero-slide" style="background-image: url('{% static "img/hero_delivery_door.jpg" %}');"></div>
-                        <div class="hero-slide" style="background-image: url('{% static "img/hero_ship_plane.jpg" %}');"></div>
-                        <div class="hero-slide" style="background-image: url('{% static "img/air_freight.jpg" %}');"></div>
-                        <div class="hero-slide" style="background-image: url('{% static "img/logistics_hub.jpg" %}');"></div>
-                        <div class="hero-slide" style="background-image: url('{% static "img/ground_transport.jpg" %}');"></div>
+
+            <!-- Right Column: Visual Showcase -->
+            <div class="col-lg-5 animate-fade-up delay-2">
+                <div class="position-relative">
+                    <!-- Modern Courier Showcase Card -->
+                    <div class="hero-slideshow-container shadow-lg" style="height: 480px !important; min-height: 480px !important; border-radius: 16px;">
+                        <div class="hero-slideshow">
+                            <div class="hero-slide" style="background-image: url('{% static "img/hero_ship_plane.jpg" %}');"></div>
+                            <div class="hero-slide" style="background-image: url('{% static "img/air_freight.jpg" %}');"></div>
+                            <div class="hero-slide" style="background-image: url('{% static "img/logistics_hub.jpg" %}');"></div>
+                            <div class="hero-slide" style="background-image: url('{% static "img/hero_delivery_door.jpg" %}');"></div>
+                            <div class="hero-slide" style="background-image: url('{% static "img/ground_transport.jpg" %}');"></div>
+                        </div>
+                        <div class="hero-dots" id="heroDots">
+                            <div class="hero-dot active" data-index="0"></div>
+                            <div class="hero-dot" data-index="1"></div>
+                            <div class="hero-dot" data-index="2"></div>
+                            <div class="hero-dot" data-index="3"></div>
+                            <div class="hero-dot" data-index="4"></div>
+                        </div>
                     </div>
-                    <!-- Slide Progress Dots -->
-                    <div class="hero-dots" id="heroDots">
-                        <div class="hero-dot active" data-index="0"></div>
-                        <div class="hero-dot" data-index="1"></div>
-                        <div class="hero-dot" data-index="2"></div>
-                        <div class="hero-dot" data-index="3"></div>
-                        <div class="hero-dot" data-index="4"></div>
+
+                    <!-- Floating Floating Status Badge -->
+                    <div class="position-absolute bg-white p-3 rounded-3 shadow-lg border d-flex align-items-center gap-3 animate-bounce-hover"
+                        style="bottom: -20px; left: 20px; z-index: 15; max-width: 290px;">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                            style="width: 44px; height: 44px; background: var(--fedex-orange-light); color: var(--fedex-orange);">
+                            <i class="bi bi-airplane-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark font-inter" style="font-size: 13px;">Live Flight Telemetry Active</div>
+                            <div class="text-secondary small font-mono" style="font-size: 11px;">Trans-Atlantic Air Corridors Open</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -86,204 +168,298 @@
     </div>
 </section>
 
-<!-- Section 2: Quick Stats -->
-<section class="py-6 bg-white overflow-hidden z-3 position-relative">
-    <div class="container animate-fade-up bg-yellow rounded-4 p-5 shadow-lg">
-        <div class="row text-center g-4 text-dark">
-            <div class="col-md-3 hover-scale"><i class="bi bi-globe-americas fs-1 animate-bounce-hover"></i>
-                <h2 class="display-4 fw-bold">150+</h2>
-                <p class="fw-bold">Countries</p>
+<!-- ══════════════════════════════════════════════════════
+     Section 2: FedEx Global Key Stats Bar
+     ══════════════════════════════════════════════════════ -->
+<section class="py-5 text-white" style="background: linear-gradient(135deg, var(--fedex-purple) 0%, var(--fedex-purple-dark) 100%);">
+    <div class="container animate-fade-up">
+        <div class="row text-center g-4">
+            <div class="col-6 col-md-3">
+                <div class="display-5 fw-bolder font-outfit text-white mb-1">220+</div>
+                <div class="fw-bold font-inter text-uppercase small" style="color: var(--fedex-orange); letter-spacing: 1px;">Countries & Territories</div>
             </div>
-            <div class="col-md-3 hover-scale"><i class="bi bi-box-seam fs-1 animate-bounce-hover"></i>
-                <h2 class="display-4 fw-bold">10M+</h2>
-                <p class="fw-bold">Deliveries</p>
+            <div class="col-6 col-md-3">
+                <div class="display-5 fw-bolder font-outfit text-white mb-1">10M+</div>
+                <div class="fw-bold font-inter text-uppercase small" style="color: var(--fedex-orange); letter-spacing: 1px;">Packages Delivered</div>
             </div>
-            <div class="col-md-3 hover-scale"><i class="bi bi-clock-history fs-1 animate-bounce-hover"></i>
-                <h2 class="display-4 fw-bold">99%</h2>
-                <p class="fw-bold">On-Time</p>
+            <div class="col-6 col-md-3">
+                <div class="display-5 fw-bolder font-outfit text-white mb-1">99.8%</div>
+                <div class="fw-bold font-inter text-uppercase small" style="color: var(--fedex-orange); letter-spacing: 1px;">On-Time Reliability</div>
             </div>
-            <div class="col-md-3 hover-scale">
-                <img src="{% static 'img/24h_delivery_badge.jpg' %}" class="img-fluid rounded-circle shadow-sm mb-3 animate-bounce-hover" style="width: 80px; height: 80px; object-fit: cover;" alt="24/7 Support">
-                <h2 class="display-4 fw-bold">24/7</h2>
-                <p class="fw-bold">AI Support</p>
+            <div class="col-6 col-md-3">
+                <div class="display-5 fw-bolder font-outfit text-white mb-1">24/7</div>
+                <div class="fw-bold font-inter text-uppercase small" style="color: var(--fedex-orange); letter-spacing: 1px;">Live Custody Monitoring</div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Section 3: Services -->
+<!-- ══════════════════════════════════════════════════════
+     Section 3: FedEx 4 Core Services Grid
+     ══════════════════════════════════════════════════════ -->
 <section id="services" class="py-6 bg-white border-bottom">
     <div class="container">
-        <h2 class="text-center display-5 fw-bold font-outfit text-accent animate-fade-up mb-5">Our Core Services</h2>
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <div class="text-uppercase fw-bold small mb-2" style="color: var(--fedex-orange); letter-spacing: 1.5px;">WORLD-CLASS LOGISTICS PORTFOLIO</div>
+            <h2 class="display-5 fw-bold font-outfit" style="color: var(--fedex-purple);">Comprehensive Global Shipping Solutions</h2>
+            <p class="text-secondary font-inter">Explore our flexible transit speeds, specialized diplomatic escorts, and enterprise freight corridors.</p>
+        </div>
+
         <div class="row g-4">
-            <div class="col-md-4 animate-slide-in delay-1">
-                <div class="glass-panel p-4 text-center border-top border-5 shadow-lg overflow-hidden"
-                    style="border-top-color: var(--primary-red) !important;">
-                    <img src="{% static 'img/air_freight.jpg' %}" class="img-fluid rounded-3 shadow-sm mb-3 animate-bounce-hover" style="height: 140px; width: 100%; object-fit: cover;" alt="Air Freight">
-                    <h4 class="fw-bold text-dark">Air Freight</h4>
-                    <p class="text-secondary fw-medium">Fast global transit routines covering all major international airports. We ensure your urgent shipments arrive on priority schedules with comprehensive customs clearance handling.</p>
+            <!-- Service 1: Air Priority -->
+            <div class="col-md-6 col-lg-3 animate-slide-in delay-1">
+                <div class="fedex-service-card">
+                    <div class="fedex-service-icon">
+                        <i class="bi bi-airplane-fill"></i>
+                    </div>
+                    <h4 class="fw-bold font-outfit mb-2 text-dark">International Express Air</h4>
+                    <p class="text-secondary font-inter small flex-grow-1">
+                        High-priority global air shipping with next-day and second-day delivery windows. Full customs clearance and prioritized handling across top hub airports.
+                    </p>
+                    <div class="pt-3 border-top mt-auto">
+                        <a href="{% url 'features' %}" class="fw-bold text-decoration-none d-flex align-items-center gap-1 font-inter small" style="color: var(--fedex-orange);">
+                            Explore Air Service <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4 animate-slide-in delay-2">
-                <div class="glass-panel p-4 text-center border-top border-5 shadow-lg"
-                    style="border-top-color: var(--accent-yellow) !important;">
-                    <img src="{% static 'img/ground_transport.jpg' %}" class="img-fluid rounded-3 shadow-sm mb-3 animate-bounce-hover" style="height: 140px; width: 100%; object-fit: cover;" alt="Ground Transport">
-                    <h4 class="mt-3 fw-bold text-dark">Ground Transport</h4>
-                    <p class="text-secondary fw-medium">Reliable continental hauling using our fleet of eco-friendly and GPS-tracked vehicles. Perfect for domestic deliveries and cross-border road freight solutions.</p>
+
+            <!-- Service 2: Ground Freight -->
+            <div class="col-md-6 col-lg-3 animate-slide-in delay-2">
+                <div class="fedex-service-card">
+                    <div class="fedex-service-icon">
+                        <i class="bi bi-truck-front-fill"></i>
+                    </div>
+                    <h4 class="fw-bold font-outfit mb-2 text-dark">Ground & Continental Fleet</h4>
+                    <p class="text-secondary font-inter small flex-grow-1">
+                        Cost-effective continental hauling using satellite GPS-tracked fleets. Day-definite transit times for domestic, regional, and cross-border commercial freight.
+                    </p>
+                    <div class="pt-3 border-top mt-auto">
+                        <a href="{% url 'features' %}" class="fw-bold text-decoration-none d-flex align-items-center gap-1 font-inter small" style="color: var(--fedex-orange);">
+                            Explore Ground Service <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4 animate-slide-in delay-3">
-                <div class="glass-panel p-4 text-center border-top border-5 shadow-lg overflow-hidden"
-                    style="border-top-color: var(--accent-green) !important;">
-                    <img src="{% static 'img/ocean_freight.jpg' %}" class="img-fluid rounded-3 shadow-sm mb-3 animate-bounce-hover" style="height: 140px; width: 100%; object-fit: cover;" alt="Ocean Freight">
-                    <h4 class="fw-bold text-dark">Ocean Freight</h4>
-                    <p class="text-secondary fw-medium">Cost-effective heavy shipping through massive container networks. Experience secure port-to-port and door-to-door transit for bulk goods and oversized cargo.</p>
+
+            <!-- Service 3: Diplomatic Pouch -->
+            <div class="col-md-6 col-lg-3 animate-slide-in delay-3">
+                <div class="fedex-service-card" style="border-top-color: var(--fedex-orange) !important;">
+                    <div class="fedex-service-icon" style="background: var(--fedex-orange-light); color: var(--fedex-orange);">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <h4 class="fw-bold font-outfit mb-2 text-dark">Diplomatic Courier Escort</h4>
+                    <p class="text-secondary font-inter small flex-grow-1">
+                        Certified consular pouch protocol with tamper-proof serialized seals. Dedicated diplomatic couriers managing end-to-end chain of custody with diplomatic immunity clearance.
+                    </p>
+                    <div class="pt-3 border-top mt-auto">
+                        <a href="{% url 'tracking' %}?track=DP-CAN-9812-alpha" class="fw-bold text-decoration-none d-flex align-items-center gap-1 font-inter small" style="color: var(--fedex-purple);">
+                            View Diplomatic Pouch <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service 4: Ocean Freight & Warehousing -->
+            <div class="col-md-6 col-lg-3 animate-slide-in delay-4">
+                <div class="fedex-service-card">
+                    <div class="fedex-service-icon">
+                        <i class="bi bi-water"></i>
+                    </div>
+                    <h4 class="fw-bold font-outfit mb-2 text-dark">Ocean & Heavy Cargo</h4>
+                    <p class="text-secondary font-inter small flex-grow-1">
+                        Full Container Load (FCL) and Less than Container Load (LCL) sea shipping. Secure bonded warehousing, inventory management, and integrated port logistics.
+                    </p>
+                    <div class="pt-3 border-top mt-auto">
+                        <a href="{% url 'quote' %}" class="fw-bold text-decoration-none d-flex align-items-center gap-1 font-inter small" style="color: var(--fedex-orange);">
+                            Request Freight Quote <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Section 4: AI Tracking Promo -->
-<section class="py-6 bg-white position-relative overflow-hidden">
-    <div class="position-absolute top-50 start-50 translate-middle blob-yellow z-0 opacity-50"></div>
-    <div class="container animate-fade-up z-2 position-relative bg-accent text-white rounded-4 p-5 shadow-lg">
-        <div class="row align-items-center">
+<!-- ══════════════════════════════════════════════════════
+     Section 4: Real-Time Corridor Telemetry Banner
+     ══════════════════════════════════════════════════════ -->
+<section class="py-6" style="background-color: var(--fedex-gray-bg);">
+    <div class="container animate-fade-up">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <span class="badge px-3 py-2 rounded-pill font-inter fw-bold mb-3" style="background:var(--fedex-purple-light); color:var(--fedex-purple);">
+                    <i class="bi bi-broadcast me-1"></i> SATELLITE CORRIDOR MATRIX
+                </span>
+                <h2 class="display-5 fw-bold font-outfit mb-4" style="color:var(--fedex-purple);">
+                    Live telemetry tracking from origin to destination.
+                </h2>
+                <p class="text-secondary font-inter lead mb-4">
+                    Monitor your cargo with pinpoint precision. TransGlo’s Route Matrix aggregates live radar telemetry, checkpoint scans, and customs milestones into an authoritative, single-pane console.
+                </p>
+                <div class="d-flex flex-column gap-3 mb-4 font-inter">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                            style="width: 32px; height: 32px; background: var(--fedex-purple); color: #fff;">
+                            <i class="bi bi-check2"></i>
+                        </div>
+                        <div>
+                            <strong>Instant Consignment Waybill & Official Receipt Generation:</strong> Download PDF receipts and print thermal parcel labels directly from the tracking view.
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                            style="width: 32px; height: 32px; background: var(--fedex-purple); color: #fff;">
+                            <i class="bi bi-check2"></i>
+                        </div>
+                        <div>
+                            <strong>Live Satellite & Vector Map Matrix:</strong> Commercial-grade CARTO Voyager and Esri World Imagery maps with dynamic flight curves and zero tile blocks.
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                            style="width: 32px; height: 32px; background: var(--fedex-purple); color: #fff;">
+                            <i class="bi bi-check2"></i>
+                        </div>
+                        <div>
+                            <strong>Real-time Email Event Alerts:</strong> Subscribe in one click to receive instant automated status notifications upon each checkpoint scan.
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{% url 'tracking' %}" class="btn btn-fedex-purple px-4 py-3 rounded-pill fw-bold font-inter shadow-sm">
+                        <i class="bi bi-geo-alt-fill me-1"></i> Launch Tracking Console
+                    </a>
+                    <a href="{% url 'quote' %}" class="btn btn-fedex-outline px-4 py-3 rounded-pill fw-bold font-inter">
+                        <i class="bi bi-calculator me-1"></i> Calculate Shipping Rates
+                    </a>
+                </div>
+            </div>
             <div class="col-lg-6 text-center">
                 <img src="{% static 'img/tracking_phone.jpg' %}"
-                    class="img-fluid rounded-4 border border-5 border-white shadow-lg hover-scale animate-pulse placeholder-glow"
-                    style="max-height: 400px; object-fit: cover;">
-            </div>
-            <div class="col-lg-6 mt-5 mt-lg-0 text-center text-lg-start">
-                <span class="badge bg-white text-accent rounded-pill px-3 py-2 mb-3 fw-bold tracking-wide shadow-sm">AI
-                    DRIVEN</span>
-                <h2 class="display-4 fw-bold font-outfit text-white mb-4">Advanced Real-Time Tracking</h2>
-                <p class="lead fw-medium mb-4">Never lose sight of your cargo. Our AI engine provides millisecond updates directly to your dashboard through predictive logic. By analyzing weather patterns, traffic data, and global supply chain shifts, we prevent delays before they even happen.</p>
-                <a href="{% url 'tracking' %}" class="btn btn-yellow btn-lg rounded-pill fw-bold animate-bounce-hover shadow-lg">Track
-                    Now</a>
+                    class="img-fluid rounded-4 shadow-lg border border-4 border-white"
+                    style="max-height: 440px; object-fit: cover;"
+                    alt="TransGlo Live Tracking Matrix">
             </div>
         </div>
     </div>
 </section>
 
-<!-- Section 5: The Process -->
-<section class="py-6 bg-white shadow-sm z-3 position-relative">
-    <div class="container animate-fade-up bg-green text-white rounded-4 p-5 shadow-lg">
-        <div class="row align-items-center g-5">
-            <!-- Left: Text & Steps -->
-            <div class="col-lg-6">
-                <span class="badge bg-yellow text-dark rounded-pill px-3 py-2 mb-3 fw-bold tracking-wide shadow-sm">OUR PROCESS</span>
-                <h2 class="display-5 fw-bold font-outfit mb-5 mt-2">How TransGlo Works</h2>
-                <div class="d-flex flex-column gap-4">
-                    <div class="d-flex align-items-start gap-4 hover-scale">
-                        <div class="bg-white text-green rounded-circle d-flex align-items-center justify-content-center shadow-lg flex-shrink-0 animate-bounce-hover"
-                            style="width: 60px; height: 60px;">
-                            <h4 class="mb-0 fw-bold">1</h4>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold mb-1">Tell AI</h5>
-                            <p class="mb-0 opacity-75 fw-medium">Speak or type your shipment details to our intelligent AI agent — available 24/7. Our natural language processing quickly records dimensions and urgency.</p>
-                        </div>
+<!-- ══════════════════════════════════════════════════════
+     Section 5: The 4-Stage Courier Process Flow
+     ══════════════════════════════════════════════════════ -->
+<section class="py-6 bg-white border-bottom">
+    <div class="container animate-fade-up">
+        <div class="text-center mb-5">
+            <div class="text-uppercase fw-bold small mb-2" style="color: var(--fedex-orange); letter-spacing: 1.5px;">SIMPLE & SEAMLESS</div>
+            <h2 class="display-5 fw-bold font-outfit" style="color: var(--fedex-purple);">How Your Shipment Moves Through TransGlo</h2>
+            <p class="text-secondary font-inter">Four systematic steps from consignment manifest to verified final delivery.</p>
+        </div>
+
+        <div class="row g-4 text-center">
+            <div class="col-md-3">
+                <div class="p-4 rounded-4 h-100 border bg-white shadow-sm hover-scale">
+                    <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                        style="width: 64px; height: 64px; background: var(--fedex-purple-light); color: var(--fedex-purple); font-size: 26px;">
+                        <i class="bi bi-file-earmark-text-fill"></i>
                     </div>
-                    <div class="d-flex align-items-start gap-4 hover-scale">
-                        <div class="bg-white text-green rounded-circle d-flex align-items-center justify-content-center shadow-lg flex-shrink-0 animate-bounce-hover delay-1"
-                            style="width: 60px; height: 60px;">
-                            <h4 class="mb-0 fw-bold">2</h4>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold mb-1">Pack Fast</h5>
-                            <p class="mb-0 opacity-75 fw-medium">Our courier arrives within the hour. Package it, we handle the rest, including instant label generation and dynamic vehicle routing for pickup.</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-start gap-4 hover-scale">
-                        <div class="bg-white text-green rounded-circle d-flex align-items-center justify-content-center shadow-lg flex-shrink-0 animate-bounce-hover delay-2"
-                            style="width: 60px; height: 60px;">
-                            <h4 class="mb-0 fw-bold">3</h4>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold mb-1">Live Track</h5>
-                            <p class="mb-0 opacity-75 fw-medium">Monitor your shipment in real-time on an interactive map from any device. Receive automated notifications via email or SMS at every checkpoint.</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-start gap-4 hover-scale">
-                        <div class="bg-white text-green rounded-circle d-flex align-items-center justify-content-center shadow-lg flex-shrink-0 animate-bounce-hover delay-3"
-                            style="width: 60px; height: 60px;">
-                            <h4 class="mb-0 fw-bold">4</h4>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold mb-1">Secured Delivery</h5>
-                            <p class="mb-0 opacity-75 fw-medium">Your package arrives safe and on-time, with full digital receipt and confirmation. Our zero-touch delivery features photographic evidence and geolocation stamps.</p>
-                        </div>
-                    </div>
+                    <div class="badge mb-2 px-3 py-1 rounded-pill" style="background:var(--fedex-purple); color:#fff;">STEP 1</div>
+                    <h5 class="fw-bold font-outfit mb-2 text-dark">Book & Manifest</h5>
+                    <p class="text-secondary small font-inter mb-0">Generate your tracking number, airway bill, and shipping label in seconds through our platform.</p>
                 </div>
             </div>
-            <!-- Right: Image -->
-            <div class="col-lg-6 text-center animate-slide-in delay-2">
-                <img src="{% static 'img/isometric_tracking_app.jpg' %}"
-                    class="img-fluid rounded-4 shadow-lg border border-5 border-white animate-pulse hover-scale"
-                    style="max-height: 480px; object-fit: contain;"
-                    alt="TransGlo Logistics Workflow">
+
+            <div class="col-md-3">
+                <div class="p-4 rounded-4 h-100 border bg-white shadow-sm hover-scale">
+                    <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                        style="width: 64px; height: 64px; background: var(--fedex-orange-light); color: var(--fedex-orange); font-size: 26px;">
+                        <i class="bi bi-box-seam-fill"></i>
+                    </div>
+                    <div class="badge mb-2 px-3 py-1 rounded-pill" style="background:var(--fedex-orange); color:#fff;">STEP 2</div>
+                    <h5 class="fw-bold font-outfit mb-2 text-dark">Origin Hub Scan</h5>
+                    <p class="text-secondary small font-inter mb-0">Package collected by courier dispatch, verified at the sorting facility, and cleared for rapid routing.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="p-4 rounded-4 h-100 border bg-white shadow-sm hover-scale">
+                    <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                        style="width: 64px; height: 64px; background: var(--fedex-purple-light); color: var(--fedex-purple); font-size: 26px;">
+                        <i class="bi bi-airplane-fill"></i>
+                    </div>
+                    <div class="badge mb-2 px-3 py-1 rounded-pill" style="background:var(--fedex-purple); color:#fff;">STEP 3</div>
+                    <h5 class="fw-bold font-outfit mb-2 text-dark">Transit & Customs</h5>
+                    <p class="text-secondary small font-inter mb-0">Monitored 24/7 along air or ground corridors with automated customs clearance updates.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="p-4 rounded-4 h-100 border bg-white shadow-sm hover-scale">
+                    <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                        style="width: 64px; height: 64px; background: var(--fedex-orange-light); color: var(--fedex-orange); font-size: 26px;">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <div class="badge mb-2 px-3 py-1 rounded-pill" style="background:var(--fedex-orange); color:#fff;">STEP 4</div>
+                    <h5 class="fw-bold font-outfit mb-2 text-dark">Verified Delivery</h5>
+                    <p class="text-secondary small font-inter mb-0">Delivered directly to recipient address with electronic signature and downloadable receipt confirmation.</p>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Section 6: Final CTA -->
-<section class="py-6 bg-white position-relative overflow-hidden">
-    <div class="position-absolute top-0 start-100 translate-middle blob-red z-0"></div>
-    <div class="container text-center animate-grow z-2 position-relative">
-        <div class="row align-items-center">
-            <div class="col-lg-6 mb-5 mb-lg-0">
-                <h2 class="display-3 fw-bold text-dark mb-4 font-outfit">Ready to Ship <span class="text-accent">Smarter?</span></h2>
-                <p class="lead text-secondary fw-medium mb-5">Join 100,000+ businesses utilizing TransGlo Global Network. Scale your enterprise with a logistics partner that adapts to your growth and volume.</p>
-                <a href="{% url 'contact' %}"
-                    class="btn btn-accent btn-lg px-5 py-3 rounded-pill fw-bold shadow-accent hover-scale animate-bounce-hover">Get
-                    Started Today</a>
-            </div>
-            <div class="col-lg-6">
-                <img src="{% static 'img/happy_customer_delivery.jpg' %}" class="img-fluid rounded-4 shadow-lg border border-5 border-white animate-fade-up" alt="Happy Customer Delivery">
+<!-- ══════════════════════════════════════════════════════
+     Section 6: Final FedEx High-Impact Call to Action
+     ══════════════════════════════════════════════════════ -->
+<section class="py-6 text-white position-relative" style="background: var(--fedex-purple);">
+    <div class="container text-center animate-fade-up">
+        <div class="max-w-700 mx-auto">
+            <h2 class="display-4 fw-bolder font-outfit mb-3 text-white">Ready to Ship with TransGlo?</h2>
+            <p class="lead font-inter text-white-50 mb-4" style="max-width: 600px; margin: 0 auto;">
+                Experience FedEx-grade precision, instant digital consignment receipts, and live corridor telemetry for your global business.
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="{% url 'tracking' %}" class="btn btn-fedex-orange btn-lg px-5 py-3 rounded-pill fw-bold font-inter shadow-lg">
+                    <i class="bi bi-geo-alt-fill me-1"></i> Track a Consignment
+                </a>
+                <a href="{% url 'quote' %}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-bold font-inter">
+                    <i class="bi bi-calculator me-1"></i> Get Rate Estimate
+                </a>
             </div>
         </div>
     </div>
 </section>
 {% endblock %}
 
-{% block extra_js %}
+{% block scripts %}
 <script>
-// Hero dot sync with CSS animation (10s per slide, 5 slides = 50s)
+// Hero Action Card Tab Switching Logic
+function switchHeroTab(tabId) {
+    const tabs = ['track', 'ship', 'rate'];
+    tabs.forEach(t => {
+        const btn = document.getElementById(`tab-${t}-btn`);
+        const content = document.getElementById(`hero-tab-${t}`);
+        if (t === tabId) {
+            btn.classList.add('active');
+            content.classList.remove('d-none');
+        } else {
+            btn.classList.remove('active');
+            content.classList.add('d-none');
+        }
+    });
+}
+
+// Hero Slideshow Timing
 (function() {
     const dots = document.querySelectorAll('.hero-dot');
     const total = dots.length;
-    const interval = 10000;
     let current = 0;
 
-    function setActive(index) {
-        dots.forEach(d => d.classList.remove('active'));
-        dots[index].classList.add('active');
-    }
-
-    // Sync with CSS animation
     setInterval(function() {
         current = (current + 1) % total;
-        setActive(current);
-    }, interval);
-
-    // Click to jump
-    dots.forEach(dot => {
-        dot.addEventListener('click', function() {
-            const index = parseInt(this.dataset.index);
-            current = index;
-            setActive(index);
-            // Reset CSS animations by forcing reflow
-            const slides = document.querySelectorAll('.hero-slide');
-            slides.forEach((slide, i) => {
-                slide.style.animation = 'none';
-                slide.offsetHeight; // force reflow
-                const delay = ((i - index + total) % total) * 10;
-                slide.style.animation = `heroFade 50s ${delay}s infinite`;
-            });
-        });
-    });
+        dots.forEach(d => d.classList.remove('active'));
+        if (dots[current]) dots[current].classList.add('active');
+    }, 10000);
 })();
 </script>
-{% endblock %}
+{% endblock %}

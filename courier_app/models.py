@@ -48,7 +48,7 @@ class Shipment(models.Model):
     
     status = models.ForeignKey(CustomStatus, on_delete=models.SET_NULL, null=True, blank=True)
     
-    weight_kg = models.DecimalField(max_digits=5, decimal_places=2)
+    weight_kg = models.DecimalField(max_digits=10, decimal_places=2, default=1.00)
     package_content = models.CharField(max_length=200, blank=True, null=True)
     package_description = models.TextField(blank=True, null=True)
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
@@ -61,19 +61,22 @@ class Shipment(models.Model):
     current_lat = models.FloatField(default=40.7128)
     current_lng = models.FloatField(default=-74.0060)
     
-    estimated_delivery = models.DateField()
+    estimated_delivery = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     latest_update = models.TextField(default="Shipment logged in network.")
 
     def save(self, *args, **kwargs):
+        import datetime
         if not self.tracking_number:
             self.tracking_number = f"TRG-{get_random_string(8).upper()}"
         if not self.airway_bill_number:
             self.airway_bill_number = f"AWB-{get_random_string(10).upper()}"
         if not self.reference_id:
             self.reference_id = f"DP-{self.tracking_number}"
+        if not self.estimated_delivery:
+            self.estimated_delivery = timezone.now().date() + datetime.timedelta(days=3)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -100,7 +103,7 @@ class TrackingEvent(models.Model):
         return f"{self.shipment.tracking_number} - {self.status_name} @ {self.location}"
 
     class Meta:
-        ordering = ['sort_order', 'timestamp']
+        ordering = ['sort_order', 'timestamp', 'id']
 
 class ShipmentSubscriber(models.Model):
     shipment = models.ForeignKey(Shipment, on_delete=models.CASCADE, related_name='subscribers')
@@ -152,11 +155,11 @@ def auto_create_tracking_event(sender, instance, created, **kwargs):
     This populates the vertical timeline history automatically.
     """
     status_name = instance.status.name if instance.status else "Processing"
-    location = instance.current_location_name or instance.origin
-    description = instance.latest_update or "Information received."
+    location = instance.current_location_name or instance.origin or "Logistics Sorting Hub"
+    description = instance.latest_update or "Shipment logged in network."
     
     # Check the latest event to prevent redundant duplicates on every save
-    last_event = instance.events.order_by('-timestamp' , '-sort_order').first()
+    last_event = instance.events.order_by('-sort_order', '-timestamp', '-id').first()
     
     if not last_event or (last_event.status_name != status_name or 
                           last_event.location != location or 
@@ -165,12 +168,14 @@ def auto_create_tracking_event(sender, instance, created, **kwargs):
         # Determine sort order
         next_order = 0
         if last_event:
-            next_order = last_event.sort_order + 10
+            next_order = (last_event.sort_order or 0) + 10
             
+        badge = "VERIFIED: COURIER SECTION" if instance.is_diplomatic else "NETWORK VERIFIED"
         TrackingEvent.objects.create(
             shipment=instance,
             status_name=status_name,
             location=location,
             description=description,
-            sort_order=next_order
+            sort_order=next_order,
+            verification_badge=badge
         )

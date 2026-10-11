@@ -74,6 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'courier_app.context_processors.map_settings',
             ],
         },
     },
@@ -82,18 +83,84 @@ TEMPLATES = [
 WSGI_APPLICATION = 'courier_project.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+# Database Configuration & Resilience
+# Supports DATABASE_URL (e.g. Postgres / MySQL / hosted database), custom persistent disk paths, or local SQLite.
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    from urllib.parse import urlparse, unquote
+    parsed_db_url = urlparse(DATABASE_URL)
+    if parsed_db_url.scheme in ['postgres', 'postgresql']:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': parsed_db_url.path[1:],
+                'USER': parsed_db_url.username,
+                'PASSWORD': unquote(parsed_db_url.password or ''),
+                'HOST': parsed_db_url.hostname,
+                'PORT': parsed_db_url.port or '5432',
+                'CONN_MAX_AGE': 600,
+            }
+        }
+    elif parsed_db_url.scheme == 'sqlite':
+        db_path_str = parsed_db_url.path
+        if db_path_str.startswith('/') and len(db_path_str) > 2 and db_path_str[2] == ':':
+            db_path_str = db_path_str[1:]
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': Path(db_path_str) if db_path_str else BASE_DIR / 'db.sqlite3',
+                'OPTIONS': {'timeout': 30},
+            }
+        }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+                'OPTIONS': {'timeout': 30},
+            }
+        }
+else:
+    # Check for dedicated persistent disk path (e.g. /var/data/db.sqlite3 or custom env)
+    persistent_sqlite_path = os.environ.get('SQLITE_DB_PATH') or os.environ.get('PERSISTENT_DB_PATH')
+    if not persistent_sqlite_path and os.path.exists('/var/data'):
+        persistent_sqlite_path = '/var/data/db.sqlite3'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        'OPTIONS': {
-            'timeout': 20,
-        },
-    }
-}
+    if persistent_sqlite_path:
+        db_path = Path(persistent_sqlite_path)
+        try:
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+        except Exception:
+            pass
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': db_path,
+                'OPTIONS': {'timeout': 30},
+            }
+        }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+                'OPTIONS': {'timeout': 30},
+            }
+        }
+
+# Durable Session Persistence across re-logins, browser restarts, and time gaps
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 1209600  # 14 days in seconds
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_NAME = 'transglo_sessionid'
+
+# Map Tile Provider Configuration (Loaded securely from Environment Variables)
+MAPBOX_ACCESS_TOKEN = os.environ.get('MAPBOX_ACCESS_TOKEN', '')
+MAPTILER_API_KEY = os.environ.get('MAPTILER_API_KEY', '')
+STADIA_API_KEY = os.environ.get('STADIA_API_KEY', '')
+CUSTOM_MAP_TILE_URL = os.environ.get('MAP_TILE_URL', '')
 
 
 # Password validation

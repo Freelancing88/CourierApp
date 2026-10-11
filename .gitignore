@@ -3,3 +3,6 @@ __pycache__/
 *.pyc
 staticfiles/
 .env
+*.sqlite3
+db.sqlite3
+deploy_payload.tar.gz
